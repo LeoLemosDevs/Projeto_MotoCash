@@ -1839,6 +1839,7 @@
       // =======================================================================
       let timerInterval = null;
       let simInterval = null;
+      let simCycleSeconds = 0;
       let gpsWatchId = null;
       let lastGpsPoint = null;
       let wakeLockSentinel = null;
@@ -1942,19 +1943,81 @@
         });
 
         renderPainel();
-        renderMotoParts();
+        const viewMoto = document.getElementById('view-moto');
+        if (viewMoto && !viewMoto.classList.contains('hidden')) {
+          renderMotoParts();
+        }
       }
 
-      // Modo de Simulação Inteligente (para testes em mesa / desktop)
+      // Modo de Simulação Inteligente e Realista (Ciclo Completo de 5 Minutos / 300 Segundos)
+      // 0s-25s: Acelera progressivamente de 0 a 60 km/h (arrancada/saída)
+      // 25s-175s (~3 min): Trânsito urbano oscilando realisticamente entre 40 e 50 km/h
+      // 175s-180s: Frenagem suave aproximando-se do semáforo
+      // 180s-240s (1 minuto cravado = 60s): PARADA NO SINAL VERMELHO (0 km/h, odômetro e desgaste pausados)
+      // 240s-265s: Sinal abre! Arrancada progressiva de 0 até 48 km/h
+      // 265s-300s: Cruza o fluxo entre 40 e 50 km/h completando o ciclo de 5 minutos, e reinicia!
       function startSimulation() {
         clearInterval(simInterval);
         simInterval = setInterval(() => {
           if (state.currentShift.isActive && !state.currentShift.isPaused) {
-            // Simula moto rodando a ~48 km/h (0.0133 km por segundo)
-            const simulatedDeltaKm = 0.0133;
-            addDistance(simulatedDeltaKm);
-            state.currentShift.currentSpeed = Math.floor(45 + Math.random() * 8);
-            renderPainel();
+            simCycleSeconds = (simCycleSeconds + 1) % 300;
+            const t = simCycleSeconds;
+
+            let currentSpeed = 0;
+            let statusText = 'Rodando na Moto';
+            let statusColor = 'green';
+
+            if (t >= 0 && t < 25) {
+              // 1. Partida progressiva: sai do 0 e acelera até 60 km/h
+              const progress = t / 25;
+              currentSpeed = Math.max(0, Math.min(60, Math.round(progress * 60 + (Math.random() * 2 - 1))));
+              statusText = `Acelerando (${currentSpeed} km/h)`;
+              statusColor = 'green';
+            } else if (t >= 25 && t < 175) {
+              // 2. Fluxo da cidade por ~3 minutos: variando suavemente entre 40 e 50 km/h
+              const wave = Math.sin((t - 25) * 0.16) * 4.2;
+              const jitter = (Math.random() * 1.8 - 0.9);
+              currentSpeed = Math.max(40, Math.min(50, Math.round(45 + wave + jitter)));
+              statusText = `Fluxo Urbano (${currentSpeed} km/h)`;
+              statusColor = 'green';
+            } else if (t >= 175 && t < 180) {
+              // 3. Frenagem suave para o semáforo
+              const decel = 1 - ((t - 175) / 5);
+              currentSpeed = Math.max(0, Math.round(45 * decel));
+              statusText = 'Freando para o Sinal';
+              statusColor = 'amber';
+            } else if (t >= 180 && t < 240) {
+              // 4. PARADA EM SINAL DE 1 MINUTO (60 segundos: 180s até 240s)
+              currentSpeed = 0;
+              const secondsLeft = 240 - t;
+              statusText = `Sinal Vermelho (${secondsLeft}s)`;
+              statusColor = 'amber';
+            } else if (t >= 240 && t < 265) {
+              // 5. Sinal verde abriu! Arrancada progressiva de 0 a 48 km/h
+              const progress = (t - 240) / 25;
+              currentSpeed = Math.max(0, Math.min(48, Math.round(progress * 48 + (Math.random() * 2 - 1))));
+              statusText = `Sinal Verde • Arrancando (${currentSpeed} km/h)`;
+              statusColor = 'green';
+            } else {
+              // 6. Fechando o ciclo de 5 minutos: rodando entre 40 e 50 km/h
+              const wave = Math.cos((t - 265) * 0.18) * 4.2;
+              const jitter = (Math.random() * 1.8 - 0.9);
+              currentSpeed = Math.max(40, Math.min(50, Math.round(45 + wave + jitter)));
+              statusText = `Rodando na Moto (${currentSpeed} km/h)`;
+              statusColor = 'green';
+            }
+
+            state.currentShift.currentSpeed = currentSpeed;
+            updateGpsStatus(statusText, statusColor);
+
+            if (currentSpeed > 0) {
+              // Distância em 1 segundo: velocidade (km/h) / 3600
+              const deltaKm = currentSpeed / 3600;
+              addDistance(deltaKm);
+            } else {
+              // Parado no semáforo: odômetro e peças não desgastam, atualiza painel em tempo real
+              renderPainel();
+            }
           }
         }, 1000);
       }
@@ -2000,8 +2063,8 @@
         const extrasCost = state.currentShift.extras.reduce((sum, item) => sum + item.value, 0);
         const totalCost = fuelCost + wearCost + extrasCost;
 
-        // Cockpit
-        document.getElementById('displayKm').textContent = km.toFixed(1);
+        // Cockpit: mostra 2 casas decimais para ver o odômetro rolando metro a metro em tempo real
+        document.getElementById('displayKm').textContent = km >= 100 ? km.toFixed(1) : km.toFixed(2);
         document.getElementById('displayTotalCost').textContent = formatBRL(totalCost);
         document.getElementById('displaySpeed').textContent = state.currentShift.isActive && !state.currentShift.isPaused ? state.currentShift.currentSpeed : 0;
         document.getElementById('displayTimer').textContent = formatTime(state.currentShift.elapsedSeconds);
@@ -3203,6 +3266,7 @@
           state.currentShift.currentSpeed = 0;
           state.currentShift.isActive = false;
           state.currentShift.isPaused = false;
+          simCycleSeconds = 0;
           stopSimulation();
           stopGpsTracking();
           releaseWakeLock();
@@ -3313,6 +3377,7 @@
           state.currentShift.km = 0.0;
           state.currentShift.elapsedSeconds = 0;
           state.currentShift.extras = [];
+          simCycleSeconds = 0;
 
           stopSimulation();
           stopGpsTracking();
