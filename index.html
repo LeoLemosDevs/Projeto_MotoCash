@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>MotoCash Pro — Finanças e Odômetro Digital para Motoboys</title>
+  
+  <!-- PWA Metadata -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#070A0E" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MotoCash" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+  <link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg" />
+
+  <!-- Google Fonts: Inter para UI e JetBrains Mono / Orbitron para o visor digital do painel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            amoled: '#070A0E',
+            amoledDark: '#030508',
+            card: '#11161F',
+            cardHover: '#161D29',
+            cardLight: '#18212C',
+            borderSubtle: '#1F2937',
+            neonGreen: '#00E676',
+            neonAmber: '#F59E0B',
+            neonBlue: '#3B82F6',
+            neonRed: '#EF4444'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            digital: ['Orbitron', 'JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* Estilo base com alto contraste e sem travamento de rolagem no toque */
+    html, body {
+      background-color: #030508;
+      color: #F3F4F6;
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
+    }
+
+    /* Brilho neon de painel digital AMOLED para sol forte e noite */
+    .digital-glow-green {
+      text-shadow: 0 0 20px rgba(0, 230, 118, 0.4), 0 0 4px rgba(0, 230, 118, 0.6);
+    }
+    .digital-glow-amber {
+      text-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+    }
+
+    /* Moldura estilo cockpit velocímetro esportivo */
+    .cluster-frame {
+      background: radial-gradient(circle at 50% 0%, #0D141D 0%, #030508 75%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 0 32px rgba(0, 230, 118, 0.05),
+        0 12px 35px -10px rgba(0, 0, 0, 0.85);
+    }
+
+    /* Animação suave para os segmentos do gráfico de rosca SVG */
+    .donut-segment {
+      transition: stroke-dasharray 0.45s ease, stroke-dashoffset 0.45s ease;
+    }
+
+    /* Sliders táteis grandes para dedos/luvas */
+    input[type="range"].part-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 9999px;
+      outline: none;
+      cursor: pointer;
+      background: #1F2937;
+    }
+    input[type="range"].part-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3px solid #00E676;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    input[type="range"].part-slider::-webkit-slider-thumb:active {
+      transform: scale(1.2);
+    }
+
+    /* Scrollbars elegantes */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070A0E;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1F2937;
+      border-radius: 9999px;
+    }
+
+    /* Modo Guidão Horizontal para celular no suporte */
+    @media (orientation: landscape) and (max-height: 560px) {
+      .landscape-grid {
+        display: grid !important;
+        grid-template-columns: 1.15fr 0.85fr !important;
+        gap: 1rem !important;
+        align-items: start !important;
+      }
+      .landscape-compact-cluster {
+        padding-top: 0.8rem !important;
+        padding-bottom: 0.8rem !important;
+      }
+      .landscape-km-text {
+        font-size: 2.8rem !important;
+        line-height: 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-amoledDark text-gray-100 antialiased selection:bg-neonGreen/20 selection:text-neonGreen pb-20 lg:pb-0">
+
+  <!-- ==================== BANNER DE INSTALAÇÃO DO PWA (Topo) ==================== -->
+  <div id="pwaInstallBanner" class="hidden bg-gradient-to-r from-emerald-950 via-card to-amoled border-b border-neonGreen/30 px-4 py-2.5 transition-all">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="w-8 h-8 rounded-xl bg-neonGreen/20 text-neonGreen flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+        </span>
+        <div class="text-xs">
+          <p class="font-bold text-white leading-tight">Instalar MotoCash Pro no Aparelho</p>
+          <p class="text-gray-400">Acesse direto da tela inicial, funciona 100% offline na rua.</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnPwaDismiss" type="button" class="px-2.5 py-1 text-xs text-gray-400 hover:text-white">Depois</button>
+        <button id="btnPwaInstall" type="button" class="px-3.5 py-1.5 rounded-xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-xs shadow-md shadow-neonGreen/20 transition">Baixar App</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="min-h-screen flex flex-col lg:flex-row">
+
+    <!-- ==================== SIDEBAR DESKTOP (Visível apenas em lg+) ==================== -->
+    <aside class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-card border-r border-borderSubtle z-30">
+      <!-- Marca -->
+      <div class="px-6 py-5 border-b border-borderSubtle flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-neonGreen/15 border border-neonGreen/30 flex items-center justify-center text-neonGreen shrink-0 shadow-inner">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="5.5" cy="17.5" r="3.5" />
+            <circle cx="18.5" cy="17.5" r="3.5" />
+            <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5V14l-3-3 4-3 2 3h2" />
+            <path d="M8.5 17.5H12" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-black text-lg tracking-tight text-white leading-none">MotoCash <span class="text-neonGreen">Pro</span></h1>
+          <p class="text-[11px] text-gray-400 mt-1 font-medium">Canivete Suíço do Motoboy</p>
+        </div>
+      </div>
+
+      <!-- Links de Navegação -->
+      <nav class="flex-1 px-4 py-6 space-y-1.5">
+        <button data-nav-target="view-painel" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-neonGreen/15 text-neonGreen border border-neonGreen/30 font-bold text-sm transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          Painel do Dia
+        </button>
+
+        <button data-nav-target="view-moto" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          Minha Moto &amp; Peças
+        </button>
+
+        <button data-nav-target="view-metas" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+          Metas Financeiras
+        </button>
+
+        <button data-nav-target="view-relatorios" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          Relatórios &amp; DRE
+        </button>
+
+        <button data-nav-target="view-config" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          Turso Cloud &amp; Ajustes
+        </button>
+      </nav>
+
+      <!-- Resumo Rápido na Base da Sidebar -->
+      <div class="p-4 m-4 rounded-2xl bg-amoled border border-borderSubtle text-xs space-y-2">
+        <div class="flex justify-between text-gray-400">
+          <span>Moto:</span>
+          <span id="sbMotoModel" class="text-gray-200 font-semibold truncate max-w-[120px]">CG 160 Fan</span>
+        </div>
+        <div class="flex justify-between text-gray-400">
+          <span>Gasolina (Ceará):</span>
+          <span id="sbFuelText" class="text-neonGreen font-mono font-bold">R$ 7,00 (40 km/L)</span>
+        </div>
+        <div class="flex justify-between text-gray-400">
+          <span>Custo por KM:</span>
+          <span id="sbCostPerKm" class="text-amber-400 font-mono font-bold">R$ 0,295/km</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================== CONTAINER PRINCIPAL ==================== -->
+    <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
+
+      <!-- CABEÇALHO GLOBAL RESPONSIVO -->
+      <header class="sticky top-0 z-20 bg-amoled/90 backdrop-blur-md border-b border-borderSubtle px-4 sm:px-6 py-3">
+        <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+          <!-- Logo no Mobile e Título da Tela Ativa -->
+          <div class="flex items-center gap-3">
+            <div class="lg:hidden w-9 h-9 rounded-xl bg-neonGreen/15 border border-neonGreen/30 flex items-center justify-center text-neonGreen shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="5.5" cy="17.5" r="3.5" />
+                <circle cx="18.5" cy="17.5" r="3.5" />
+                <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5V14l-3-3 4-3 2 3h2" />
+              </svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 id="headerScreenTitle" class="font-extrabold text-base sm:text-lg text-white leading-tight">Painel do Dia</h2>
+                <!-- Badge de Status do GPS -->
+                <span id="gpsStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                  <span id="gpsStatusDot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+                  <span id="gpsStatusText">Pausado</span>
+                </span>
+              </div>
+              <p id="headerDateSubtitle" class="text-xs text-gray-400 font-medium">Hoje • Turno pronto</p>
+            </div>
+          </div>
+
+          <!-- Ações Rápidas do Cabeçalho -->
+          <div class="flex items-center gap-2">
+            <!-- Botão Simulação (Para testar no PC ou sem sair de moto) -->
+            <button id="btnToggleSim" type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40 hover:bg-neonGreen/25" title="Alternar entre modo simulação de teste (~50 km/h) e GPS real">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              <span id="simLabel">Simulação: ON</span>
+            </button>
+
+            <!-- Botão KM Manual -->
+            <button id="btnOpenManualKm" type="button" class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold bg-card hover:bg-cardHover text-gray-200 border border-borderSubtle transition">
+              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+              <span class="hidden sm:inline">KM Manual</span>
+            </button>
+
+            <!-- Botão Instalar App (Se disponível) -->
+            <button id="btnHeaderInstall" type="button" class="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-card border border-neonGreen/30 text-neonGreen hover:bg-neonGreen/10 transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              <span>Instalar</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- ==================== CONTEÚDO DAS VIEWS / ABAS ==================== -->
+      <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6 pb-24 lg:pb-12 space-y-6">
+
+        <!-- ================================================================= -->
+        <!-- VIEW 1: PAINEL DO DIA (Cockpit Odômetro Digital & Fechamento)     -->
+        <!-- ================================================================= -->
+        <div id="view-painel" class="view-panel space-y-6">
+
+          <!-- GRID PRINCIPAL: Painel Digital (Esq) + Gráfico de Custos (Dir) -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-5 landscape-grid">
+
+            <!-- COLUNA ESQUERDA: Cockpit Digital -->
+            <section class="md:col-span-7 flex flex-col gap-4">
+              <!-- Cluster Digital (Visor Preto Tradicional AMOLED) -->
+              <div class="cluster-frame landscape-compact-cluster relative rounded-3xl border-2 border-borderSubtle/90 p-5 sm:p-7 overflow-hidden">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-2/5 h-1 rounded-b-full bg-gradient-to-r from-transparent via-neonGreen/70 to-transparent"></div>
+
+                <div class="flex items-center justify-between text-[11px] uppercase tracking-widest text-gray-500 font-semibold mb-3">
+                  <span class="flex items-center gap-1.5">
+                    <span id="clusterStatusDot" class="w-2 h-2 rounded-full bg-gray-600"></span>
+                    <span id="clusterStatusText">Odômetro do Dia</span>
+                  </span>
+                  <span class="font-mono text-gray-400">MOTOCASH TRIP</span>
+                </div>
+
+                <!-- Leitura Gigante de KM -->
+                <div class="text-center py-2 sm:py-3">
+                  <div class="flex items-baseline justify-center gap-2">
+                    <span id="displayKm" class="landscape-km-text font-digital font-extrabold text-5xl sm:text-6xl lg:text-7xl tracking-tight text-neonGreen digital-glow-green tabular-nums">
+                      0.0
+                    </span>
+                    <span class="font-digital text-lg sm:text-2xl font-bold text-neonGreen/80">km</span>
+                  </div>
+
+                  <!-- Valor Gasto Acumulado em Reais -->
+                  <div class="mt-3 sm:mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-white/[0.04] border border-white/10">
+                    <span class="text-xs uppercase tracking-wider text-gray-400 font-semibold">Gasto do Dia</span>
+                    <span id="displayTotalCost" class="font-mono font-extrabold text-2xl sm:text-3xl text-amber-400 digital-glow-amber tabular-nums">
+                      R$ 0,00
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Mini-Indicadores (Velocidade, Tempo e Custo/KM) -->
+                <div class="mt-5 pt-4 border-t border-gray-800/90 grid grid-cols-3 gap-2 text-center">
+                  <div class="bg-white/[0.02] rounded-xl py-2 px-1 border border-white/[0.04]">
+                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-medium">Velocidade</p>
+                    <p class="font-mono font-bold text-sm sm:text-base text-white mt-0.5 tabular-nums">
+                      <span id="displaySpeed">0</span> <span class="text-xs text-gray-400 font-normal">km/h</span>
+                    </p>
+                  </div>
+                  <div class="bg-white/[0.02] rounded-xl py-2 px-1 border border-white/[0.04]">
+                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-medium">Tempo Rodando</p>
+                    <p id="displayTimer" class="font-mono font-bold text-sm sm:text-base text-white mt-0.5 tabular-nums">00:00:00</p>
+                  </div>
+                  <div class="bg-white/[0.02] rounded-xl py-2 px-1 border border-white/[0.04]">
+                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-medium">Custo / KM</p>
+                    <p id="displayCostPerKm" class="font-mono font-bold text-sm sm:text-base text-neonGreen mt-0.5 tabular-nums">R$ 0,295</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- BOTÕES DE CONTROLE RÁPIDO (Tamanho grande para luvas e rua) -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <button id="btnStartPause" type="button" class="col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition">
+                  <svg id="iconStartPause" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                  <span id="textStartPause">Iniciar Dia</span>
+                </button>
+
+                <button id="btnOpenExtra" type="button" class="min-h-[56px] px-4 py-3.5 rounded-2xl bg-card hover:bg-cardHover active:scale-[0.98] text-blue-400 border border-blue-500/35 font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition">
+                  <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                  <span>+ Gasto Extra</span>
+                </button>
+
+                <button id="btnFinishDay" type="button" class="min-h-[56px] px-4 py-3.5 rounded-2xl bg-red-600/90 hover:bg-red-500 active:scale-[0.98] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 transition">
+                  <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <span>Finalizar Dia</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- COLUNA DIREITA: Custos em Tempo Real (Rosca + Legenda) -->
+            <section class="md:col-span-5 bg-card rounded-3xl border border-borderSubtle p-5 flex flex-col justify-between gap-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-bold text-base text-white">Custos do Dia em Reais</h3>
+                  <p class="text-xs text-gray-400">Distribuição real por quilômetro</p>
+                </div>
+                <span class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-amoled border border-borderSubtle text-neonGreen font-semibold">
+                  Ao vivo
+                </span>
+              </div>
+
+              <!-- Gráfico de Rosca SVG -->
+              <div class="flex flex-col sm:flex-row md:flex-col xl:flex-row items-center justify-center gap-5 my-1">
+                <div class="relative w-44 h-44 shrink-0 flex items-center justify-center">
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 160 160">
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#1F2937" stroke-width="18" />
+                    <circle id="segFuel" class="donut-segment" cx="80" cy="80" r="60" fill="none" stroke="#00E676" stroke-width="18" stroke-dasharray="0 377" stroke-dashoffset="0" />
+                    <circle id="segWear" class="donut-segment" cx="80" cy="80" r="60" fill="none" stroke="#F59E0B" stroke-width="18" stroke-dasharray="0 377" stroke-dashoffset="0" />
+                    <circle id="segExtra" class="donut-segment" cx="80" cy="80" r="60" fill="none" stroke="#3B82F6" stroke-width="18" stroke-dasharray="0 377" stroke-dashoffset="0" />
+                  </svg>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none px-4">
+                    <span class="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Total Gasto</span>
+                    <span id="donutTotalText" class="font-mono font-extrabold text-lg text-white tabular-nums mt-0.5">R$ 0,00</span>
+                  </div>
+                </div>
+
+                <!-- Lista de Categorias -->
+                <div class="w-full space-y-2">
+                  <div class="flex items-center justify-between p-2.5 rounded-xl bg-amoled/80 border border-borderSubtle">
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-neonGreen shrink-0"></span>
+                      <div>
+                        <p class="text-xs font-semibold text-gray-200">Gasolina</p>
+                        <p id="lblFuelKm" class="text-[10px] text-gray-500 font-mono">R$ 0,175/km • <span id="pctFuel">0%</span></p>
+                      </div>
+                    </div>
+                    <span id="valFuel" class="font-mono font-bold text-sm text-neonGreen tabular-nums">R$ 0,00</span>
+                  </div>
+
+                  <div class="flex items-center justify-between p-2.5 rounded-xl bg-amoled/80 border border-amber-500/25">
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-neonAmber shrink-0"></span>
+                      <div>
+                        <p class="text-xs font-semibold text-gray-200">Desgaste Peças (Caixinha)</p>
+                        <p id="lblWearKm" class="text-[10px] text-gray-500 font-mono">R$ 0,120/km • <span id="pctWear">0%</span></p>
+                      </div>
+                    </div>
+                    <span id="valWear" class="font-mono font-bold text-sm text-amber-400 tabular-nums">R$ 0,00</span>
+                  </div>
+
+                  <div class="flex items-center justify-between p-2.5 rounded-xl bg-amoled/80 border border-borderSubtle">
+                    <div class="flex items-center gap-2">
+                      <span class="w-3 h-3 rounded-full bg-neonBlue shrink-0"></span>
+                      <div>
+                        <p class="text-xs font-semibold text-gray-200">Gastos Extras</p>
+                        <p class="text-[10px] text-gray-500"><span id="extraCountLabel">0 itens</span> • <span id="pctExtra">0%</span></p>
+                      </div>
+                    </div>
+                    <span id="valExtra" class="font-mono font-bold text-sm text-blue-400 tabular-nums">R$ 0,00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Destaque Educativo: Caixinha da Moto -->
+              <div class="rounded-2xl bg-amber-500/10 border border-amber-500/30 px-3.5 py-2.5 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <p class="text-xs text-amber-100/90 leading-snug">
+                  Separe <strong id="caixinhaHighlight" class="font-mono text-amber-400">R$ 0,00</strong> na <strong>Caixinha da Moto</strong> hoje para pneus, relação e trocas de óleo.
+                </p>
+              </div>
+            </section>
+          </div>
+
+          <!-- RADAR DE SAÚDE DA MOTO (Prévia no Painel) -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-white/5 border border-borderSubtle flex items-center justify-center text-neonGreen">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                </div>
+                <div>
+                  <h3 class="font-bold text-base text-white">Saúde das Peças (Desgaste por KM)</h3>
+                  <p class="text-xs text-gray-400">Diminui automaticamente conforme você roda na moto</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 text-[11px] text-gray-400 font-medium">
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-neonGreen"></span> &gt;30% OK</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-neonAmber"></span> 15-30% Atenção</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-neonRed"></span> &lt;15% Trocar</span>
+              </div>
+            </div>
+
+            <!-- Lista Dinâmica de Saúde das Peças -->
+            <div id="panelPartsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              <!-- Preenchido via JavaScript -->
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 2: MINHA MOTO & PEÇAS (Perfil, Combustível, Sliders, Trocas) -->
+        <!-- ================================================================= -->
+        <div id="view-moto" class="view-panel hidden space-y-6">
+
+          <!-- Mini Dashboard Resumo da Moto -->
+          <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-card rounded-2xl border border-borderSubtle p-4 sm:p-5 flex flex-col justify-between gap-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Custo Total por KM</span>
+                <span class="w-8 h-8 rounded-xl bg-neonGreen/10 text-neonGreen flex items-center justify-center">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </span>
+              </div>
+              <div class="flex items-baseline gap-1.5 mt-1">
+                <span id="motoSummaryTotalPerKm" class="font-mono font-extrabold text-3xl text-neonGreen tabular-nums">R$ 0,295</span>
+                <span class="text-xs font-mono text-gray-400">/km</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-borderSubtle/80 font-mono">
+                <span>Gasolina: <strong id="motoSummaryFuelPerKm" class="text-gray-200">R$ 0,175</strong></span>
+                <span>Peças: <strong id="motoSummaryPartsPerKm" class="text-amber-400">R$ 0,120</strong></span>
+              </div>
+            </div>
+
+            <div class="bg-card rounded-2xl border border-borderSubtle p-4 sm:p-5 flex flex-col justify-between gap-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Autonomia do Tanque</span>
+                <span class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                </span>
+              </div>
+              <div class="flex items-baseline gap-1.5 mt-1">
+                <span id="motoSummaryRangeKm" class="font-mono font-extrabold text-3xl text-white tabular-nums">560</span>
+                <span class="text-xs font-mono text-gray-400">km / tanque</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-borderSubtle/80 font-mono">
+                <span>Tanque cheio: <strong id="motoSummaryFullTankCost" class="text-blue-400">R$ 98,00</strong></span>
+                <span id="motoSummaryTankLiters" class="text-gray-500">14 L</span>
+              </div>
+            </div>
+
+            <div class="bg-card rounded-2xl border border-borderSubtle p-4 sm:p-5 flex flex-col justify-between gap-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Saúde Geral da Moto</span>
+                <span id="motoSummaryHealthBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-neonGreen/15 text-neonGreen">Boa</span>
+              </div>
+              <div class="flex items-baseline justify-between mt-1">
+                <span id="motoSummaryHealthPct" class="font-mono font-extrabold text-3xl text-white tabular-nums">72%</span>
+                <span id="motoSummaryActivePartsCount" class="text-xs text-gray-400">10 peças ativas</span>
+              </div>
+              <div class="pt-2">
+                <div class="w-full h-2 rounded-full bg-amoled border border-borderSubtle overflow-hidden">
+                  <div id="motoSummaryHealthBar" class="h-full rounded-full bg-neonGreen transition-all duration-300" style="width: 72%;"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Formulário Piloto & Moto -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            <!-- Perfil do Piloto -->
+            <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
+              <h3 class="font-bold text-base text-white border-b border-borderSubtle pb-3">Perfil do Piloto</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Nome do Piloto</label>
+                  <input id="inputPilotName" type="text" placeholder="Ex: Carlos Eduardo" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-sm text-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Apelido / Nome no painel</label>
+                  <input id="inputPilotNickname" type="text" placeholder="Ex: Carlão" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-sm text-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Cidade / Estado</label>
+                  <input id="inputPilotCity" type="text" placeholder="Ex: Fortaleza - CE" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-sm text-white" />
+                </div>
+              </div>
+            </section>
+
+            <!-- Dados da Moto & Combustível -->
+            <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
+              <h3 class="font-bold text-base text-white border-b border-borderSubtle pb-3">Moto &amp; Combustível (Gasolina)</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Modelo da Moto</label>
+                  <input id="inputMotoModel" type="text" placeholder="Ex: Honda CG 160 Fan" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-sm text-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Odômetro Total (km)</label>
+                  <input id="inputMotoOdometer" type="number" min="0" placeholder="32400" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-sm font-mono text-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Preço do Litro (R$)</label>
+                  <input id="inputFuelPrice" type="number" step="0.05" min="1" placeholder="7.00" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-sm font-mono font-bold text-neonGreen" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Consumo (km/L)</label>
+                  <input id="inputFuelConsumption" type="number" step="1" min="5" placeholder="40" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-sm font-mono font-bold text-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Tanque (Litros)</label>
+                  <input id="inputTankCapacity" type="number" step="1" min="1" placeholder="14" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-sm font-mono font-bold text-white" />
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Tabela de Peças e Sliders de Desgaste -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-borderSubtle">
+              <div>
+                <h3 class="font-bold text-lg text-white">Peças e Desgaste Calculado por KM</h3>
+                <p class="text-xs text-gray-400">Arraste a barra para indicar a vida útil que resta na sua moto hoje.</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btnOpenAddPart" type="button" class="px-3.5 py-2 rounded-xl bg-cardLight hover:bg-gray-800 border border-neonGreen/40 text-neonGreen font-bold text-xs flex items-center gap-1.5 transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                  <span>+ Adicionar Peça</span>
+                </button>
+                <button id="btnSaveMotoProfile" type="button" class="px-4 py-2 rounded-xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-xs shadow-md shadow-neonGreen/20 transition">
+                  Salvar Alterações
+                </button>
+              </div>
+            </div>
+
+            <!-- Grade de Peças -->
+            <div id="motoPartsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Renderizado via JavaScript -->
+            </div>
+          </section>
+
+          <!-- Histórico de Trocas / Manutenções -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-3">
+            <h3 class="font-bold text-base text-white">Histórico de Peças Trocadas</h3>
+            <div id="replacementHistoryList" class="space-y-2 text-xs">
+              <!-- Preenchido via JavaScript -->
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 3: METAS FINANCEIRAS & PLANEJAMENTO (Escala, Recálculo)     -->
+        <!-- ================================================================= -->
+        <div id="view-metas" class="view-panel hidden space-y-6">
+
+          <!-- Cards de Metas: Diária, Semanal e Mensal -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Meta Diária -->
+            <div class="bg-card rounded-2xl border border-borderSubtle p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Meta Líquida de Hoje</span>
+                <span id="goalDailyBadge" class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-neonGreen/15 text-neonGreen">0%</span>
+              </div>
+              <div>
+                <p id="goalDailyTarget" class="font-mono font-extrabold text-3xl text-white">R$ 153,84</p>
+                <p class="text-xs text-gray-400 mt-1">Conquistado hoje: <strong id="goalDailyCurrent" class="text-neonGreen font-mono">R$ 0,00</strong></p>
+              </div>
+              <div class="w-full h-2 rounded-full bg-amoled border border-borderSubtle overflow-hidden">
+                <div id="goalDailyBar" class="h-full rounded-full bg-neonGreen transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Meta Semanal -->
+            <div class="bg-card rounded-2xl border border-borderSubtle p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Meta da Semana</span>
+                <span id="goalWeeklyBadge" class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-400">0%</span>
+              </div>
+              <div>
+                <p id="goalWeeklyTarget" class="font-mono font-extrabold text-3xl text-white">R$ 1.000,00</p>
+                <p class="text-xs text-gray-400 mt-1">Acumulado na semana: <strong id="goalWeeklyCurrent" class="text-blue-400 font-mono">R$ 0,00</strong></p>
+              </div>
+              <div class="w-full h-2 rounded-full bg-amoled border border-borderSubtle overflow-hidden">
+                <div id="goalWeeklyBar" class="h-full rounded-full bg-blue-500 transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Meta Mensal -->
+            <div class="bg-card rounded-2xl border border-borderSubtle p-5 flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Meta do Mês (Líquida)</span>
+                <span id="goalMonthlyBadge" class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400">0%</span>
+              </div>
+              <div>
+                <p id="goalMonthlyTarget" class="font-mono font-extrabold text-3xl text-white">R$ 3.500,00</p>
+                <p class="text-xs text-gray-400 mt-1">Lucro líquido no mês: <strong id="goalMonthlyCurrent" class="text-amber-400 font-mono">R$ 0,00</strong></p>
+              </div>
+              <div class="w-full h-2 rounded-full bg-amoled border border-borderSubtle overflow-hidden">
+                <div id="goalMonthlyBar" class="h-full rounded-full bg-amber-400 transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configuração da Escala de Trabalho e Custos Fixos -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
+              <h3 class="font-bold text-base text-white border-b border-borderSubtle pb-3">Sua Meta e Custos Fixos</h3>
+              <div class="space-y-3.5">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Quanto você quer levar LIMPO no mês? (Meta Líquida)</label>
+                  <div class="relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-neonGreen font-mono font-bold">R$</span>
+                    <input id="inputMonthlyNetGoal" type="number" step="50" min="500" value="3500" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-base font-mono font-bold text-white" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-1">Custos Fixos Mensais (Parcela moto, seguro, MEI, celular)</label>
+                  <div class="relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400 font-mono font-bold">R$</span>
+                    <input id="inputMonthlyFixedCosts" type="number" step="20" min="0" value="500" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-amber-400 focus:outline-none text-base font-mono font-bold text-white" />
+                  </div>
+                </div>
+
+                <!-- Dias de Trabalho da Semana -->
+                <div>
+                  <label class="block text-xs font-semibold text-gray-300 mb-2">Quais dias você roda na semana?</label>
+                  <div id="workDaysSelector" class="grid grid-cols-7 gap-1.5">
+                    <!-- Gerado via JS: Seg, Ter, Qua, Qui, Sex, Sáb, Dom -->
+                  </div>
+                </div>
+
+                <button id="btnSaveGoals" type="button" class="w-full py-3 rounded-xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-sm shadow-md shadow-neonGreen/20 transition">
+                  Recalcular Meta Diária
+                </button>
+              </div>
+            </section>
+
+            <!-- Objetivos Financeiros Personalizados -->
+            <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
+              <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
+                <h3 class="font-bold text-base text-white">Objetivos &amp; Compras da Moto</h3>
+                <button id="btnOpenAddObj" type="button" class="px-3 py-1.5 rounded-xl bg-cardLight hover:bg-gray-800 text-neonGreen font-bold text-xs border border-neonGreen/30 transition">
+                  + Novo Objetivo
+                </button>
+              </div>
+              <div id="objectivesList" class="space-y-3">
+                <!-- Gerado via JS -->
+              </div>
+            </section>
+          </div>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 4: RELATÓRIOS & DRE DO MOTOBOY (Histórico, Exportação CSV)   -->
+        <!-- ================================================================= -->
+        <div id="view-relatorios" class="view-panel hidden space-y-6">
+
+          <!-- Resumo DRE do Motoboy -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderSubtle pb-4">
+              <div>
+                <h3 class="font-bold text-lg text-white">DRE do Motoboy — Fechamento Financeiro</h3>
+                <p class="text-xs text-gray-400">Total acumulado de todos os seus turnos trabalhados</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btnExportCsv" type="button" class="px-3.5 py-2 rounded-xl bg-amoled hover:bg-gray-800 border border-borderSubtle text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition">
+                  <svg class="w-4 h-4 text-neonGreen" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  <span>Exportar CSV</span>
+                </button>
+                <button id="btnExportJson" type="button" class="px-3.5 py-2 rounded-xl bg-amoled hover:bg-gray-800 border border-borderSubtle text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition">
+                  <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                  <span>Backup JSON</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Grade de Métricas DRE -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle">
+                <p class="text-[11px] text-gray-400 font-medium">Faturamento Bruto</p>
+                <p id="dreGross" class="font-mono font-extrabold text-lg sm:text-xl text-white mt-1">R$ 0,00</p>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle">
+                <p class="text-[11px] text-gray-400 font-medium">(-) Gasolina</p>
+                <p id="dreFuel" class="font-mono font-extrabold text-lg sm:text-xl text-red-400 mt-1">R$ 0,00</p>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle">
+                <p class="text-[11px] text-gray-400 font-medium">(-) Caixinha Peças</p>
+                <p id="dreWear" class="font-mono font-extrabold text-lg sm:text-xl text-amber-400 mt-1">R$ 0,00</p>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle">
+                <p class="text-[11px] text-gray-400 font-medium">(-) Extras Rua</p>
+                <p id="dreExtras" class="font-mono font-extrabold text-lg sm:text-xl text-blue-400 mt-1">R$ 0,00</p>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-amoled border border-neonGreen/30 col-span-2 sm:col-span-1">
+                <p class="text-[11px] text-neonGreen font-bold uppercase">(=) Lucro Líquido</p>
+                <p id="dreNet" class="font-mono font-extrabold text-lg sm:text-xl text-neonGreen mt-1">R$ 0,00</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tabela de Turnos Salvos -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
+            <h3 class="font-bold text-base text-white">Histórico Detalhado dos Turnos</h3>
+            <div id="shiftsTableContainer" class="overflow-x-auto">
+              <!-- Preenchido via JavaScript -->
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 5: CONFIGURAÇÕES & TURSO CLOUD SYNC                          -->
+        <!-- ================================================================= -->
+        <div id="view-config" class="view-panel hidden space-y-6">
+
+          <!-- Configurações do GPS e Sensibilidade -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
+            <h3 class="font-bold text-base text-white border-b border-borderSubtle pb-3">Ajustes do GPS e Bateria</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Filtro de Velocidade Mínima (km/h)</label>
+                <input id="cfgMinSpeed" type="number" step="0.5" min="1" value="5.4" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-white text-sm" />
+                <p class="text-[11px] text-gray-500 mt-1">Ignora velocidades abaixo disso para não somar parado no sinal.</p>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Manter Tela Sempre Ligada (Wake Lock)</label>
+                <select id="cfgWakeLock" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-white text-sm">
+                  <option value="true">Ativado (Recomendado no suporte da moto)</option>
+                  <option value="false">Desativado (Economizar bateria no bolso)</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- Configuração do Banco Turso (libSQL Edge SQLite) -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
+              <div>
+                <h3 class="font-bold text-base text-white">Sincronização em Nuvem — Turso (libSQL)</h3>
+                <p class="text-xs text-gray-400">Banco de dados gratuito e ultra-rápido na borda para sincronizar com seu PC.</p>
+              </div>
+              <span id="tursoStatusBadge" class="text-xs font-mono font-semibold px-2.5 py-1 rounded-full bg-gray-800 text-gray-400">Local-Only</span>
+            </div>
+
+            <div class="space-y-3.5">
+              <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Turso Database URL</label>
+                <input id="inputTursoUrl" type="text" placeholder="https://seu-banco-motocash.turso.io" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-xs text-white" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">Turso Auth Token</label>
+                <input id="inputTursoToken" type="password" placeholder="Cole seu token gerado no turso db tokens create" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-xs text-white" />
+              </div>
+
+              <div class="flex flex-wrap gap-2.5 pt-2">
+                <button id="btnTestTurso" type="button" class="px-4 py-2.5 rounded-xl bg-cardLight hover:bg-gray-800 border border-borderSubtle text-white font-semibold text-xs transition">
+                  Testar Conexão Turso
+                </button>
+                <button id="btnSyncTurso" type="button" class="px-4 py-2.5 rounded-xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-xs shadow-md shadow-neonGreen/20 transition">
+                  Sincronizar Dados Agora
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Backup Manual JSON -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
+            <h3 class="font-bold text-base text-white border-b border-borderSubtle pb-3">Backup e Restauração Local</h3>
+            <div class="flex flex-wrap items-center gap-3">
+              <button id="btnDownloadBackup" type="button" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition">
+                Exportar Backup (.json)
+              </button>
+              <label class="px-4 py-2.5 rounded-xl bg-amoled hover:bg-gray-800 border border-borderSubtle text-gray-200 font-semibold text-xs cursor-pointer transition">
+                Restaurar Backup (.json)
+                <input id="inputRestoreJson" type="file" accept=".json" class="hidden" />
+              </label>
+            </div>
+          </section>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== BARRA DE NAVEGAÇÃO INFERIOR (Mobile / Tablet) ==================== -->
+  <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-card/95 backdrop-blur-md border-t border-borderSubtle px-2 py-2">
+    <div class="max-w-md mx-auto grid grid-cols-5 gap-1">
+      <button data-nav-target="view-painel" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-neonGreen bg-neonGreen/10 font-semibold">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span class="text-[10px] mt-1">Painel</span>
+      </button>
+
+      <button data-nav-target="view-moto" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        <span class="text-[10px] mt-1">Moto</span>
+      </button>
+
+      <button data-nav-target="view-metas" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+        <span class="text-[10px] mt-1">Metas</span>
+      </button>
+
+      <button data-nav-target="view-relatorios" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+        <span class="text-[10px] mt-1">DRE</span>
+      </button>
+
+      <button data-nav-target="view-config" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+        <span class="text-[10px] mt-1">Turso</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== MODAL 1: + GASTO EXTRA ==================== -->
+  <div id="modalExtra" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+    <div class="w-full max-w-md bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg text-white">Adicionar Gasto Extra na Rua</h3>
+        <button data-close-modal="modalExtra" class="p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-400 font-medium mb-2">Categoria rápida</p>
+      <div class="grid grid-cols-2 gap-2 mb-4">
+        <button type="button" data-extra-cat="Lanche" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-blue-500 bg-blue-500/15 text-blue-300 font-semibold text-sm text-left transition">🍔 Lanche</button>
+        <button type="button" data-extra-cat="Água" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-sm text-left transition">💧 Água</button>
+        <button type="button" data-extra-cat="Remendo" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-sm text-left transition">🔧 Remendo / Pneu</button>
+        <button type="button" data-extra-cat="Estacionamento" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-sm text-left transition">🅿️ Estacionamento</button>
+      </div>
+
+      <label for="inputExtraValue" class="block text-xs text-gray-400 font-medium mb-1.5">Valor em Reais (R$)</label>
+      <div class="relative mb-5">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-mono font-bold">R$</span>
+        <input id="inputExtraValue" type="number" step="0.50" min="0" placeholder="12,00" class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-amoled border border-borderSubtle focus:border-blue-500 focus:outline-none text-white font-mono text-lg font-bold" />
+      </div>
+
+      <div class="flex gap-3">
+        <button data-close-modal="modalExtra" type="button" class="flex-1 py-3.5 rounded-2xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-sm">Cancelar</button>
+        <button id="btnConfirmExtra" type="button" class="flex-1 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg shadow-blue-600/25">Adicionar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 2: KM MANUAL ==================== -->
+  <div id="modalManualKm" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+    <div class="w-full max-w-md bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-bold text-lg text-white">Adicionar KM Manual</h3>
+        <button data-close-modal="modalManualKm" class="p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <p class="text-xs text-gray-400 mb-4">Caso você tenha rodado com o GPS desligado e queira somar o que marcou no painel da moto.</p>
+
+      <label for="inputManualKm" class="block text-xs text-gray-400 font-medium mb-1.5">Quilômetros a somar (km)</label>
+      <input id="inputManualKm" type="number" step="0.1" min="0.1" placeholder="Ex: 25.4" class="w-full px-4 py-3.5 rounded-2xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-neonGreen font-mono text-xl font-bold mb-5" />
+
+      <div class="flex gap-3">
+        <button data-close-modal="modalManualKm" type="button" class="flex-1 py-3.5 rounded-2xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-sm">Cancelar</button>
+        <button id="btnConfirmManualKm" type="button" class="flex-1 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-sm">Somar ao Dia</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 3: FINALIZAR DIA (FECHAMENTO) ==================== -->
+  <div id="modalFinishDay" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+    <div class="w-full max-w-md bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <h3 class="font-bold text-lg text-white">Fechamento do Dia de Trabalho</h3>
+          <p class="text-xs text-gray-400">Informe seu ganho total para ver seu lucro limpo real.</p>
+        </div>
+        <button data-close-modal="modalFinishDay" class="p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Faturamento por Aplicativo -->
+      <div class="space-y-3 mb-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">iFood / Entregas de Comida (R$)</label>
+          <input id="closeGainIfood" type="number" step="1" min="0" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-white text-base font-bold" />
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">99Moto / Entrega (R$)</label>
+            <input id="closeGain99" type="number" step="1" min="0" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-white text-base font-bold" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Uber Moto / Flash (R$)</label>
+            <input id="closeGainUber" type="number" step="1" min="0" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-white text-base font-bold" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Particulares / Direto (R$)</label>
+            <input id="closeGainPart" type="number" step="1" min="0" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-white text-base font-bold" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Gorjetas (R$)</label>
+            <input id="closeGainTips" type="number" step="1" min="0" placeholder="0" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-white text-base font-bold" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Extrato Transparente -->
+      <div class="rounded-2xl bg-amoled border border-borderSubtle p-4 space-y-2 text-xs mb-4">
+        <div class="flex justify-between text-gray-300">
+          <span>Quilometragem do Dia</span>
+          <span id="closeKm" class="font-mono font-bold text-white">0.0 km</span>
+        </div>
+        <div class="flex justify-between text-gray-400">
+          <span>(+) Faturamento Bruto</span>
+          <span id="closeGross" class="font-mono font-bold text-white">R$ 0,00</span>
+        </div>
+        <div class="flex justify-between text-gray-400">
+          <span>(-) Gasolina estimada</span>
+          <span id="closeFuel" class="font-mono font-semibold text-red-400">- R$ 0,00</span>
+        </div>
+        <div class="flex justify-between text-gray-400">
+          <span>(-) Caixinha da Moto (Peças)</span>
+          <span id="closeWear" class="font-mono font-semibold text-amber-400">- R$ 0,00</span>
+        </div>
+        <div class="flex justify-between text-gray-400">
+          <span>(-) Gastos Extras</span>
+          <span id="closeExtras" class="font-mono font-semibold text-blue-400">- R$ 0,00</span>
+        </div>
+        <div class="pt-2.5 border-t border-borderSubtle flex items-center justify-between">
+          <div>
+            <p class="text-[11px] uppercase tracking-wider text-gray-400 font-bold">Lucro Líquido Real</p>
+            <p id="closePerKm" class="text-[10px] text-gray-500 font-mono">R$ 0,00 livres/km</p>
+          </div>
+          <span id="closeNetProfit" class="font-mono font-black text-2xl text-neonGreen">R$ 0,00</span>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button data-close-modal="modalFinishDay" type="button" class="flex-1 py-3.5 rounded-2xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-sm">Voltar</button>
+        <button id="btnSaveCloseDay" type="button" class="flex-1 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-sm shadow-lg shadow-neonGreen/20">Salvar e Fechar Dia</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 4: REGISTRAR TROCA DE PEÇA ==================== -->
+  <div id="modalReplacePart" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
+      <h3 id="modalReplaceTitle" class="font-bold text-lg text-white mb-1">Troca de Peça</h3>
+      <p class="text-xs text-gray-400 mb-4">Informe o valor pago para reiniciar o ciclo da peça em 100%.</p>
+
+      <label class="block text-xs font-semibold text-gray-300 mb-1">Valor pago na peça nova (R$)</label>
+      <input id="inputReplaceCost" type="number" step="5" min="0" placeholder="Ex: 40.00" class="w-full px-4 py-3 rounded-xl bg-amoled border border-borderSubtle font-mono text-neonGreen text-lg font-bold mb-4" />
+
+      <label class="block text-xs font-semibold text-gray-300 mb-1">Observação / Marca (opcional)</label>
+      <input id="inputReplaceNotes" type="text" placeholder="Ex: Mobil 20W50 / Riffel" class="w-full px-4 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-xs text-white mb-5" />
+
+      <div class="flex gap-2.5">
+        <button data-close-modal="modalReplacePart" type="button" class="flex-1 py-3 rounded-xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-xs">Cancelar</button>
+        <button id="btnConfirmReplace" type="button" class="flex-1 py-3 rounded-xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-xs">Confirmar Troca</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 5: ADICIONAR PEÇA PERSONALIZADA ==================== -->
+  <div id="modalAddPart" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
+      <h3 class="font-bold text-lg text-white mb-1">Nova Peça Personalizada</h3>
+      <p class="text-xs text-gray-400 mb-4">Cadastre qualquer item da sua moto que sofra desgaste por km.</p>
+
+      <div class="space-y-3 mb-5">
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Nome da Peça</label>
+          <input id="newPartName" type="text" placeholder="Ex: Bateria, Amortecedor Traseiro" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-sm text-white" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Valor Médio (R$)</label>
+            <input id="newPartPrice" type="number" step="5" min="1" placeholder="Ex: 180" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-neonGreen text-sm font-bold" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Vida Útil (KM)</label>
+            <input id="newPartLifespan" type="number" step="1000" min="100" placeholder="Ex: 20000" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-white text-sm font-bold" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Estado Atual de Vida Útil: <span id="lblNewPartHealth" class="font-mono text-neonGreen font-bold">100%</span></label>
+          <input id="newPartHealth" type="range" min="0" max="100" value="100" class="part-slider" />
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button data-close-modal="modalAddPart" type="button" class="flex-1 py-3 rounded-xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-xs">Cancelar</button>
+        <button id="btnConfirmAddPart" type="button" class="flex-1 py-3 rounded-xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-xs">Adicionar Peça</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 6: NOVO OBJETIVO FINANCEIRO ==================== -->
+  <div id="modalAddObj" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
+      <h3 class="font-bold text-lg text-white mb-1">Novo Objetivo</h3>
+      <p class="text-xs text-gray-400 mb-4">Meta de compra ou reserva financeira.</p>
+
+      <div class="space-y-3 mb-5">
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Nome</label>
+          <input id="newObjName" type="text" placeholder="Ex: Pneu novo, Capacete, Seguro" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-sm text-white" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Valor Alvo (R$)</label>
+            <input id="newObjValue" type="number" step="10" min="1" placeholder="220" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-neonGreen text-sm font-bold" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Período</label>
+            <select id="newObjPeriod" class="w-full px-3 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-xs text-white">
+              <option value="semanal">Semanal</option>
+              <option value="mensal">Mensal</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button data-close-modal="modalAddObj" type="button" class="flex-1 py-3 rounded-xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-xs">Cancelar</button>
+        <button id="btnConfirmAddObj" type="button" class="flex-1 py-3 rounded-xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-xs">Criar Objetivo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST DISCRETO ==================== -->
+  <div id="toast" class="pointer-events-none fixed top-16 left-1/2 -translate-x-1/2 z-50 opacity-0 translate-y-2 transition-all duration-300">
+    <div class="px-4 py-2.5 rounded-2xl bg-gray-900/95 border border-gray-700 text-gray-100 text-xs sm:text-sm font-medium shadow-2xl flex items-center gap-2 whitespace-nowrap">
+      <span id="toastDot" class="w-2.5 h-2.5 rounded-full bg-neonGreen"></span>
+      <span id="toastMsg">Notificação</span>
+    </div>
+  </div>
+
+  <!-- ==================== APLICATIVO JAVASCRIPT ==================== -->
+  <script>
+    (() => {
+      'use strict';
+
+      // =======================================================================
+      // 1. CONFIGURAÇÕES E ESTADO DO APLICATIVO
+      // =======================================================================
+      const STORAGE_KEY = 'motocash_pro_app_state_v1';
+      const TURSO_KEY = 'motocash_pro_turso_config_v1';
+      const CIRCUMFERENCE = 2 * Math.PI * 60; // 376.99 para o SVG Donut
+
+      // Lista completa e detalhada de itens que sofrem desgaste por KM
+      const DEFAULT_PARTS = [
+        { id: 'oleo', name: 'Óleo do Motor', price: 40, lifespanKm: 1000, healthPct: 80, active: true, custom: false },
+        { id: 'pneu_traseiro', name: 'Pneu Traseiro', price: 220, lifespanKm: 12000, healthPct: 35, active: true, custom: false },
+        { id: 'pneu_dianteiro', name: 'Pneu Dianteiro', price: 180, lifespanKm: 18000, healthPct: 75, active: true, custom: false },
+        { id: 'kit_relacao', name: 'Kit Relação (Coroa/Pinhão/Corrente)', price: 150, lifespanKm: 15000, healthPct: 60, active: true, custom: false },
+        { id: 'freio_traseiro', name: 'Freio Traseiro (Lona/Pastilha)', price: 45, lifespanKm: 8000, healthPct: 20, active: true, custom: false },
+        { id: 'freio_dianteiro', name: 'Freio Dianteiro (Pastilha)', price: 50, lifespanKm: 10000, healthPct: 65, active: true, custom: false },
+        { id: 'filtro_ar', name: 'Filtro de Ar', price: 35, lifespanKm: 10000, healthPct: 50, active: true, custom: false },
+        { id: 'vela', name: 'Vela de Ignição', price: 30, lifespanKm: 15000, healthPct: 70, active: true, custom: false },
+        { id: 'cabos', name: 'Cabos (Embreagem/Acelerador)', price: 80, lifespanKm: 15000, healthPct: 85, active: true, custom: false },
+        { id: 'reserva', name: 'Reserva de Manutenção Geral', price: 200, lifespanKm: 10000, healthPct: 100, active: true, custom: false }
+      ];
+
+      function getDefaultState() {
+        return {
+          pilot: {
+            name: 'Carlos Silva',
+            nickname: 'Carlão',
+            city: 'Fortaleza - CE',
+            apps: ['iFood', '99Moto', 'Uber Moto']
+          },
+          moto: {
+            model: 'Honda CG 160 Fan',
+            odometer: 32450,
+            fuelPrice: 7.00, // Gasolina no Ceará (R$ 7,00)
+            fuelConsumption: 40.0, // 40 km por Litro
+            tankCapacity: 14.0
+          },
+          parts: DEFAULT_PARTS,
+          replacements: [
+            { id: 'rep_1', partId: 'oleo', partName: 'Óleo do Motor', date: '10/11/2026', cost: 40, notes: 'Mobil 20W50' },
+            { id: 'rep_2', partId: 'freio_dianteiro', partName: 'Freio Dianteiro (Pastilha)', date: '01/10/2026', cost: 48, notes: 'Cobreq' }
+          ],
+          goals: {
+            monthlyNetGoal: 3500,
+            monthlyFixedCosts: 500,
+            workDays: [0, 1, 2, 3, 4, 5] // Seg a Sáb
+          },
+          objectives: [
+            { id: 'obj_1', name: 'Comprar Pneu Traseiro Novo', target: 220, period: 'semanal', done: false },
+            { id: 'obj_2', name: 'Troca de Óleo e Manutenção', target: 80, period: 'semanal', done: false }
+          ],
+          shifts: [
+            {
+              id: 'shift_prev_1',
+              date: '2026-11-20',
+              km: 135.4,
+              timeSeconds: 15400,
+              gross: 215.00,
+              fuelCost: 23.69,
+              wearCost: 16.25,
+              extrasCost: 12.00,
+              netProfit: 163.06,
+              perKm: 1.20,
+              perHour: 38.10
+            }
+          ],
+          // Turno ativo de hoje
+          currentShift: {
+            isActive: false,
+            isPaused: false,
+            km: 0.0,
+            elapsedSeconds: 0,
+            currentSpeed: 0,
+            extras: [] // { category: 'Lanche', value: 12.00 }
+          },
+          config: {
+            minSpeedKmh: 5.4,
+            wakeLockEnabled: true,
+            simulationMode: true // Inicia ON para facilitar testes
+          }
+        };
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return getDefaultState();
+          const parsed = JSON.parse(raw);
+          const def = getDefaultState();
+          return {
+            ...def,
+            ...parsed,
+            pilot: { ...def.pilot, ...(parsed.pilot || {}) },
+            moto: { ...def.moto, ...(parsed.moto || {}) },
+            goals: { ...def.goals, ...(parsed.goals || {}) },
+            config: { ...def.config, ...(parsed.config || {}) },
+            parts: Array.isArray(parsed.parts) && parsed.parts.length ? parsed.parts : def.parts,
+            replacements: Array.isArray(parsed.replacements) ? parsed.replacements : def.replacements,
+            shifts: Array.isArray(parsed.shifts) ? parsed.shifts : def.shifts,
+            objectives: Array.isArray(parsed.objectives) ? parsed.objectives : def.objectives,
+            currentShift: { ...def.currentShift, ...(parsed.currentShift || {}) }
+          };
+        } catch (err) {
+          console.warn('Erro ao ler estado do storage, usando padrão:', err);
+          return getDefaultState();
+        }
+      }
+
+      let state = loadState();
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (err) {
+          console.error('Falha ao persistir dados localmente:', err);
+        }
+      }
+
+      // =======================================================================
+      // 2. UTILITÁRIOS MATEMÁTICOS E DE FORMATAÇÃO
+      // =======================================================================
+      function formatBRL(val, decimals = 2) {
+        const num = Number.isFinite(val) ? val : 0;
+        return num.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals
+        });
+      }
+
+      function formatTime(totalSecs) {
+        const hrs = Math.floor(totalSecs / 3600);
+        const mins = Math.floor((totalSecs % 3600) / 60);
+        const secs = totalSecs % 60;
+        return [hrs, mins, secs].map(v => String(v).padStart(2, '0')).join(':');
+      }
+
+      function getHealthColor(pct) {
+        if (pct < 15) return { hex: '#EF4444', textClass: 'text-red-400', bgClass: 'bg-neonRed', badgeBg: 'bg-red-500/15 text-red-400', label: 'Trocar' };
+        if (pct <= 30) return { hex: '#F59E0B', textClass: 'text-amber-400', bgClass: 'bg-neonAmber', badgeBg: 'bg-amber-500/15 text-amber-400', label: 'Atenção' };
+        return { hex: '#00E676', textClass: 'text-neonGreen', bgClass: 'bg-neonGreen', badgeBg: 'bg-neonGreen/15 text-neonGreen', label: 'OK' };
+      }
+
+      function haversineKm(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+          Math.sin(dLon / 2) ** 2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      }
+
+      let toastTimer = null;
+      function showToast(msg, tone = 'green') {
+        const toast = document.getElementById('toast');
+        const dot = document.getElementById('toastDot');
+        document.getElementById('toastMsg').textContent = msg;
+        dot.className = 'w-2.5 h-2.5 rounded-full ' + (
+          tone === 'red' ? 'bg-neonRed' :
+          tone === 'amber' ? 'bg-neonAmber' :
+          tone === 'blue' ? 'bg-neonBlue' : 'bg-neonGreen'
+        );
+        toast.classList.remove('opacity-0', 'translate-y-2');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.add('opacity-0', 'translate-y-2');
+          toast.classList.remove('opacity-100', 'translate-y-0');
+        }, 2800);
+      }
+
+      // =======================================================================
+      // 3. CÁLCULO DAS FRAÇÕES POR QUILÔMETRO
+      // =======================================================================
+      function getCostPerKm() {
+        const fuelPrice = Math.max(0, parseFloat(state.moto.fuelPrice) || 0);
+        const fuelConsumption = Math.max(0.1, parseFloat(state.moto.fuelConsumption) || 0.1);
+        const fuelPerKm = fuelPrice / fuelConsumption;
+
+        let partsPerKm = 0;
+        state.parts.forEach(part => {
+          if (part.active) {
+            const price = Math.max(0, parseFloat(part.price) || 0);
+            const lifespan = Math.max(1, parseFloat(part.lifespanKm) || 1);
+            partsPerKm += price / lifespan;
+          }
+        });
+
+        return {
+          fuelPerKm,
+          partsPerKm,
+          totalPerKm: fuelPerKm + partsPerKm
+        };
+      }
+
+      // =======================================================================
+      // 4. RASTREAMENTO GPS REAL, WAKE LOCK E SIMULAÇÃO
+      // =======================================================================
+      let timerInterval = null;
+      let simInterval = null;
+      let gpsWatchId = null;
+      let lastGpsPoint = null;
+      let wakeLockSentinel = null;
+
+      async function requestWakeLock() {
+        if ('wakeLock' in navigator && state.config.wakeLockEnabled) {
+          try {
+            wakeLockSentinel = await navigator.wakeLock.request('screen');
+            wakeLockSentinel.addEventListener('release', () => {
+              wakeLockSentinel = null;
+            });
+          } catch (err) {
+            console.log('Wake Lock não suportado ou negado:', err);
+          }
+        }
+      }
+
+      function releaseWakeLock() {
+        if (wakeLockSentinel) {
+          wakeLockSentinel.release();
+          wakeLockSentinel = null;
+        }
+      }
+
+      function startGpsTracking() {
+        if (!navigator.geolocation) {
+          showToast('GPS não suportado neste aparelho. Use KM Manual.', 'red');
+          return;
+        }
+
+        const options = {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        };
+
+        gpsWatchId = navigator.geolocation.watchPosition(
+          (pos) => {
+            if (!state.currentShift.isActive || state.currentShift.isPaused) return;
+
+            const accuracy = pos.coords.accuracy || 999;
+            const speedMps = pos.coords.speed || 0;
+            const speedKmh = speedMps * 3.6;
+
+            // Filtro 1: Descarta leituras imprecisas (> 25 metros)
+            if (accuracy > 25) return;
+
+            const currentPoint = {
+              lat: pos.coords.latitude,
+              lon: pos.coords.longitude,
+              time: pos.timestamp
+            };
+
+            if (lastGpsPoint) {
+              const deltaKm = haversineKm(
+                lastGpsPoint.lat, lastGpsPoint.lon,
+                currentPoint.lat, currentPoint.lon
+              );
+
+              // Filtro 2: Velocidade mínima ou distância mínima de 10 metros para evitar oscilação parado no semáforo
+              const minSpeed = parseFloat(state.config.minSpeedKmh) || 5.4;
+              if (speedKmh >= minSpeed || deltaKm >= 0.015) {
+                addDistance(deltaKm);
+                state.currentShift.currentSpeed = Math.round(speedKmh);
+              } else {
+                state.currentShift.currentSpeed = 0;
+              }
+            }
+
+            lastGpsPoint = currentPoint;
+            renderPainel();
+          },
+          (err) => {
+            console.warn('Erro na captura do GPS:', err);
+            updateGpsStatus('Erro GPS', 'red');
+          },
+          options
+        );
+      }
+
+      function stopGpsTracking() {
+        if (gpsWatchId !== null) {
+          navigator.geolocation.clearWatch(gpsWatchId);
+          gpsWatchId = null;
+        }
+        lastGpsPoint = null;
+      }
+
+      // Adiciona distância percorrida e consome a vida útil das peças em tempo real
+      function addDistance(deltaKm) {
+        if (deltaKm <= 0) return;
+        state.currentShift.km += deltaKm;
+        state.moto.odometer += deltaKm;
+
+        state.parts.forEach(part => {
+          if (part.active) {
+            const lifespan = Math.max(1, parseFloat(part.lifespanKm) || 1);
+            const dropPct = (deltaKm / lifespan) * 100;
+            part.healthPct = Math.max(0, part.healthPct - dropPct);
+          }
+        });
+
+        renderPainel();
+        renderMotoParts();
+      }
+
+      // Modo de Simulação Inteligente (para testes em mesa / desktop)
+      function startSimulation() {
+        clearInterval(simInterval);
+        simInterval = setInterval(() => {
+          if (state.currentShift.isActive && !state.currentShift.isPaused) {
+            // Simula moto rodando a ~48 km/h (0.0133 km por segundo)
+            const simulatedDeltaKm = 0.0133;
+            addDistance(simulatedDeltaKm);
+            state.currentShift.currentSpeed = Math.floor(45 + Math.random() * 8);
+            renderPainel();
+          }
+        }, 1000);
+      }
+
+      function stopSimulation() {
+        clearInterval(simInterval);
+        simInterval = null;
+      }
+
+      function updateGpsStatus(text, color) {
+        const badge = document.getElementById('gpsStatusBadge');
+        const dot = document.getElementById('gpsStatusDot');
+        const label = document.getElementById('gpsStatusText');
+        const clusterDot = document.getElementById('clusterStatusDot');
+        const clusterText = document.getElementById('clusterStatusText');
+
+        label.textContent = text;
+        if (clusterText) clusterText.textContent = text;
+
+        if (color === 'green') {
+          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-neonGreen/15 text-neonGreen border border-neonGreen/30';
+          dot.className = 'w-2 h-2 rounded-full bg-neonGreen animate-pulse';
+          if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-neonGreen';
+        } else if (color === 'amber') {
+          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30';
+          dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+          if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-amber-400';
+        } else {
+          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-red-500/15 text-red-400 border border-red-500/30';
+          dot.className = 'w-2 h-2 rounded-full bg-red-400';
+          if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-red-400';
+        }
+      }
+
+      // =======================================================================
+      // 5. RENDERIZAÇÃO DAS VIEWS E COMPONENTES
+      // =======================================================================
+      function renderPainel() {
+        const { fuelPerKm, partsPerKm, totalPerKm } = getCostPerKm();
+        const km = state.currentShift.km;
+        const fuelCost = km * fuelPerKm;
+        const wearCost = km * partsPerKm;
+        const extrasCost = state.currentShift.extras.reduce((sum, item) => sum + item.value, 0);
+        const totalCost = fuelCost + wearCost + extrasCost;
+
+        // Cockpit
+        document.getElementById('displayKm').textContent = km.toFixed(1);
+        document.getElementById('displayTotalCost').textContent = formatBRL(totalCost);
+        document.getElementById('displaySpeed').textContent = state.currentShift.isActive && !state.currentShift.isPaused ? state.currentShift.currentSpeed : 0;
+        document.getElementById('displayTimer').textContent = formatTime(state.currentShift.elapsedSeconds);
+        document.getElementById('displayCostPerKm').textContent = formatBRL(totalPerKm, 3);
+
+        // Sidebar
+        document.getElementById('sbCostPerKm').textContent = `${formatBRL(totalPerKm, 3)}/km`;
+        document.getElementById('sbFuelText').textContent = `${formatBRL(state.moto.fuelPrice)} (${state.moto.fuelConsumption} km/L)`;
+        document.getElementById('sbMotoModel').textContent = state.moto.model;
+
+        // Gráfico de Rosca e Cards
+        document.getElementById('donutTotalText').textContent = formatBRL(totalCost);
+        document.getElementById('valFuel').textContent = formatBRL(fuelCost);
+        document.getElementById('valWear').textContent = formatBRL(wearCost);
+        document.getElementById('valExtra').textContent = formatBRL(extrasCost);
+        document.getElementById('caixinhaHighlight').textContent = formatBRL(wearCost);
+        document.getElementById('lblFuelKm').innerHTML = `${formatBRL(fuelPerKm, 3)}/km • <span id="pctFuel">${totalCost > 0 ? Math.round((fuelCost / totalCost) * 100) : 0}%</span>`;
+        document.getElementById('lblWearKm').innerHTML = `${formatBRL(partsPerKm, 3)}/km • <span id="pctWear">${totalCost > 0 ? Math.round((wearCost / totalCost) * 100) : 0}%</span>`;
+        document.getElementById('extraCountLabel').textContent = `${state.currentShift.extras.length} ${state.currentShift.extras.length === 1 ? 'item' : 'itens'}`;
+
+        if (totalCost > 0) {
+          const segFuelLen = (fuelCost / totalCost) * CIRCUMFERENCE;
+          const segWearLen = (wearCost / totalCost) * CIRCUMFERENCE;
+          const segExtraLen = (extrasCost / totalCost) * CIRCUMFERENCE;
+
+          document.getElementById('segFuel').setAttribute('stroke-dasharray', `${segFuelLen} ${CIRCUMFERENCE}`);
+          document.getElementById('segFuel').setAttribute('stroke-dashoffset', '0');
+
+          document.getElementById('segWear').setAttribute('stroke-dasharray', `${segWearLen} ${CIRCUMFERENCE}`);
+          document.getElementById('segWear').setAttribute('stroke-dashoffset', `-${segFuelLen}`);
+
+          document.getElementById('segExtra').setAttribute('stroke-dasharray', `${segExtraLen} ${CIRCUMFERENCE}`);
+          document.getElementById('segExtra').setAttribute('stroke-dashoffset', `-${segFuelLen + segWearLen}`);
+        } else {
+          document.getElementById('segFuel').setAttribute('stroke-dasharray', '0 377');
+          document.getElementById('segWear').setAttribute('stroke-dasharray', '0 377');
+          document.getElementById('segExtra').setAttribute('stroke-dasharray', '0 377');
+        }
+
+        // Radar de Peças no Painel
+        renderPanelHealthList();
+      }
+
+      function renderPanelHealthList() {
+        const container = document.getElementById('panelPartsList');
+        if (!container) return;
+
+        // Ordena por menor saúde para mostrar as mais críticas primeiro
+        const sorted = [...state.parts].filter(p => p.active).sort((a, b) => a.healthPct - b.healthPct);
+
+        container.innerHTML = sorted.slice(0, 6).map(part => {
+          const pct = Math.round(Math.max(0, Math.min(100, part.healthPct)));
+          const lifespan = parseFloat(part.lifespanKm) || 1;
+          const remainingKm = Math.round(lifespan * (pct / 100));
+          const color = getHealthColor(pct);
+
+          return `
+            <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-white truncate max-w-[150px]">${part.name}</span>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${color.badgeBg}">
+                  ${pct}% • ${color.label}
+                </span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-gray-800 overflow-hidden">
+                <div class="h-full rounded-full ${color.bgClass} transition-all duration-300" style="width: ${pct}%;"></div>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-gray-400 font-mono">
+                <span>Resta: <strong class="text-gray-200">${remainingKm.toLocaleString('pt-BR')} km</strong></span>
+                <button type="button" data-replace-part="${part.id}" class="text-neonGreen hover:underline font-sans font-semibold">Troquei</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderMotoParts() {
+        const { fuelPerKm, partsPerKm, totalPerKm } = getCostPerKm();
+        const consumption = parseFloat(state.moto.fuelConsumption) || 40;
+        const tank = parseFloat(state.moto.tankCapacity) || 14;
+        const fuelPrice = parseFloat(state.moto.fuelPrice) || 7;
+
+        document.getElementById('motoSummaryTotalPerKm').textContent = formatBRL(totalPerKm, 3);
+        document.getElementById('motoSummaryFuelPerKm').textContent = formatBRL(fuelPerKm, 3);
+        document.getElementById('motoSummaryPartsPerKm').textContent = formatBRL(partsPerKm, 3);
+        document.getElementById('motoSummaryRangeKm').textContent = Math.round(consumption * tank);
+        document.getElementById('motoSummaryFullTankCost').textContent = formatBRL(fuelPrice * tank);
+        document.getElementById('motoSummaryTankLiters').textContent = `${tank} L`;
+
+        // Saúde Geral
+        const activeParts = state.parts.filter(p => p.active);
+        const avgHealth = activeParts.length ? Math.round(activeParts.reduce((s, p) => s + p.healthPct, 0) / activeParts.length) : 0;
+        const avgColor = getHealthColor(avgHealth);
+
+        document.getElementById('motoSummaryHealthPct').textContent = `${avgHealth}%`;
+        document.getElementById('motoSummaryHealthBar').style.width = `${avgHealth}%`;
+        document.getElementById('motoSummaryHealthBar').className = `h-full rounded-full transition-all duration-300 ${avgColor.bgClass}`;
+        document.getElementById('motoSummaryHealthBadge').className = `text-[11px] font-bold px-2.5 py-0.5 rounded-full ${avgColor.badgeBg}`;
+        document.getElementById('motoSummaryHealthBadge').textContent = avgHealth >= 60 ? 'Ótima' : avgHealth > 30 ? 'Boa' : 'Atenção';
+        document.getElementById('motoSummaryActivePartsCount').textContent = `${activeParts.length} peças ativas`;
+
+        // Lista de Peças e Sliders
+        const container = document.getElementById('motoPartsContainer');
+        if (!container) return;
+
+        container.innerHTML = state.parts.map(part => {
+          const pct = Math.round(Math.max(0, Math.min(100, part.healthPct)));
+          const price = parseFloat(part.price) || 0;
+          const lifespan = parseFloat(part.lifespanKm) || 1;
+          const costKm = price / lifespan;
+          const remainingKm = Math.round(lifespan * (pct / 100));
+          const color = getHealthColor(pct);
+
+          return `
+            <div data-part-id="${part.id}" class="p-4 rounded-2xl bg-amoled border ${part.active ? 'border-borderSubtle' : 'border-gray-800 opacity-60'} space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 class="font-bold text-sm text-white">${part.name}</h4>
+                  <p class="text-[11px] text-gray-400 font-mono">
+                    ${formatBRL(price)} a cada ${lifespan.toLocaleString('pt-BR')} km • <span class="text-neonGreen font-bold">${formatBRL(costKm, 3)}/km</span>
+                  </p>
+                </div>
+                <button type="button" data-replace-part="${part.id}" class="px-2.5 py-1 rounded-lg bg-neonGreen/10 border border-neonGreen/30 text-neonGreen font-bold text-xs hover:bg-neonGreen/20 transition">
+                  Troquei
+                </button>
+              </div>
+
+              <!-- Slider de Saúde -->
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="text-gray-400">Vida útil restante:</span>
+                  <span class="font-mono font-bold ${color.textClass}">${pct}% (${remainingKm.toLocaleString('pt-BR')} km)</span>
+                </div>
+                <input type="range" min="0" max="100" value="${pct}" data-part-slider="${part.id}" class="part-slider" />
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Histórico de Trocas
+        const historyContainer = document.getElementById('replacementHistoryList');
+        if (historyContainer) {
+          if (!state.replacements.length) {
+            historyContainer.innerHTML = '<p class="text-gray-500 py-2">Nenhuma troca registrada ainda.</p>';
+          } else {
+            historyContainer.innerHTML = state.replacements.slice(0, 5).map(rep => `
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-amoled border border-borderSubtle">
+                <div>
+                  <span class="font-semibold text-white">${rep.partName}</span>
+                  <span class="text-gray-500 ml-1.5">• ${rep.date} ${rep.notes ? `(${rep.notes})` : ''}</span>
+                </div>
+                <span class="font-mono font-bold text-neonGreen">${formatBRL(rep.cost)}</span>
+              </div>
+            `).join('');
+          }
+        }
+      }
+
+      function renderMetas() {
+        const monthlyNetGoal = parseFloat(state.goals.monthlyNetGoal) || 3500;
+        const fixedCosts = parseFloat(state.goals.monthlyFixedCosts) || 500;
+        const totalMonthlyTarget = monthlyNetGoal + fixedCosts;
+
+        const workDaysCount = Math.max(1, state.goals.workDays.length);
+        const workDaysInMonth = Math.round(workDaysCount * 4.33);
+        const dailyTarget = totalMonthlyTarget / workDaysInMonth;
+        const weeklyTarget = totalMonthlyTarget / 4;
+
+        // Turnos acumulados no mês
+        const totalNetMonth = state.shifts.reduce((sum, s) => sum + s.netProfit, 0);
+
+        // Atualiza cards
+        document.getElementById('goalDailyTarget').textContent = formatBRL(dailyTarget);
+        document.getElementById('goalWeeklyTarget').textContent = formatBRL(weeklyTarget);
+        document.getElementById('goalMonthlyTarget').textContent = formatBRL(monthlyNetGoal);
+        document.getElementById('goalMonthlyCurrent').textContent = formatBRL(totalNetMonth);
+
+        const monthlyPct = Math.min(100, Math.round((totalNetMonth / monthlyNetGoal) * 100));
+        document.getElementById('goalMonthlyBadge').textContent = `${monthlyPct}%`;
+        document.getElementById('goalMonthlyBar').style.width = `${monthlyPct}%`;
+
+        // Seletor de dias da semana
+        const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+        const selector = document.getElementById('workDaysSelector');
+        if (selector) {
+          selector.innerHTML = days.map((day, idx) => {
+            const isSelected = state.goals.workDays.includes(idx);
+            return `
+              <button type="button" data-work-day="${idx}" class="py-2 rounded-xl text-xs font-bold transition ${
+                isSelected
+                  ? 'bg-neonGreen text-amoled shadow-sm shadow-neonGreen/20'
+                  : 'bg-amoled text-gray-500 hover:text-white border border-borderSubtle'
+              }">${day}</button>
+            `;
+          }).join('');
+        }
+
+        // Objetivos
+        const objContainer = document.getElementById('objectivesList');
+        if (objContainer) {
+          objContainer.innerHTML = state.objectives.map(obj => `
+            <div class="p-3 rounded-2xl bg-amoled border border-borderSubtle flex items-center justify-between">
+              <div>
+                <p class="font-bold text-xs text-white">${obj.name}</p>
+                <p class="text-[11px] text-gray-400 font-mono">Alvo: ${formatBRL(obj.target)} (${obj.period})</p>
+              </div>
+              <button type="button" data-toggle-obj="${obj.id}" class="px-3 py-1 rounded-lg text-xs font-bold ${
+                obj.done ? 'bg-neonGreen text-amoled' : 'bg-gray-800 text-gray-300 hover:text-white'
+              }">
+                ${obj.done ? 'Concluído' : 'Em andamento'}
+              </button>
+            </div>
+          `).join('');
+        }
+      }
+
+      function renderRelatorios() {
+        let totalGross = 0, totalFuel = 0, totalWear = 0, totalExtras = 0, totalNet = 0;
+        state.shifts.forEach(s => {
+          totalGross += s.gross;
+          totalFuel += s.fuelCost;
+          totalWear += s.wearCost;
+          totalExtras += s.extrasCost;
+          totalNet += s.netProfit;
+        });
+
+        document.getElementById('dreGross').textContent = formatBRL(totalGross);
+        document.getElementById('dreFuel').textContent = formatBRL(totalFuel);
+        document.getElementById('dreWear').textContent = formatBRL(totalWear);
+        document.getElementById('dreExtras').textContent = formatBRL(totalExtras);
+        document.getElementById('dreNet').textContent = formatBRL(totalNet);
+
+        const tableContainer = document.getElementById('shiftsTableContainer');
+        if (!tableContainer) return;
+
+        if (!state.shifts.length) {
+          tableContainer.innerHTML = '<p class="text-gray-500 py-4 text-center">Nenhum turno finalizado ainda. Inicie seu primeiro dia no Painel!</p>';
+          return;
+        }
+
+        tableContainer.innerHTML = `
+          <table class="w-full text-left text-xs whitespace-nowrap">
+            <thead>
+              <tr class="text-gray-400 border-b border-borderSubtle">
+                <th class="py-2.5 px-3">Data</th>
+                <th class="py-2.5 px-3">KM</th>
+                <th class="py-2.5 px-3">Bruto</th>
+                <th class="py-2.5 px-3">Gasolina</th>
+                <th class="py-2.5 px-3">Caixinha Moto</th>
+                <th class="py-2.5 px-3">Extras</th>
+                <th class="py-2.5 px-3 text-neonGreen font-bold">Lucro Líquido</th>
+                <th class="py-2.5 px-3">R$/KM</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-borderSubtle/60 font-mono">
+              ${state.shifts.map(s => `
+                <tr class="hover:bg-white/[0.02]">
+                  <td class="py-3 px-3 text-white font-sans">${s.date}</td>
+                  <td class="py-3 px-3 text-white">${s.km.toFixed(1)} km</td>
+                  <td class="py-3 px-3 text-white">${formatBRL(s.gross)}</td>
+                  <td class="py-3 px-3 text-red-400">-${formatBRL(s.fuelCost)}</td>
+                  <td class="py-3 px-3 text-amber-400">-${formatBRL(s.wearCost)}</td>
+                  <td class="py-3 px-3 text-blue-400">-${formatBRL(s.extrasCost)}</td>
+                  <td class="py-3 px-3 text-neonGreen font-bold">${formatBRL(s.netProfit)}</td>
+                  <td class="py-3 px-3 text-gray-300 font-bold">${formatBRL(s.perKm, 2)}/km</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      // =======================================================================
+      // 6. NAVEGAÇÃO DE ABAS (SPA)
+      // =======================================================================
+      function switchView(targetViewId) {
+        document.querySelectorAll('.view-panel').forEach(v => v.classList.add('hidden'));
+        const targetView = document.getElementById(targetViewId);
+        if (targetView) targetView.classList.remove('hidden');
+
+        // Atualiza botões de navegação
+        document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+          const isTarget = btn.dataset.navTarget === targetViewId;
+          if (isTarget) {
+            btn.className = 'nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-neonGreen/15 text-neonGreen border border-neonGreen/30 font-bold text-sm transition';
+          } else {
+            btn.className = 'nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition';
+          }
+        });
+
+        // Atualiza título do cabeçalho
+        const titles = {
+          'view-painel': 'Painel do Dia',
+          'view-moto': 'Minha Moto & Peças',
+          'view-metas': 'Metas Financeiras',
+          'view-relatorios': 'Relatórios & DRE',
+          'view-config': 'Turso Cloud & Ajustes'
+        };
+        document.getElementById('headerScreenTitle').textContent = titles[targetViewId] || 'MotoCash Pro';
+
+        if (targetViewId === 'view-moto') renderMotoParts();
+        if (targetViewId === 'view-metas') renderMetas();
+        if (targetViewId === 'view-relatorios') renderRelatorios();
+      }
+
+      // =======================================================================
+      // 7. INICIALIZAÇÃO DE EVENTOS E CONTROLES DO DIA
+      // =======================================================================
+      function initEvents() {
+        // Navegação das Abas
+        document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const target = btn.dataset.navTarget;
+            switchView(target);
+          });
+        });
+
+        // Botão Iniciar / Pausar Turno
+        const btnStartPause = document.getElementById('btnStartPause');
+        btnStartPause.addEventListener('click', () => {
+          if (!state.currentShift.isActive) {
+            // Iniciar Turno
+            state.currentShift.isActive = true;
+            state.currentShift.isPaused = false;
+            btnStartPause.innerHTML = `
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              <span>Pausar Dia</span>
+            `;
+            btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition';
+            updateGpsStatus('Rodando na Moto', 'green');
+            requestWakeLock();
+
+            if (state.config.simulationMode) {
+              startSimulation();
+            } else {
+              startGpsTracking();
+            }
+
+            // Cronômetro do Turno
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+              if (state.currentShift.isActive && !state.currentShift.isPaused) {
+                state.currentShift.elapsedSeconds += 1;
+                document.getElementById('displayTimer').textContent = formatTime(state.currentShift.elapsedSeconds);
+              }
+            }, 1000);
+
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            showToast('Turno iniciado! Tela mantida acesa.', 'green');
+          } else if (!state.currentShift.isPaused) {
+            // Pausar Turno
+            state.currentShift.isPaused = true;
+            btnStartPause.innerHTML = `
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+              <span>Continuar Dia</span>
+            `;
+            btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition';
+            updateGpsStatus('Pausado', 'amber');
+            lastGpsPoint = null; // Reseta ponto para evitar salto de distância ao despausar em outro local
+            showToast('Turno pausado.', 'amber');
+          } else {
+            // Retomar Turno
+            state.currentShift.isPaused = false;
+            btnStartPause.innerHTML = `
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              <span>Pausar Dia</span>
+            `;
+            btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition';
+            updateGpsStatus('Rodando na Moto', 'green');
+            showToast('Turno retomado!', 'green');
+          }
+          saveState();
+        });
+
+        // Alternar Modo Simulação vs GPS Real
+        const btnToggleSim = document.getElementById('btnToggleSim');
+        btnToggleSim.addEventListener('click', () => {
+          state.config.simulationMode = !state.config.simulationMode;
+          const label = document.getElementById('simLabel');
+          if (state.config.simulationMode) {
+            btnToggleSim.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40 hover:bg-neonGreen/25';
+            label.textContent = 'Simulação: ON';
+            stopGpsTracking();
+            if (state.currentShift.isActive && !state.currentShift.isPaused) startSimulation();
+            showToast('Modo Simulação ativado (~48 km/h)', 'green');
+          } else {
+            btnToggleSim.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-card text-gray-400 border-borderSubtle hover:bg-cardHover';
+            label.textContent = 'GPS Real: ON';
+            stopSimulation();
+            if (state.currentShift.isActive && !state.currentShift.isPaused) startGpsTracking();
+            showToast('GPS Real ativado!', 'blue');
+          }
+          saveState();
+        });
+
+        // Botão + Gasto Extra
+        let selectedExtraCat = 'Lanche';
+        document.getElementById('btnOpenExtra').addEventListener('click', () => {
+          document.getElementById('modalExtra').classList.remove('hidden');
+          document.getElementById('inputExtraValue').value = '';
+          document.getElementById('inputExtraValue').focus();
+        });
+
+        document.querySelectorAll('.extra-cat-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            selectedExtraCat = btn.dataset.extraCat;
+            document.querySelectorAll('.extra-cat-btn').forEach(b => {
+              b.className = 'extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-sm text-left transition';
+            });
+            btn.className = 'extra-cat-btn py-2.5 px-3 rounded-xl border border-blue-500 bg-blue-500/15 text-blue-300 font-semibold text-sm text-left transition';
+          });
+        });
+
+        document.getElementById('btnConfirmExtra').addEventListener('click', () => {
+          const val = parseFloat(document.getElementById('inputExtraValue').value);
+          if (val > 0) {
+            state.currentShift.extras.push({ category: selectedExtraCat, value: val });
+            document.getElementById('modalExtra').classList.add('hidden');
+            renderPainel();
+            saveState();
+            showToast(`Gasto de ${formatBRL(val)} adicionado!`, 'blue');
+          }
+        });
+
+        // KM Manual
+        document.getElementById('btnOpenManualKm').addEventListener('click', () => {
+          document.getElementById('modalManualKm').classList.remove('hidden');
+          document.getElementById('inputManualKm').value = '';
+          document.getElementById('inputManualKm').focus();
+        });
+
+        document.getElementById('btnConfirmManualKm').addEventListener('click', () => {
+          const delta = parseFloat(document.getElementById('inputManualKm').value);
+          if (delta > 0) {
+            addDistance(delta);
+            document.getElementById('modalManualKm').classList.add('hidden');
+            saveState();
+            showToast(`${delta} km somados ao odômetro!`, 'green');
+          }
+        });
+
+        // Fechamento do Dia
+        document.getElementById('btnFinishDay').addEventListener('click', () => {
+          const { fuelPerKm, partsPerKm } = getCostPerKm();
+          const km = state.currentShift.km;
+          const fuelCost = km * fuelPerKm;
+          const wearCost = km * partsPerKm;
+          const extrasCost = state.currentShift.extras.reduce((sum, item) => sum + item.value, 0);
+
+          document.getElementById('closeKm').textContent = `${km.toFixed(1)} km`;
+          document.getElementById('closeFuel').textContent = `-${formatBRL(fuelCost)}`;
+          document.getElementById('closeWear').textContent = `-${formatBRL(wearCost)}`;
+          document.getElementById('closeExtras').textContent = `-${formatBRL(extrasCost)}`;
+
+          const updateCheckoutPreview = () => {
+            const ifood = parseFloat(document.getElementById('closeGainIfood').value) || 0;
+            const n99 = parseFloat(document.getElementById('closeGain99').value) || 0;
+            const uber = parseFloat(document.getElementById('closeGainUber').value) || 0;
+            const part = parseFloat(document.getElementById('closeGainPart').value) || 0;
+            const tips = parseFloat(document.getElementById('closeGainTips').value) || 0;
+            const totalGross = ifood + n99 + uber + part + tips;
+            const netProfit = totalGross - fuelCost - wearCost - extrasCost;
+            const perKm = km > 0 ? (netProfit / km) : 0;
+
+            document.getElementById('closeGross').textContent = formatBRL(totalGross);
+            document.getElementById('closeNetProfit').textContent = formatBRL(netProfit);
+            document.getElementById('closePerKm').textContent = `${formatBRL(perKm, 2)} livres/km`;
+          };
+
+          ['closeGainIfood', 'closeGain99', 'closeGainUber', 'closeGainPart', 'closeGainTips'].forEach(id => {
+            document.getElementById(id).oninput = updateCheckoutPreview;
+          });
+          updateCheckoutPreview();
+
+          document.getElementById('modalFinishDay').classList.remove('hidden');
+        });
+
+        document.getElementById('btnSaveCloseDay').addEventListener('click', () => {
+          const { fuelPerKm, partsPerKm } = getCostPerKm();
+          const km = state.currentShift.km;
+          const fuelCost = km * fuelPerKm;
+          const wearCost = km * partsPerKm;
+          const extrasCost = state.currentShift.extras.reduce((sum, item) => sum + item.value, 0);
+
+          const ifood = parseFloat(document.getElementById('closeGainIfood').value) || 0;
+          const n99 = parseFloat(document.getElementById('closeGain99').value) || 0;
+          const uber = parseFloat(document.getElementById('closeGainUber').value) || 0;
+          const part = parseFloat(document.getElementById('closeGainPart').value) || 0;
+          const tips = parseFloat(document.getElementById('closeGainTips').value) || 0;
+          const totalGross = ifood + n99 + uber + part + tips;
+          const netProfit = totalGross - fuelCost - wearCost - extrasCost;
+          const timeSec = state.currentShift.elapsedSeconds;
+
+          // Salva turno
+          const today = new Date().toISOString().split('T')[0];
+          state.shifts.unshift({
+            id: 'shift_' + Date.now(),
+            date: today,
+            km: km,
+            timeSeconds: timeSec,
+            gross: totalGross,
+            fuelCost: fuelCost,
+            wearCost: wearCost,
+            extrasCost: extrasCost,
+            netProfit: netProfit,
+            perKm: km > 0 ? (netProfit / km) : 0,
+            perHour: timeSec > 0 ? (netProfit / (timeSec / 3600)) : 0
+          });
+
+          // Reseta turno ativo
+          state.currentShift.isActive = false;
+          state.currentShift.isPaused = false;
+          state.currentShift.km = 0.0;
+          state.currentShift.elapsedSeconds = 0;
+          state.currentShift.extras = [];
+
+          stopSimulation();
+          stopGpsTracking();
+          releaseWakeLock();
+          clearInterval(timerInterval);
+
+          document.getElementById('btnStartPause').innerHTML = `
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+            <span>Iniciar Dia</span>
+          `;
+          document.getElementById('btnStartPause').className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition';
+          updateGpsStatus('Pausado', 'amber');
+
+          document.getElementById('modalFinishDay').classList.add('hidden');
+          renderPainel();
+          saveState();
+          showToast(`Fechamento salvo! Lucro Líquido: ${formatBRL(netProfit)}`, 'green');
+        });
+
+        // Fechar qualquer modal com data-close-modal
+        document.querySelectorAll('[data-close-modal]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const modalId = btn.dataset.closeModal;
+            document.getElementById(modalId).classList.add('hidden');
+          });
+        });
+
+        // Troca de Peça (Botão 'Troquei')
+        let partBeingReplaced = null;
+        document.body.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-replace-part]');
+          if (btn) {
+            const partId = btn.dataset.replacePart;
+            partBeingReplaced = state.parts.find(p => p.id === partId);
+            if (partBeingReplaced) {
+              document.getElementById('modalReplaceTitle').textContent = `Trocar ${partBeingReplaced.name}`;
+              document.getElementById('inputReplaceCost').value = partBeingReplaced.price;
+              document.getElementById('inputReplaceNotes').value = '';
+              document.getElementById('modalReplacePart').classList.remove('hidden');
+            }
+          }
+        });
+
+        document.getElementById('btnConfirmReplace').addEventListener('click', () => {
+          if (!partBeingReplaced) return;
+          const paid = parseFloat(document.getElementById('inputReplaceCost').value) || partBeingReplaced.price;
+          const notes = document.getElementById('inputReplaceNotes').value.trim();
+
+          partBeingReplaced.healthPct = 100;
+          partBeingReplaced.price = paid;
+
+          state.replacements.unshift({
+            id: 'rep_' + Date.now(),
+            partId: partBeingReplaced.id,
+            partName: partBeingReplaced.name,
+            date: new Date().toLocaleDateString('pt-BR'),
+            cost: paid,
+            notes: notes
+          });
+
+          document.getElementById('modalReplacePart').classList.add('hidden');
+          renderPainel();
+          renderMotoParts();
+          saveState();
+          showToast(`${partBeingReplaced.name} renovado com sucesso!`, 'green');
+        });
+
+        // Sliders de Saúde das Peças
+        document.body.addEventListener('input', (e) => {
+          if (e.target.matches('[data-part-slider]')) {
+            const partId = e.target.dataset.partSlider;
+            const part = state.parts.find(p => p.id === partId);
+            if (part) {
+              part.healthPct = Number(e.target.value);
+              renderMotoParts();
+              renderPainel();
+            }
+          }
+        });
+
+        // Adicionar Peça Personalizada
+        document.getElementById('btnOpenAddPart').addEventListener('click', () => {
+          document.getElementById('modalAddPart').classList.remove('hidden');
+          document.getElementById('newPartName').value = '';
+          document.getElementById('newPartPrice').value = '';
+          document.getElementById('newPartLifespan').value = '';
+          document.getElementById('newPartHealth').value = 100;
+          document.getElementById('lblNewPartHealth').textContent = '100%';
+        });
+
+        document.getElementById('newPartHealth').addEventListener('input', (e) => {
+          document.getElementById('lblNewPartHealth').textContent = `${e.target.value}%`;
+        });
+
+        document.getElementById('btnConfirmAddPart').addEventListener('click', () => {
+          const name = document.getElementById('newPartName').value.trim();
+          const price = parseFloat(document.getElementById('newPartPrice').value);
+          const lifespan = parseFloat(document.getElementById('newPartLifespan').value);
+          const health = parseFloat(document.getElementById('newPartHealth').value);
+
+          if (!name || !price || !lifespan) {
+            showToast('Preencha nome, valor e vida útil da peça.', 'amber');
+            return;
+          }
+
+          state.parts.push({
+            id: 'custom_' + Date.now(),
+            name: name,
+            price: price,
+            lifespanKm: lifespan,
+            healthPct: health,
+            active: true,
+            custom: true
+          });
+
+          document.getElementById('modalAddPart').classList.add('hidden');
+          renderMotoParts();
+          renderPainel();
+          saveState();
+          showToast(`Peça "${name}" adicionada!`, 'green');
+        });
+
+        // Salvar Perfil da Moto
+        document.getElementById('btnSaveMotoProfile').addEventListener('click', () => {
+          state.pilot.name = document.getElementById('inputPilotName').value.trim() || state.pilot.name;
+          state.pilot.nickname = document.getElementById('inputPilotNickname').value.trim() || state.pilot.nickname;
+          state.pilot.city = document.getElementById('inputPilotCity').value.trim() || state.pilot.city;
+
+          state.moto.model = document.getElementById('inputMotoModel').value.trim() || state.moto.model;
+          state.moto.odometer = parseFloat(document.getElementById('inputMotoOdometer').value) || state.moto.odometer;
+          state.moto.fuelPrice = parseFloat(document.getElementById('inputFuelPrice').value) || 7.00;
+          state.moto.fuelConsumption = parseFloat(document.getElementById('inputFuelConsumption').value) || 40.0;
+          state.moto.tankCapacity = parseFloat(document.getElementById('inputTankCapacity').value) || 14.0;
+
+          renderMotoParts();
+          renderPainel();
+          saveState();
+          showToast('Perfil e parâmetros da moto salvos com sucesso!', 'green');
+        });
+
+        // Metas: Salvar e Recalcular
+        document.getElementById('btnSaveGoals').addEventListener('click', () => {
+          state.goals.monthlyNetGoal = parseFloat(document.getElementById('inputMonthlyNetGoal').value) || 3500;
+          state.goals.monthlyFixedCosts = parseFloat(document.getElementById('inputMonthlyFixedCosts').value) || 500;
+          renderMetas();
+          saveState();
+          showToast('Metas recalculadas com sucesso!', 'green');
+        });
+
+        // Seletor de Dias de Trabalho
+        document.body.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-work-day]');
+          if (btn) {
+            const dayIdx = parseInt(btn.dataset.workDay, 10);
+            if (state.goals.workDays.includes(dayIdx)) {
+              if (state.goals.workDays.length > 1) {
+                state.goals.workDays = state.goals.workDays.filter(d => d !== dayIdx);
+              }
+            } else {
+              state.goals.workDays.push(dayIdx);
+              state.goals.workDays.sort();
+            }
+            renderMetas();
+            saveState();
+          }
+        });
+
+        // Exportar CSV
+        document.getElementById('btnExportCsv').addEventListener('click', () => {
+          if (!state.shifts.length) {
+            showToast('Nenhum turno registrado para exportar.', 'amber');
+            return;
+          }
+          let csv = 'Data;Quilometros;Faturamento_Bruto;Gasolina;Caixinha_Peças;Extras;Lucro_Liquido;Lucro_Por_KM\n';
+          state.shifts.forEach(s => {
+            csv += `${s.date};${s.km.toFixed(1)};${s.gross.toFixed(2)};${s.fuelCost.toFixed(2)};${s.wearCost.toFixed(2)};${s.extrasCost.toFixed(2)};${s.netProfit.toFixed(2)};${s.perKm.toFixed(2)}\n`;
+          });
+
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `motocash_relatorio_${new Date().toISOString().split('T')[0]}.csv`;
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast('Relatório CSV baixado!', 'green');
+        });
+
+        // Exportar Backup JSON
+        const exportJson = () => {
+          const jsonStr = JSON.stringify(state, null, 2);
+          const blob = new Blob([jsonStr], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `motocash_backup_${new Date().toISOString().split('T')[0]}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast('Backup JSON exportado com sucesso!', 'green');
+        };
+        document.getElementById('btnExportJson').addEventListener('click', exportJson);
+        document.getElementById('btnDownloadBackup').addEventListener('click', exportJson);
+
+        // Restaurar Backup JSON
+        document.getElementById('inputRestoreJson').addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const loaded = JSON.parse(event.target.result);
+              if (loaded.moto && loaded.parts) {
+                state = loaded;
+                saveState();
+                renderPainel();
+                renderMotoParts();
+                renderMetas();
+                renderRelatorios();
+                showToast('Backup restaurado com sucesso!', 'green');
+              } else {
+                showToast('Arquivo de backup inválido.', 'red');
+              }
+            } catch (err) {
+              showToast('Erro ao ler o arquivo JSON.', 'red');
+            }
+          };
+          reader.readAsText(file);
+        });
+
+        // Conexão Turso Cloud (libSQL REST API)
+        const savedTurso = JSON.parse(localStorage.getItem(TURSO_KEY) || '{}');
+        if (savedTurso.url) document.getElementById('inputTursoUrl').value = savedTurso.url;
+        if (savedTurso.token) document.getElementById('inputTursoToken').value = savedTurso.token;
+
+        document.getElementById('btnTestTurso').addEventListener('click', async () => {
+          const url = document.getElementById('inputTursoUrl').value.trim();
+          const token = document.getElementById('inputTursoToken').value.trim();
+
+          if (!url || !token) {
+            showToast('Informe a URL e o Token do Turso.', 'amber');
+            return;
+          }
+
+          showToast('Testando conexão com o Turso...', 'blue');
+          try {
+            // Chamada REST padronizada da API do libSQL / Turso
+            const httpUrl = url.replace('libsql://', 'https://');
+            const res = await fetch(`${httpUrl}/v2/pipeline`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                requests: [{ type: 'execute', stmt: { sql: 'SELECT 1;' } }]
+              })
+            });
+
+            if (res.ok) {
+              localStorage.setItem(TURSO_KEY, JSON.stringify({ url, token }));
+              document.getElementById('tursoStatusBadge').textContent = 'Conectado';
+              document.getElementById('tursoStatusBadge').className = 'text-xs font-mono font-semibold px-2.5 py-1 rounded-full bg-neonGreen/15 text-neonGreen';
+              showToast('Turso conectado com sucesso!', 'green');
+            } else {
+              showToast(`Falha na autenticação Turso (HTTP ${res.status})`, 'red');
+            }
+          } catch (err) {
+            console.error(err);
+            showToast('Erro de rede ao conectar ao Turso.', 'red');
+          }
+        });
+
+        document.getElementById('btnSyncTurso').addEventListener('click', async () => {
+          const saved = JSON.parse(localStorage.getItem(TURSO_KEY) || '{}');
+          if (!saved.url || !saved.token) {
+            showToast('Configure a URL e o Token do Turso primeiro.', 'amber');
+            return;
+          }
+
+          showToast('Sincronizando turnos com o Turso...', 'blue');
+          try {
+            const httpUrl = saved.url.replace('libsql://', 'https://');
+            // Envia o último turno como registro SQL
+            const requests = state.shifts.slice(0, 10).map(s => ({
+              type: 'execute',
+              stmt: {
+                sql: `INSERT OR REPLACE INTO turnos_diarios (id, data, km_rodados, faturamento_bruto, custo_combustivel, custo_desgaste, custo_extras, lucro_liquido, lucro_por_km) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+                args: [
+                  { type: 'text', value: s.id },
+                  { type: 'text', value: s.date },
+                  { type: 'float', value: s.km },
+                  { type: 'float', value: s.gross },
+                  { type: 'float', value: s.fuelCost },
+                  { type: 'float', value: s.wearCost },
+                  { type: 'float', value: s.extrasCost },
+                  { type: 'float', value: s.netProfit },
+                  { type: 'float', value: s.perKm }
+                ]
+              }
+            }));
+
+            const res = await fetch(`${httpUrl}/v2/pipeline`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${saved.token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ requests })
+            });
+
+            if (res.ok) {
+              showToast('Sincronizado com o Turso!', 'green');
+            } else {
+              showToast('Erro ao sincronizar com o Turso.', 'red');
+            }
+          } catch (err) {
+            showToast('Falha na sincronização Turso.', 'red');
+          }
+        });
+
+        // Preenche formulário de perfil com os dados salvos
+        document.getElementById('inputPilotName').value = state.pilot.name;
+        document.getElementById('inputPilotNickname').value = state.pilot.nickname;
+        document.getElementById('inputPilotCity').value = state.pilot.city;
+        document.getElementById('inputMotoModel').value = state.moto.model;
+        document.getElementById('inputMotoOdometer').value = state.moto.odometer;
+        document.getElementById('inputFuelPrice').value = state.moto.fuelPrice;
+        document.getElementById('inputFuelConsumption').value = state.moto.fuelConsumption;
+        document.getElementById('inputTankCapacity').value = state.moto.tankCapacity;
+        document.getElementById('inputMonthlyNetGoal').value = state.goals.monthlyNetGoal;
+        document.getElementById('inputMonthlyFixedCosts').value = state.goals.monthlyFixedCosts;
+      }
+
+      // =======================================================================
+      // 8. PWA INSTALL PROMPT & SERVICE WORKER
+      // =======================================================================
+      let deferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('pwaInstallBanner').classList.remove('hidden');
+        document.getElementById('btnHeaderInstall').classList.remove('hidden');
+      });
+
+      const handleInstallClick = async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            document.getElementById('pwaInstallBanner').classList.add('hidden');
+            document.getElementById('btnHeaderInstall').classList.add('hidden');
+            showToast('MotoCash Pro instalado com sucesso!', 'green');
+          }
+          deferredPrompt = null;
+        } else {
+          // iOS Safari ou manual
+          showToast('No iPhone: toque no ícone de Compartilhar e selecione "Adicionar à Tela de Início".', 'blue');
+        }
+      };
+
+      document.getElementById('btnPwaInstall').addEventListener('click', handleInstallClick);
+      document.getElementById('btnHeaderInstall').addEventListener('click', handleInstallClick);
+      document.getElementById('btnPwaDismiss').addEventListener('click', () => {
+        document.getElementById('pwaInstallBanner').classList.add('hidden');
+      });
+
+      // Registra o Service Worker para cache e uso offline
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').then((reg) => {
+            console.log('[PWA] Service Worker registrado com escopo:', reg.scope);
+          }).catch((err) => {
+            console.warn('[PWA] Registro do Service Worker falhou:', err);
+          });
+        });
+      }
+
+      // Inicialização Geral
+      initEvents();
+      renderPainel();
+    })();
+  </script>
+</body>
+</html>

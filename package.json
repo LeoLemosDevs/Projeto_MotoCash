@@ -1,0 +1,31 @@
+{
+  "name": "motocash-pro",
+  "version": "1.0.0",
+  "description": "Aplicativo Financeiro, Controle de Desgaste por KM e Odômetro Digital para Motoboys",
+  "homepage": "https://github.com/LeoLemosDevs/Projeto_MotoCash",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LeoLemosDevs/Projeto_MotoCash.git"
+  },
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "start": "npx serve -l 3000 .",
+    "build": "echo 'Build de produção do MotoCash Pro PWA pronto para a Vercel'"
+  },
+  "keywords": [
+    "motoboy",
+    "financeiro",
+    "pwa",
+    "gps",
+    "quilometragem",
+    "desgaste-moto",
+    "ifood",
+    "uber-moto",
+    "99moto",
+    "turso",
+    "vercel"
+  ],
+  "author": "Leo Lemos",
+  "license": "MIT"
+}
