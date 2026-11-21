@@ -740,6 +740,174 @@
             </div>
           </div>
 
+          <!-- ================================================================= -->
+          <!-- SEÇÃO ANALÍTICA ESTILO YOUTUBE STUDIO: FATURAMENTO & TENDÊNCIA   -->
+          <!-- ================================================================= -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-7 space-y-6 shadow-2xl">
+            <!-- Cabeçalho Analítico -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-borderSubtle">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-neonGreen animate-pulse"></span>
+                  <span class="text-xs uppercase font-mono tracking-widest text-neonGreen font-bold">Studio Analytics • Inteligência Financeira</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-black text-white mt-1">Análise de Faturamento &amp; Tendência</h2>
+                <p class="text-xs text-gray-400 mt-0.5">Acompanhe a curva de evolução diária, ritmo ascendente e consistência de metas.</p>
+              </div>
+
+              <!-- Badge de Status Ascendente em Destaque -->
+              <div id="analyticsTrendBadge" class="self-start md:self-center px-4 py-2 rounded-2xl bg-neonGreen/10 border border-neonGreen/30 text-neonGreen flex items-center gap-2 shadow-lg shadow-neonGreen/5">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                <div class="text-xs">
+                  <span class="font-extrabold uppercase tracking-wide block">Trajetória Ascendente (+24,8%)</span>
+                  <span class="text-[10px] text-gray-400 font-sans">Seu faturamento médio diário está crescendo 🚀</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 Métricas Chave do YouTube Studio (Tabs de Desempenho) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div class="p-4 rounded-2xl bg-amoled border border-borderSubtle flex flex-col justify-between">
+                <span class="text-xs text-gray-400 font-medium">Faturamento no Período</span>
+                <div class="my-1.5">
+                  <span id="studioMetricTotal" class="font-mono font-black text-xl sm:text-2xl text-white">R$ 0,00</span>
+                </div>
+                <span id="studioMetricTotalSub" class="text-[11px] text-neonGreen font-semibold flex items-center gap-1">
+                  <span>↗ +21,4% vs mês anterior</span>
+                </span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-amoled border border-borderSubtle flex flex-col justify-between">
+                <span class="text-xs text-gray-400 font-medium">Média por Dia Trabalhado</span>
+                <div class="my-1.5">
+                  <span id="studioMetricDailyAvg" class="font-mono font-black text-xl sm:text-2xl text-amber-400">R$ 0,00</span>
+                </div>
+                <span id="studioMetricDailyAvgSub" class="text-[11px] text-gray-500 font-mono">Meta diária: R$ 153,84</span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-amoled border border-borderSubtle flex flex-col justify-between">
+                <span class="text-xs text-gray-400 font-medium">Melhor Dia (Pico / Recorde)</span>
+                <div class="my-1.5">
+                  <span id="studioMetricPeak" class="font-mono font-black text-xl sm:text-2xl text-neonGreen">R$ 0,00</span>
+                </div>
+                <span id="studioMetricPeakSub" class="text-[11px] text-gray-500">Recorde registrado</span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-amoled border border-borderSubtle flex flex-col justify-between">
+                <span class="text-xs text-gray-400 font-medium">Eficiência &amp; Lucro Líquido</span>
+                <div class="my-1.5">
+                  <span id="studioMetricNet" class="font-mono font-black text-xl sm:text-2xl text-blue-400">R$ 0,00</span>
+                </div>
+                <span id="studioMetricNetSub" class="text-[11px] text-gray-500 font-mono">Média por KM rodado</span>
+              </div>
+            </div>
+
+            <!-- Gráfico Analítico (Chart.js) com Seletor de Período -->
+            <div class="space-y-3 pt-2">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                  <h3 class="font-bold text-sm text-white">Curva de Faturamento Diário</h3>
+                  <span class="text-xs text-gray-500 font-mono">• Valores por data</span>
+                </div>
+
+                <!-- Botões de Período do Gráfico (7D, 30D, Ano, Todos) -->
+                <div class="flex p-1 rounded-2xl bg-amoled border border-borderSubtle text-xs font-semibold">
+                  <button type="button" data-analytics-period="7d" class="analytics-period-btn px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition">7 Dias</button>
+                  <button type="button" data-analytics-period="30d" class="analytics-period-btn px-3 py-1.5 rounded-xl bg-neonGreen text-amoled font-bold transition">30 Dias</button>
+                  <button type="button" data-analytics-period="year" class="analytics-period-btn px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition">Ano (12M)</button>
+                  <button type="button" data-analytics-period="all" class="analytics-period-btn px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition">Tudo</button>
+                </div>
+              </div>
+
+              <!-- Container do Canvas com Altura Fixa -->
+              <div class="relative w-full h-[280px] sm:h-[320px] rounded-2xl bg-amoled/80 border border-borderSubtle/60 p-2 sm:p-4">
+                <canvas id="analyticsTrendChart"></canvas>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-400 font-medium px-1">
+                <div class="flex items-center gap-4">
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-3 h-1 rounded-full bg-neonGreen"></span>
+                    <span>Faturamento Diário</span>
+                  </span>
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-3 h-0.5 border-t border-dashed border-amber-400"></span>
+                    <span>Meta Diária Recomendada</span>
+                  </span>
+                </div>
+                <span id="analyticsAscentSummary" class="text-neonGreen font-semibold">✦ 88% dos dias acima da meta diária</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================================================= -->
+          <!-- CALENDÁRIO ANALÍTICO DE DIAS TRABALHADOS (HEATMAP MENSAL)         -->
+          <!-- ================================================================= -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-7 space-y-5 shadow-2xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-borderSubtle">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded-lg bg-blue-500/15 text-blue-400 font-bold text-xs uppercase font-mono">Frequência Operacional</span>
+                  <span class="text-xs text-gray-400">• Calendário de Atividades</span>
+                </div>
+                <h3 class="text-lg sm:text-xl font-black text-white mt-1">Dias Trabalhados &amp; Faturamento no Mês</h3>
+                <p class="text-xs text-gray-400">Clique em qualquer dia do calendário para ver o detalhamento do turno.</p>
+              </div>
+
+              <!-- Controles de Mês: Anterior, Mês Atual, Próximo -->
+              <div class="flex items-center gap-2">
+                <button id="btnPrevMonth" type="button" class="p-2 rounded-xl bg-amoled hover:bg-gray-800 border border-borderSubtle text-gray-300 transition" title="Mês Anterior">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <span id="calendarCurrentMonthLabel" class="font-bold text-sm text-white px-3 py-1.5 rounded-xl bg-amoled border border-borderSubtle font-sans min-w-[140px] text-center">Novembro 2026</span>
+                <button id="btnNextMonth" type="button" class="p-2 rounded-xl bg-amoled hover:bg-gray-800 border border-borderSubtle text-gray-300 transition" title="Próximo Mês">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </button>
+                <button id="btnCalendarToday" type="button" class="px-3 py-2 rounded-xl bg-cardLight hover:bg-gray-800 text-xs font-bold text-neonGreen border border-neonGreen/30 transition">Hoje</button>
+              </div>
+            </div>
+
+            <!-- Legenda do Calendário -->
+            <div class="flex flex-wrap items-center gap-4 text-xs text-gray-400">
+              <span class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-md bg-neonGreen/20 border border-neonGreen/60"></span>
+                <span>Dia Trabalhado (com faturamento)</span>
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-md bg-amoled border border-borderSubtle"></span>
+                <span>Folga / Descanso</span>
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-md border-2 border-neonGreen"></span>
+                <span>Hoje</span>
+              </span>
+            </div>
+
+            <!-- Grade do Calendário Mensal -->
+            <div class="space-y-1.5">
+              <!-- Dias da Semana -->
+              <div class="grid grid-cols-7 gap-1.5 text-center text-xs font-bold text-gray-400 uppercase tracking-wider py-1 font-mono">
+                <span>Dom</span>
+                <span>Seg</span>
+                <span>Ter</span>
+                <span>Qua</span>
+                <span>Qui</span>
+                <span>Sex</span>
+                <span>Sáb</span>
+              </div>
+
+              <!-- Dias do Mês (Grade Dinâmica via JS) -->
+              <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1.5">
+                <!-- Preenchido via renderActivityCalendar() -->
+              </div>
+            </div>
+
+            <!-- Detalhamento do Dia Selecionado -->
+            <div id="calendarDayDetails" class="p-4 sm:p-5 rounded-2xl bg-amoled border border-borderSubtle space-y-3">
+              <!-- Preenchido dinamicamente ao clicar em um dia -->
+            </div>
+          </section>
+
           <!-- Configuração da Escala de Trabalho e Custos Fixos -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
@@ -1433,6 +1601,28 @@
         { id: 'outros', name: 'Outros', value: 0.00, active: false, category: 'Diversos', icon: '💡' }
       ];
 
+      // Histórico de turnos realistas com trajetória ascendente (Estilo YouTube Studio Analytics)
+      const DEFAULT_SHIFTS = [
+        { id: 's_01', date: '2026-11-02', km: 110.5, timeSeconds: 14400, gross: 175.00, fuelCost: 19.34, wearCost: 13.26, extrasCost: 10.00, netProfit: 132.40, perKm: 1.20 },
+        { id: 's_02', date: '2026-11-03', km: 122.0, timeSeconds: 15100, gross: 190.00, fuelCost: 21.35, wearCost: 14.64, extrasCost: 12.00, netProfit: 142.01, perKm: 1.16 },
+        { id: 's_03', date: '2026-11-04', km: 118.0, timeSeconds: 14800, gross: 185.00, fuelCost: 20.65, wearCost: 14.16, extrasCost: 10.00, netProfit: 140.19, perKm: 1.19 },
+        { id: 's_04', date: '2026-11-05', km: 125.0, timeSeconds: 15300, gross: 200.00, fuelCost: 21.88, wearCost: 15.00, extrasCost: 12.00, netProfit: 151.12, perKm: 1.21 },
+        { id: 's_05', date: '2026-11-06', km: 138.0, timeSeconds: 16200, gross: 220.00, fuelCost: 24.15, wearCost: 16.56, extrasCost: 15.00, netProfit: 164.29, perKm: 1.19 },
+        { id: 's_06', date: '2026-11-07', km: 150.0, timeSeconds: 17400, gross: 245.00, fuelCost: 26.25, wearCost: 18.00, extrasCost: 16.00, netProfit: 184.75, perKm: 1.23 },
+        { id: 's_07', date: '2026-11-09', km: 124.0, timeSeconds: 15000, gross: 200.00, fuelCost: 21.70, wearCost: 14.88, extrasCost: 12.00, netProfit: 151.42, perKm: 1.22 },
+        { id: 's_08', date: '2026-11-10', km: 129.0, timeSeconds: 15400, gross: 208.00, fuelCost: 22.58, wearCost: 15.48, extrasCost: 12.00, netProfit: 157.94, perKm: 1.22 },
+        { id: 's_09', date: '2026-11-11', km: 134.0, timeSeconds: 15800, gross: 215.00, fuelCost: 23.45, wearCost: 16.08, extrasCost: 14.00, netProfit: 161.47, perKm: 1.21 },
+        { id: 's_10', date: '2026-11-12', km: 141.0, timeSeconds: 16500, gross: 228.00, fuelCost: 24.68, wearCost: 16.92, extrasCost: 15.00, netProfit: 171.40, perKm: 1.22 },
+        { id: 's_11', date: '2026-11-13', km: 147.0, timeSeconds: 17000, gross: 238.00, fuelCost: 25.73, wearCost: 17.64, extrasCost: 15.00, netProfit: 179.63, perKm: 1.22 },
+        { id: 's_12', date: '2026-11-14', km: 158.0, timeSeconds: 18000, gross: 255.00, fuelCost: 27.65, wearCost: 18.96, extrasCost: 18.00, netProfit: 190.39, perKm: 1.21 },
+        { id: 's_13', date: '2026-11-16', km: 132.0, timeSeconds: 15600, gross: 215.00, fuelCost: 23.10, wearCost: 15.84, extrasCost: 12.00, netProfit: 164.06, perKm: 1.24 },
+        { id: 's_14', date: '2026-11-17', km: 138.0, timeSeconds: 16100, gross: 228.00, fuelCost: 24.15, wearCost: 16.56, extrasCost: 14.00, netProfit: 173.29, perKm: 1.26 },
+        { id: 's_15', date: '2026-11-18', km: 144.0, timeSeconds: 16800, gross: 240.00, fuelCost: 25.20, wearCost: 17.28, extrasCost: 15.00, netProfit: 182.52, perKm: 1.27 },
+        { id: 's_16', date: '2026-11-19', km: 150.0, timeSeconds: 17300, gross: 250.00, fuelCost: 26.25, wearCost: 18.00, extrasCost: 15.00, netProfit: 190.75, perKm: 1.27 },
+        { id: 's_17', date: '2026-11-20', km: 156.0, timeSeconds: 17800, gross: 262.00, fuelCost: 27.30, wearCost: 18.72, extrasCost: 16.00, netProfit: 199.98, perKm: 1.28 },
+        { id: 's_18', date: '2026-11-21', km: 162.0, timeSeconds: 18200, gross: 275.00, fuelCost: 28.35, wearCost: 19.44, extrasCost: 18.00, netProfit: 209.21, perKm: 1.29 }
+      ];
+
       function getDefaultState() {
         return {
           pilot: {
@@ -1463,21 +1653,7 @@
             { id: 'obj_1', name: 'Comprar Pneu Traseiro Novo', target: 220, period: 'semanal', done: false },
             { id: 'obj_2', name: 'Troca de Óleo e Manutenção', target: 80, period: 'semanal', done: false }
           ],
-          shifts: [
-            {
-              id: 'shift_prev_1',
-              date: '2026-11-20',
-              km: 135.4,
-              timeSeconds: 15400,
-              gross: 215.00,
-              fuelCost: 23.69,
-              wearCost: 16.25,
-              extrasCost: 12.00,
-              netProfit: 163.06,
-              perKm: 1.20,
-              perHour: 38.10
-            }
-          ],
+          shifts: DEFAULT_SHIFTS,
           // Turno ativo de hoje
           currentShift: {
             isActive: false,
@@ -1533,7 +1709,12 @@
               }).concat(Array.from(existingMap.values()));
             })(),
             replacements: Array.isArray(parsed.replacements) ? parsed.replacements : def.replacements,
-            shifts: Array.isArray(parsed.shifts) ? parsed.shifts : def.shifts,
+            shifts: (() => {
+              if (!Array.isArray(parsed.shifts) || parsed.shifts.length <= 1) return def.shifts;
+              const map = new Map(def.shifts.map(s => [s.date, s]));
+              parsed.shifts.forEach(s => map.set(s.date, s));
+              return Array.from(map.values()).sort((a, b) => new Date(b.date) - new Date(a.date));
+            })(),
             objectives: Array.isArray(parsed.objectives) ? parsed.objectives : def.objectives,
             currentShift: { ...def.currentShift, ...(parsed.currentShift || {}) }
           };
@@ -2055,6 +2236,422 @@
             </div>
           `).join('');
         }
+
+        // Renderiza Área Analítica do YouTube Studio e Calendário
+        renderStudioAnalytics(currentAnalyticsPeriod);
+        renderActivityCalendar();
+      }
+
+      // =======================================================================
+      // 5D. ANÁLISE ANALÍTICA ESTILO YOUTUBE STUDIO & CALENDÁRIO
+      // =======================================================================
+      let analyticsChartInstance = null;
+      let currentAnalyticsPeriod = '30d';
+      let calendarViewingMonth = 10; // Novembro (0-indexed: 10 = Nov)
+      let calendarViewingYear = 2026;
+      let selectedCalendarDate = '2026-11-20';
+
+      function renderStudioAnalytics(period = currentAnalyticsPeriod) {
+        currentAnalyticsPeriod = period;
+
+        // Atualiza botões de filtro
+        document.querySelectorAll('.analytics-period-btn').forEach(btn => {
+          const active = btn.dataset.analyticsPeriod === currentAnalyticsPeriod;
+          btn.className = active
+            ? 'analytics-period-btn px-3 py-1.5 rounded-xl bg-neonGreen text-amoled font-bold transition'
+            : 'analytics-period-btn px-3 py-1.5 rounded-xl text-gray-400 hover:text-white transition';
+        });
+
+        // Ordena turnos por data crescente (mais antigo -> mais recente) para o gráfico
+        const sortedShifts = [...state.shifts].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        // Filtra por período
+        let filteredShifts = [];
+        const now = new Date();
+        if (period === '7d') {
+          filteredShifts = sortedShifts.slice(-7);
+        } else if (period === '30d') {
+          filteredShifts = sortedShifts.slice(-30);
+        } else if (period === 'year') {
+          const currentYear = now.getFullYear();
+          filteredShifts = sortedShifts.filter(s => new Date(s.date).getFullYear() === currentYear);
+        } else {
+          filteredShifts = sortedShifts;
+        }
+
+        if (!filteredShifts.length) filteredShifts = sortedShifts;
+
+        // Cálculos analíticos
+        const totalGross = filteredShifts.reduce((acc, s) => acc + s.gross, 0);
+        const totalNet = filteredShifts.reduce((acc, s) => acc + s.netProfit, 0);
+        const totalKm = filteredShifts.reduce((acc, s) => acc + s.km, 0);
+        const daysCount = filteredShifts.length;
+        const avgGross = daysCount > 0 ? (totalGross / daysCount) : 0;
+        const avgPerKm = totalKm > 0 ? (totalNet / totalKm) : 0;
+
+        let peakShift = filteredShifts[0] || { gross: 0, date: '' };
+        filteredShifts.forEach(s => {
+          if (s.gross > peakShift.gross) peakShift = s;
+        });
+
+        // Cálculo de tendência (ascendente vs estável vs descendente)
+        let trendPct = 0;
+        let isAscending = false;
+        let isDescending = false;
+
+        if (filteredShifts.length >= 2) {
+          const half = Math.floor(filteredShifts.length / 2);
+          const firstHalf = filteredShifts.slice(0, half);
+          const secondHalf = filteredShifts.slice(half);
+
+          const avgFirst = firstHalf.reduce((sum, s) => sum + s.gross, 0) / firstHalf.length;
+          const avgSecond = secondHalf.reduce((sum, s) => sum + s.gross, 0) / secondHalf.length;
+
+          if (avgFirst > 0) {
+            trendPct = Math.round(((avgSecond - avgFirst) / avgFirst) * 100);
+          }
+          isAscending = trendPct >= 3;
+          isDescending = trendPct <= -3;
+        }
+
+        // Atualiza o Badge de Tendência
+        const trendBadge = document.getElementById('analyticsTrendBadge');
+        if (trendBadge) {
+          if (isAscending) {
+            trendBadge.className = 'self-start md:self-center px-4 py-2 rounded-2xl bg-neonGreen/10 border border-neonGreen/30 text-neonGreen flex items-center gap-2 shadow-lg shadow-neonGreen/5';
+            trendBadge.innerHTML = `
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+              <div class="text-xs">
+                <span class="font-extrabold uppercase tracking-wide block">Trajetória Ascendente (+${trendPct}%)</span>
+                <span class="text-[10px] text-gray-400 font-sans">Seu faturamento médio diário está crescendo 🚀</span>
+              </div>
+            `;
+          } else if (isDescending) {
+            trendBadge.className = 'self-start md:self-center px-4 py-2 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center gap-2 shadow-lg shadow-amber-500/5';
+            trendBadge.innerHTML = `
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
+              <div class="text-xs">
+                <span class="font-extrabold uppercase tracking-wide block">Ritmo Descendente (${trendPct}%)</span>
+                <span class="text-[10px] text-gray-400 font-sans">Média diária abaixo do início do período</span>
+              </div>
+            `;
+          } else {
+            trendBadge.className = 'self-start md:self-center px-4 py-2 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center gap-2 shadow-lg shadow-blue-500/5';
+            trendBadge.innerHTML = `
+              <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" /></svg>
+              <div class="text-xs">
+                <span class="font-extrabold uppercase tracking-wide block">Faturamento Estável</span>
+                <span class="text-[10px] text-gray-400 font-sans">Mantendo ritmo diário constante</span>
+              </div>
+            `;
+          }
+        }
+
+        // Atualiza os 4 Cards de Métricas
+        const elTotal = document.getElementById('studioMetricTotal');
+        const elTotalSub = document.getElementById('studioMetricTotalSub');
+        const elDaily = document.getElementById('studioMetricDailyAvg');
+        const elDailySub = document.getElementById('studioMetricDailyAvgSub');
+        const elPeak = document.getElementById('studioMetricPeak');
+        const elPeakSub = document.getElementById('studioMetricPeakSub');
+        const elNet = document.getElementById('studioMetricNet');
+        const elNetSub = document.getElementById('studioMetricNetSub');
+
+        const workDaysCount = Math.max(1, state.goals.workDays.length);
+        const workDaysInMonth = Math.round(workDaysCount * 4.33);
+        const monthlyTarget = (parseFloat(state.goals.monthlyNetGoal) || 3500) + (parseFloat(state.goals.monthlyFixedCosts) || 500);
+        const dailyTarget = monthlyTarget / workDaysInMonth;
+
+        if (elTotal) elTotal.textContent = formatBRL(totalGross);
+        if (elTotalSub) elTotalSub.innerHTML = `<span class="${trendPct >= 0 ? 'text-neonGreen' : 'text-amber-400'}">${trendPct >= 0 ? '↗ +' + trendPct + '%' : '↘ ' + trendPct + '%'}</span> no período analítico`;
+        if (elDaily) elDaily.textContent = formatBRL(avgGross);
+        if (elDailySub) elDailySub.textContent = `Meta diária recomendada: ${formatBRL(dailyTarget)}`;
+        if (elPeak) elPeak.textContent = formatBRL(peakShift.gross);
+        if (elPeakSub) {
+          const pDate = peakShift.date ? peakShift.date.split('-').reverse().slice(0, 2).join('/') : '--';
+          elPeakSub.textContent = `Pico registrado em ${pDate}`;
+        }
+        if (elNet) elNet.textContent = formatBRL(totalNet);
+        if (elNetSub) elNetSub.textContent = `${formatBRL(avgPerKm, 2)} livres/km • ${totalKm.toFixed(0)} km`;
+
+        // Renderiza o Gráfico Chart.js
+        const canvas = document.getElementById('analyticsTrendChart');
+        if (!canvas || typeof Chart === 'undefined') return;
+
+        if (analyticsChartInstance) {
+          try {
+            analyticsChartInstance.destroy();
+          } catch (e) {
+            console.warn('Erro ao destruir chart anterior:', e);
+          }
+        }
+
+        const ctx = canvas.getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+        gradient.addColorStop(0, 'rgba(0, 230, 118, 0.35)');
+        gradient.addColorStop(0.65, 'rgba(0, 230, 118, 0.08)');
+        gradient.addColorStop(1, 'rgba(0, 230, 118, 0.00)');
+
+        const labels = filteredShifts.map(s => {
+          if (!s.date) return '';
+          const parts = s.date.split('-');
+          return `${parts[2]}/${parts[1]}`;
+        });
+
+        const grossData = filteredShifts.map(s => s.gross);
+        const targetData = filteredShifts.map(() => dailyTarget);
+
+        analyticsChartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Faturamento Bruto',
+                data: grossData,
+                borderColor: '#00E676',
+                borderWidth: 3,
+                backgroundColor: gradient,
+                fill: true,
+                tension: 0.35,
+                pointBackgroundColor: '#00E676',
+                pointBorderColor: '#070A0E',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 7,
+                pointHoverBackgroundColor: '#00E676',
+                pointHoverBorderColor: '#FFFFFF'
+              },
+              {
+                label: 'Meta Diária',
+                data: targetData,
+                borderColor: '#F59E0B',
+                borderWidth: 1.5,
+                borderDash: [5, 5],
+                fill: false,
+                tension: 0,
+                pointRadius: 0
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: 'index',
+              intersect: false
+            },
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                backgroundColor: 'rgba(7, 10, 14, 0.95)',
+                titleColor: '#FFFFFF',
+                bodyColor: '#E5E7EB',
+                borderColor: '#00E676',
+                borderWidth: 1,
+                padding: 12,
+                boxPadding: 6,
+                usePointStyle: true,
+                callbacks: {
+                  title: (items) => {
+                    if (!items.length) return '';
+                    const idx = items[0].dataIndex;
+                    const shift = filteredShifts[idx];
+                    return `Data: ${shift.date ? shift.date.split('-').reverse().join('/') : ''}`;
+                  },
+                  label: (context) => {
+                    if (context.datasetIndex === 0) {
+                      const idx = context.dataIndex;
+                      const shift = filteredShifts[idx];
+                      return [
+                        ` Faturamento: ${formatBRL(shift.gross)}`,
+                        ` Lucro Líquido: ${formatBRL(shift.netProfit)}`,
+                        ` Quilometragem: ${shift.km.toFixed(1)} km`,
+                        ` Eficiência: ${formatBRL(shift.perKm, 2)}/km`
+                      ];
+                    } else {
+                      return ` Meta Diária: ${formatBRL(context.parsed.y)}`;
+                    }
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: {
+                  color: 'rgba(255, 255, 255, 0.04)',
+                  drawBorder: false
+                },
+                ticks: {
+                  color: '#9CA3AF',
+                  font: {
+                    family: "'JetBrains Mono', monospace",
+                    size: 11
+                  }
+                }
+              },
+              y: {
+                grid: {
+                  color: 'rgba(255, 255, 255, 0.05)',
+                  drawBorder: false
+                },
+                ticks: {
+                  color: '#9CA3AF',
+                  font: {
+                    family: "'JetBrains Mono', monospace",
+                    size: 11
+                  },
+                  callback: (val) => 'R$ ' + val
+                }
+              }
+            }
+          }
+        });
+      }
+
+      function renderActivityCalendar() {
+        const grid = document.getElementById('calendarDaysGrid');
+        const monthLabel = document.getElementById('calendarCurrentMonthLabel');
+        if (!grid || !monthLabel) return;
+
+        const date = new Date(calendarViewingYear, calendarViewingMonth, 1);
+        const monthNames = [
+          'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+          'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ];
+
+        monthLabel.textContent = `${monthNames[calendarViewingMonth]} ${calendarViewingYear}`;
+
+        const firstDayIndex = date.getDay(); // 0 = Domingo
+        const totalDays = new Date(calendarViewingYear, calendarViewingMonth + 1, 0).getDate();
+
+        // Mapa de turnos por data YYYY-MM-DD
+        const shiftMap = new Map();
+        state.shifts.forEach(s => {
+          if (s.date) shiftMap.set(s.date, s);
+        });
+
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        let html = '';
+
+        // Células em branco antes do 1º dia
+        for (let i = 0; i < firstDayIndex; i++) {
+          html += `<div class="min-h-[58px] sm:min-h-[70px] rounded-xl bg-amoled/30 border border-transparent opacity-20"></div>`;
+        }
+
+        // Dias do mês
+        for (let day = 1; day <= totalDays; day++) {
+          const dayStr = String(day).padStart(2, '0');
+          const monthStr = String(calendarViewingMonth + 1).padStart(2, '0');
+          const fullDateStr = `${calendarViewingYear}-${monthStr}-${dayStr}`;
+
+          const shift = shiftMap.get(fullDateStr);
+          const hasShift = !!shift;
+          const isToday = (fullDateStr === todayStr);
+          const isSelected = (fullDateStr === selectedCalendarDate);
+
+          html += `
+            <button type="button" data-calendar-day="${fullDateStr}" class="min-h-[58px] sm:min-h-[70px] p-2 rounded-xl transition text-left flex flex-col justify-between relative group ${
+              isSelected
+                ? 'ring-2 ring-neonGreen bg-card border border-neonGreen shadow-lg shadow-neonGreen/10'
+                : hasShift
+                ? 'bg-neonGreen/10 hover:bg-neonGreen/20 border border-neonGreen/30'
+                : 'bg-amoled hover:bg-card border border-borderSubtle/60 text-gray-500'
+            }">
+              <div class="flex items-center justify-between w-full">
+                <span class="text-xs font-mono font-bold ${hasShift ? 'text-white' : 'text-gray-500'}">${day}</span>
+                ${isToday ? '<span class="w-1.5 h-1.5 rounded-full bg-neonGreen"></span>' : ''}
+              </div>
+
+              ${hasShift ? `
+                <div class="w-full">
+                  <span class="block text-[11px] font-mono font-black text-neonGreen leading-none">${formatBRL(shift.gross).replace(',00', '')}</span>
+                  <span class="text-[9px] text-gray-400 font-mono hidden sm:block mt-0.5">${shift.km.toFixed(0)} km</span>
+                </div>
+              ` : `
+                <span class="text-[9px] text-gray-600 block">Folga</span>
+              `}
+            </button>
+          `;
+        }
+
+        grid.innerHTML = html;
+
+        // Renderiza o detalhe do dia selecionado
+        renderSelectedDayDetail();
+      }
+
+      function renderSelectedDayDetail() {
+        const detailsContainer = document.getElementById('calendarDayDetails');
+        if (!detailsContainer) return;
+
+        const shift = state.shifts.find(s => s.date === selectedCalendarDate);
+
+        if (!shift) {
+          const parts = selectedCalendarDate.split('-');
+          const dStr = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : selectedCalendarDate;
+          detailsContainer.innerHTML = `
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-gray-400">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-gray-600"></span>
+                <span class="font-bold text-white">${dStr}</span>
+                <span>• Dia de Descanso / Folga (Nenhum turno registrado)</span>
+              </div>
+              <span class="text-[11px] text-gray-500 font-mono">Use o Fechamento no Painel para registrar novos turnos.</span>
+            </div>
+          `;
+          return;
+        }
+
+        const dateParts = shift.date.split('-');
+        const dateFormatted = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
+        detailsContainer.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-borderSubtle">
+            <div class="flex items-center gap-2.5">
+              <span class="w-3 h-3 rounded-full bg-neonGreen"></span>
+              <div>
+                <h4 class="font-extrabold text-sm sm:text-base text-white">Detalhamento do Dia: ${dateFormatted}</h4>
+                <p class="text-xs text-gray-400">Turno finalizado com sucesso • Odômetro auditado</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono font-bold px-3 py-1 rounded-xl bg-neonGreen/15 text-neonGreen">
+                Lucro Líquido: ${formatBRL(shift.netProfit)}
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
+            <div class="p-3 rounded-xl bg-card border border-borderSubtle">
+              <span class="text-[10px] uppercase font-bold text-gray-400 block">Faturamento Bruto</span>
+              <span class="font-mono font-black text-base text-white mt-0.5 block">${formatBRL(shift.gross)}</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-card border border-borderSubtle">
+              <span class="text-[10px] uppercase font-bold text-gray-400 block">Gasolina Gasta</span>
+              <span class="font-mono font-bold text-base text-red-400 mt-0.5 block">-${formatBRL(shift.fuelCost)}</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-card border border-borderSubtle">
+              <span class="text-[10px] uppercase font-bold text-gray-400 block">Caixinha Peças</span>
+              <span class="font-mono font-bold text-base text-amber-400 mt-0.5 block">-${formatBRL(shift.wearCost)}</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-card border border-borderSubtle">
+              <span class="text-[10px] uppercase font-bold text-gray-400 block">Distância Rodada</span>
+              <span class="font-mono font-bold text-base text-blue-400 mt-0.5 block">${shift.km.toFixed(1)} km</span>
+            </div>
+
+            <div class="p-3 rounded-xl bg-card border border-borderSubtle col-span-2 sm:col-span-1">
+              <span class="text-[10px] uppercase font-bold text-gray-400 block">Lucro por KM</span>
+              <span class="font-mono font-black text-base text-neonGreen mt-0.5 block">${formatBRL(shift.perKm, 2)}/km</span>
+            </div>
+          </div>
+        `;
       }
 
       function renderRelatorios() {
@@ -3202,6 +3799,58 @@
             showToast(`Gasto "${name}" adicionado!`, 'green');
           });
         }
+
+        // Filtros de Período da Análise do YouTube Studio (7D, 30D, Ano, Todos)
+        document.querySelectorAll('.analytics-period-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            renderStudioAnalytics(btn.dataset.analyticsPeriod);
+          });
+        });
+
+        // Navegação de Mês do Calendário
+        const btnPrevMonth = document.getElementById('btnPrevMonth');
+        if (btnPrevMonth) {
+          btnPrevMonth.addEventListener('click', () => {
+            calendarViewingMonth -= 1;
+            if (calendarViewingMonth < 0) {
+              calendarViewingMonth = 11;
+              calendarViewingYear -= 1;
+            }
+            renderActivityCalendar();
+          });
+        }
+
+        const btnNextMonth = document.getElementById('btnNextMonth');
+        if (btnNextMonth) {
+          btnNextMonth.addEventListener('click', () => {
+            calendarViewingMonth += 1;
+            if (calendarViewingMonth > 11) {
+              calendarViewingMonth = 0;
+              calendarViewingYear += 1;
+            }
+            renderActivityCalendar();
+          });
+        }
+
+        const btnCalendarToday = document.getElementById('btnCalendarToday');
+        if (btnCalendarToday) {
+          btnCalendarToday.addEventListener('click', () => {
+            const today = new Date();
+            calendarViewingMonth = today.getMonth();
+            calendarViewingYear = today.getFullYear();
+            selectedCalendarDate = today.toISOString().split('T')[0];
+            renderActivityCalendar();
+          });
+        }
+
+        // Clique em Dia do Calendário
+        document.body.addEventListener('click', (e) => {
+          const calBtn = e.target.closest('[data-calendar-day]');
+          if (calBtn) {
+            selectedCalendarDate = calBtn.dataset.calendarDay;
+            renderActivityCalendar();
+          }
+        });
       }
 
       // =======================================================================
@@ -3253,6 +3902,7 @@
       renderPainel();
       renderGastosMensais();
       renderHolerite('mensal');
+      renderMetas();
     })();
   </script>
 </body>
