@@ -7,10 +7,10 @@
     "type": "git",
     "url": "https://github.com/LeoLemosDevs/Projeto_MotoCash.git"
   },
-  "main": "index.html",
+  "main": "server.js",
   "scripts": {
-    "dev": "npx serve -l 3000 .",
-    "start": "npx serve -l 3000 .",
+    "start": "node server.js",
+    "dev": "node server.js",
     "build": "echo 'Build de produção do MotoCash Pro PWA pronto para a Vercel'"
   },
   "keywords": [
