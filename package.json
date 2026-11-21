@@ -10,8 +10,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
-    "build": "echo 'Build de produção do MotoCash Pro PWA pronto para a Vercel'"
+    "dev": "node server.js"
   },
   "keywords": [
     "motoboy",

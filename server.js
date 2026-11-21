@@ -23,20 +23,42 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
-  let reqPath = decodeURI(req.url.split('?')[0]);
+  let rawUrl = req.url || '/';
+  let reqPath = decodeURI(rawUrl.split('?')[0]);
+  
+  // Normaliza caminhos raiz ou favicon
   if (reqPath === '/' || reqPath === '') {
     reqPath = '/index.html';
+  } else if (reqPath === '/favicon.ico') {
+    reqPath = '/assets/icons/icon-192.png';
   }
 
   // Sanitiza caminho contra directory traversal
   const safePath = path.normalize(reqPath).replace(/^(\.\.[\/\\])+/, '');
-  const filePath = path.join(__dirname, safePath);
+  let filePath = path.join(__dirname, safePath);
 
   fs.stat(filePath, (err, stats) => {
+    // Se o arquivo não existir ou for uma rota SPA (ex: /painel, /moto, /metas)
     if (err || !stats.isFile()) {
-      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end('404 Not Found');
-      return;
+      // Se não possui extensão (ex: /painel, /metas), faz fallback para index.html (SPA)
+      if (!path.extname(reqPath)) {
+        filePath = path.join(__dirname, 'index.html');
+      } else {
+        console.warn(`[404] Arquivo não encontrado: ${req.url}`);
+        res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(`
+          <!DOCTYPE html>
+          <html lang="pt-BR">
+          <head><meta charset="UTF-8"><title>404 - MotoCash Pro</title></head>
+          <body style="background:#030508;color:#fff;font-family:sans-serif;text-align:center;padding:50px;">
+            <h1 style="color:#00E676;">MotoCash Pro</h1>
+            <p>Página não encontrada (${req.url}).</p>
+            <p><a href="/" style="color:#00E676;font-weight:bold;">Voltar para o Painel</a></p>
+          </body>
+          </html>
+        `);
+        return;
+      }
     }
 
     const ext = path.extname(filePath).toLowerCase();
@@ -47,7 +69,7 @@ const server = http.createServer((req, res) => {
       'Access-Control-Allow-Origin': '*'
     };
 
-    if (safePath.endsWith('sw.js')) {
+    if (filePath.endsWith('sw.js')) {
       headers['Service-Worker-Allowed'] = '/';
       headers['Cache-Control'] = 'no-cache';
     }
