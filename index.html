@@ -567,7 +567,10 @@
 
             <!-- Dados da Moto & Combustível -->
             <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
-              <h3 class="font-bold text-base text-white border-b border-borderSubtle pb-3">Moto &amp; Combustível (Gasolina)</h3>
+              <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
+                <h3 class="font-bold text-base text-white">Moto &amp; Consumo de Combustível</h3>
+                <span id="lblLiveFuelSummary" class="text-xs font-mono font-bold text-neonGreen">Consumo de Combustível: R$ 0,175/km</span>
+              </div>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                 <div class="sm:col-span-2">
                   <label class="block text-xs font-semibold text-gray-300 mb-1">Modelo da Moto</label>
@@ -582,7 +585,10 @@
                   <input id="inputFuelPrice" type="number" step="0.05" min="1" placeholder="7.00" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-sm font-mono font-bold text-neonGreen" />
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold text-gray-300 mb-1">Consumo (km/L)</label>
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="block text-xs font-semibold text-gray-300">Consumo (km/L)</label>
+                    <span id="lblLiveFuelPerKm" class="text-[11px] font-mono text-neonGreen font-bold">R$ 0,175/km</span>
+                  </div>
                   <input id="inputFuelConsumption" type="number" step="1" min="5" placeholder="40" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle focus:border-neonGreen focus:outline-none text-sm font-mono font-bold text-white" />
                 </div>
                 <div>
@@ -1051,19 +1057,59 @@
 
   <!-- ==================== MODAL 4: REGISTRAR TROCA DE PEÇA ==================== -->
   <div id="modalReplacePart" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="w-full max-w-sm bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
-      <h3 id="modalReplaceTitle" class="font-bold text-lg text-white mb-1">Troca de Peça</h3>
-      <p class="text-xs text-gray-400 mb-4">Informe o valor pago para reiniciar o ciclo da peça em 100%.</p>
+    <div class="w-full max-w-md bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-2">
+        <h3 id="modalReplaceTitle" class="font-bold text-lg text-white">Trocar Peça</h3>
+        <button data-close-modal="modalReplacePart" class="p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+        Digite quanto pagou e a quilometragem estimada de durabilidade (peça nova, meia-vida ou usada). O custo por KM é calculado automaticamente e entra no painel.
+      </p>
 
-      <label class="block text-xs font-semibold text-gray-300 mb-1">Valor pago na peça nova (R$)</label>
-      <input id="inputReplaceCost" type="number" step="5" min="0" placeholder="Ex: 40.00" class="w-full px-4 py-3 rounded-xl bg-amoled border border-borderSubtle font-mono text-neonGreen text-lg font-bold mb-4" />
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+        <div>
+          <label for="inputReplaceCost" class="block text-xs font-semibold text-gray-300 mb-1">Valor Pago (R$)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 font-mono font-bold text-xs">R$</span>
+            <input id="inputReplaceCost" type="number" step="1" min="0" placeholder="Ex: 220" class="w-full pl-10 pr-3 py-3 rounded-xl bg-amoled border border-borderSubtle font-mono text-neonGreen text-base font-bold focus:border-neonGreen focus:outline-none" />
+          </div>
+        </div>
 
-      <label class="block text-xs font-semibold text-gray-300 mb-1">Observação / Marca (opcional)</label>
-      <input id="inputReplaceNotes" type="text" placeholder="Ex: Mobil 20W50 / Riffel" class="w-full px-4 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-xs text-white mb-5" />
+        <div>
+          <label for="inputReplaceLifespan" class="block text-xs font-semibold text-gray-300 mb-1">Quanto vai durar? (KM)</label>
+          <div class="relative">
+            <input id="inputReplaceLifespan" type="number" step="500" min="50" placeholder="Ex: 56000" class="w-full pl-3 pr-10 py-3 rounded-xl bg-amoled border border-borderSubtle font-mono text-white text-base font-bold focus:border-neonGreen focus:outline-none" />
+            <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 font-mono text-xs">km</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-[11px] text-gray-500 mb-3.5">
+        💡 <span class="text-gray-400 font-semibold">Exemplo:</span> Pneu novo de marca pode durar ~<strong class="text-gray-300">56.000 km</strong>. Um pneu usado/meia-vida pode durar ~<strong class="text-gray-300">15.000 km</strong>.
+      </p>
+
+      <!-- Cartão Dinâmico de Cálculo R$/KM -->
+      <div class="rounded-2xl bg-amoled border border-neonGreen/30 p-3.5 flex items-center justify-between mb-4">
+        <div>
+          <span class="text-[11px] text-gray-400 font-medium block">Custo Real por KM</span>
+          <span id="replaceCostFormula" class="text-[11px] text-gray-500 font-mono">R$ 0,00 ÷ 0 km</span>
+        </div>
+        <div class="text-right">
+          <span id="replaceCostPerKmDisplay" class="font-mono font-black text-neonGreen text-lg sm:text-xl">R$ 0,0000/km</span>
+          <span class="block text-[10px] text-emerald-400/80 font-mono">Entra no cálculo do painel</span>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <label for="inputReplaceNotes" class="block text-xs font-semibold text-gray-300 mb-1">Marca, Condição ou Observação (opcional)</label>
+        <input id="inputReplaceNotes" type="text" placeholder="Ex: Michelin novo, Pirelli meia-vida, Riffel..." class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-xs text-white focus:border-neonGreen focus:outline-none" />
+      </div>
 
       <div class="flex gap-2.5">
-        <button data-close-modal="modalReplacePart" type="button" class="flex-1 py-3 rounded-xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-xs">Cancelar</button>
-        <button id="btnConfirmReplace" type="button" class="flex-1 py-3 rounded-xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-xs">Confirmar Troca</button>
+        <button data-close-modal="modalReplacePart" type="button" class="flex-1 py-3 rounded-xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-xs hover:bg-gray-800 transition">Cancelar</button>
+        <button id="btnConfirmReplace" type="button" class="flex-1 py-3 rounded-xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-xs shadow-lg shadow-neonGreen/20 transition">Confirmar Troca</button>
       </div>
     </div>
   </div>
@@ -1158,15 +1204,16 @@
       // Lista completa e detalhada de itens que sofrem desgaste por KM
       const DEFAULT_PARTS = [
         { id: 'oleo', name: 'Óleo do Motor', price: 40, lifespanKm: 1000, healthPct: 80, active: true, custom: false },
-        { id: 'pneu_traseiro', name: 'Pneu Traseiro', price: 220, lifespanKm: 12000, healthPct: 35, active: true, custom: false },
         { id: 'pneu_dianteiro', name: 'Pneu Dianteiro', price: 180, lifespanKm: 18000, healthPct: 75, active: true, custom: false },
+        { id: 'pneu_traseiro', name: 'Pneu Traseiro', price: 220, lifespanKm: 12000, healthPct: 35, active: true, custom: false },
         { id: 'kit_relacao', name: 'Kit Relação (Coroa/Pinhão/Corrente)', price: 150, lifespanKm: 15000, healthPct: 60, active: true, custom: false },
-        { id: 'freio_traseiro', name: 'Freio Traseiro (Lona/Pastilha)', price: 45, lifespanKm: 8000, healthPct: 20, active: true, custom: false },
         { id: 'freio_dianteiro', name: 'Freio Dianteiro (Pastilha)', price: 50, lifespanKm: 10000, healthPct: 65, active: true, custom: false },
+        { id: 'freio_traseiro', name: 'Freio Traseiro (Lona/Pastilha)', price: 45, lifespanKm: 8000, healthPct: 20, active: true, custom: false },
+        { id: 'oleo_bengalas', name: 'Óleo de Bengalas (Suspensão)', price: 80, lifespanKm: 15000, healthPct: 85, active: true, custom: false },
+        { id: 'revisao_geral', name: 'Revisão Geral Preventiva', price: 250, lifespanKm: 10000, healthPct: 90, active: true, custom: false },
         { id: 'filtro_ar', name: 'Filtro de Ar', price: 35, lifespanKm: 10000, healthPct: 50, active: true, custom: false },
         { id: 'vela', name: 'Vela de Ignição', price: 30, lifespanKm: 15000, healthPct: 70, active: true, custom: false },
-        { id: 'cabos', name: 'Cabos (Embreagem/Acelerador)', price: 80, lifespanKm: 15000, healthPct: 85, active: true, custom: false },
-        { id: 'reserva', name: 'Reserva de Manutenção Geral', price: 200, lifespanKm: 10000, healthPct: 100, active: true, custom: false }
+        { id: 'cabos', name: 'Cabos (Embreagem/Acelerador)', price: 80, lifespanKm: 15000, healthPct: 85, active: true, custom: false }
       ];
 
       function getDefaultState() {
@@ -1243,7 +1290,12 @@
             moto: { ...def.moto, ...(parsed.moto || {}) },
             goals: { ...def.goals, ...(parsed.goals || {}) },
             config: { ...def.config, ...(parsed.config || {}) },
-            parts: Array.isArray(parsed.parts) && parsed.parts.length ? parsed.parts : def.parts,
+            parts: (() => {
+              if (!Array.isArray(parsed.parts) || !parsed.parts.length) return def.parts;
+              const existingIds = new Set(parsed.parts.map(p => p.id));
+              const missingDefaults = def.parts.filter(p => !existingIds.has(p.id));
+              return [...parsed.parts, ...missingDefaults];
+            })(),
             replacements: Array.isArray(parsed.replacements) ? parsed.replacements : def.replacements,
             shifts: Array.isArray(parsed.shifts) ? parsed.shifts : def.shifts,
             objectives: Array.isArray(parsed.objectives) ? parsed.objectives : def.objectives,
@@ -1599,6 +1651,10 @@
 
         document.getElementById('motoSummaryTotalPerKm').textContent = formatBRL(totalPerKm, 3);
         document.getElementById('motoSummaryFuelPerKm').textContent = formatBRL(fuelPerKm, 3);
+        const liveFuelEl = document.getElementById('lblLiveFuelPerKm');
+        if (liveFuelEl) liveFuelEl.textContent = `${formatBRL(fuelPerKm, 3)}/km`;
+        const liveFuelSummaryEl = document.getElementById('lblLiveFuelSummary');
+        if (liveFuelSummaryEl) liveFuelSummaryEl.textContent = `Consumo de Combustível: ${formatBRL(fuelPerKm, 3)}/km`;
         document.getElementById('motoSummaryPartsPerKm').textContent = formatBRL(partsPerKm, 3);
         document.getElementById('motoSummaryRangeKm').textContent = Math.round(consumption * tank);
         document.getElementById('motoSummaryFullTankCost').textContent = formatBRL(fuelPrice * tank);
@@ -1660,15 +1716,20 @@
           if (!state.replacements.length) {
             historyContainer.innerHTML = '<p class="text-gray-500 py-2">Nenhuma troca registrada ainda.</p>';
           } else {
-            historyContainer.innerHTML = state.replacements.slice(0, 5).map(rep => `
-              <div class="flex items-center justify-between p-2.5 rounded-xl bg-amoled border border-borderSubtle">
-                <div>
-                  <span class="font-semibold text-white">${rep.partName}</span>
-                  <span class="text-gray-500 ml-1.5">• ${rep.date} ${rep.notes ? `(${rep.notes})` : ''}</span>
+            historyContainer.innerHTML = state.replacements.slice(0, 8).map(rep => {
+              const kmInfo = rep.lifespanKm ? ` • ${rep.lifespanKm.toLocaleString('pt-BR')} km` : '';
+              const perKmInfo = rep.costPerKm ? ` • ${formatBRL(rep.costPerKm, 4)}/km` : '';
+              const notesInfo = rep.notes ? ` (${rep.notes})` : '';
+              return `
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-amoled border border-borderSubtle">
+                  <div>
+                    <span class="font-semibold text-white text-xs sm:text-sm">${rep.partName}</span>
+                    <span class="text-gray-400 text-xs ml-1.5">• ${rep.date}${kmInfo}${perKmInfo}${notesInfo}</span>
+                  </div>
+                  <span class="font-mono font-bold text-neonGreen text-xs sm:text-sm">${formatBRL(rep.cost)}</span>
                 </div>
-                <span class="font-mono font-bold text-neonGreen">${formatBRL(rep.cost)}</span>
-              </div>
-            `).join('');
+              `;
+            }).join('');
           }
         }
       }
@@ -2097,6 +2158,26 @@
 
         // Troca de Peça (Botão 'Troquei')
         let partBeingReplaced = null;
+
+        function updateReplacePerKmPreview() {
+          const cost = Math.max(0, parseFloat(document.getElementById('inputReplaceCost').value) || 0);
+          const km = Math.max(0, parseFloat(document.getElementById('inputReplaceLifespan').value) || 0);
+          const formulaEl = document.getElementById('replaceCostFormula');
+          const displayEl = document.getElementById('replaceCostPerKmDisplay');
+
+          if (cost > 0 && km > 0) {
+            const perKm = cost / km;
+            formulaEl.textContent = `${formatBRL(cost)} ÷ ${km.toLocaleString('pt-BR')} km`;
+            displayEl.textContent = `${formatBRL(perKm, 4)}/km`;
+          } else {
+            formulaEl.textContent = 'R$ 0,00 ÷ 0 km';
+            displayEl.textContent = 'R$ 0,0000/km';
+          }
+        }
+
+        document.getElementById('inputReplaceCost').addEventListener('input', updateReplacePerKmPreview);
+        document.getElementById('inputReplaceLifespan').addEventListener('input', updateReplacePerKmPreview);
+
         document.body.addEventListener('click', (e) => {
           const btn = e.target.closest('[data-replace-part]');
           if (btn) {
@@ -2105,19 +2186,26 @@
             if (partBeingReplaced) {
               document.getElementById('modalReplaceTitle').textContent = `Trocar ${partBeingReplaced.name}`;
               document.getElementById('inputReplaceCost').value = partBeingReplaced.price;
+              document.getElementById('inputReplaceLifespan').value = partBeingReplaced.lifespanKm;
               document.getElementById('inputReplaceNotes').value = '';
+              updateReplacePerKmPreview();
               document.getElementById('modalReplacePart').classList.remove('hidden');
+              document.getElementById('inputReplaceCost').focus();
             }
           }
         });
 
         document.getElementById('btnConfirmReplace').addEventListener('click', () => {
           if (!partBeingReplaced) return;
-          const paid = parseFloat(document.getElementById('inputReplaceCost').value) || partBeingReplaced.price;
+          const paid = parseFloat(document.getElementById('inputReplaceCost').value) || 0;
+          const newLifespan = Math.max(50, parseFloat(document.getElementById('inputReplaceLifespan').value) || partBeingReplaced.lifespanKm);
           const notes = document.getElementById('inputReplaceNotes').value.trim();
 
           partBeingReplaced.healthPct = 100;
           partBeingReplaced.price = paid;
+          partBeingReplaced.lifespanKm = newLifespan;
+
+          const costPerKm = paid / newLifespan;
 
           state.replacements.unshift({
             id: 'rep_' + Date.now(),
@@ -2125,6 +2213,8 @@
             partName: partBeingReplaced.name,
             date: new Date().toLocaleDateString('pt-BR'),
             cost: paid,
+            lifespanKm: newLifespan,
+            costPerKm: costPerKm,
             notes: notes
           });
 
@@ -2132,7 +2222,7 @@
           renderPainel();
           renderMotoParts();
           saveState();
-          showToast(`${partBeingReplaced.name} renovado com sucesso!`, 'green');
+          showToast(`${partBeingReplaced.name} trocado! Custo atualizado para ${formatBRL(costPerKm, 4)}/km`, 'green');
         });
 
         // Sliders de Saúde das Peças
@@ -2191,6 +2281,20 @@
         });
 
         // Salvar Perfil da Moto
+        const updateFuelPreview = () => {
+          const p = parseFloat(document.getElementById('inputFuelPrice').value) || 0;
+          const c = parseFloat(document.getElementById('inputFuelConsumption').value) || 0;
+          const el = document.getElementById('lblLiveFuelPerKm');
+          const sumEl = document.getElementById('lblLiveFuelSummary');
+          if (p > 0 && c > 0) {
+            const costKm = p / c;
+            if (el) el.textContent = `${formatBRL(costKm, 3)}/km`;
+            if (sumEl) sumEl.textContent = `Consumo de Combustível: ${formatBRL(costKm, 3)}/km`;
+          }
+        };
+        document.getElementById('inputFuelPrice').addEventListener('input', updateFuelPreview);
+        document.getElementById('inputFuelConsumption').addEventListener('input', updateFuelPreview);
+
         document.getElementById('btnSaveMotoProfile').addEventListener('click', () => {
           state.pilot.name = document.getElementById('inputPilotName').value.trim() || state.pilot.name;
           state.pilot.nickname = document.getElementById('inputPilotNickname').value.trim() || state.pilot.nickname;
