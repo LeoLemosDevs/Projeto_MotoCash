@@ -140,6 +140,55 @@
         line-height: 1 !important;
       }
     }
+
+    /* Estilos de Impressão e PDF para o Holerite de Folha de Pagamento */
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      aside, header, nav, #pwaInstallBanner, #toastContainer, .no-print {
+        display: none !important;
+      }
+      .view-panel {
+        display: none !important;
+      }
+      #view-relatorios {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      #holeriteCard {
+        display: block !important;
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        border: 2px solid #111827 !important;
+        box-shadow: none !important;
+        padding: 16px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 8px !important;
+        page-break-inside: avoid !important;
+      }
+      #holeriteCard * {
+        color: #111827 !important;
+        border-color: #374151 !important;
+        background-color: transparent !important;
+      }
+      #holeriteCard .text-emerald-400, #holeriteCard .text-neonGreen {
+        color: #047857 !important;
+        font-weight: 800 !important;
+      }
+      #holeriteCard .text-red-400 {
+        color: #b91c1c !important;
+        font-weight: 700 !important;
+      }
+      #holeriteCard .text-gray-400, #holeriteCard .text-gray-500 {
+        color: #4b5563 !important;
+      }
+    }
   </style>
 </head>
 
@@ -199,14 +248,19 @@
           Minha Moto &amp; Peças
         </button>
 
-        <button data-nav-target="view-metas" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-          Metas Financeiras
+        <button data-nav-target="view-gastos-mensais" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+          Gastos Mensais
         </button>
 
         <button data-nav-target="view-relatorios" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-          Relatórios &amp; DRE
+          Gestão &amp; Holerite
+        </button>
+
+        <button data-nav-target="view-metas" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+          Metas Financeiras
         </button>
 
         <button data-nav-target="view-config" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition">
@@ -738,31 +792,107 @@
         </div>
 
         <!-- ================================================================= -->
-        <!-- VIEW 4: RELATÓRIOS & DRE DO MOTOBOY (Histórico, Exportação CSV)   -->
+        <!-- VIEW: GASTOS MENSAIS NO TRABALHO (Custos Fixos & Prevenção)       -->
+        <!-- ================================================================= -->
+        <div id="view-gastos-mensais" class="view-panel hidden space-y-6">
+
+          <!-- Header & Resumo Executivo -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-borderSubtle">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-1 rounded-lg bg-blue-500/15 text-blue-400 font-bold text-xs uppercase tracking-wider">Visão Empreendedora</span>
+                  <span class="text-xs text-gray-400">• Prevenção &amp; Sustentabilidade</span>
+                </div>
+                <h2 class="font-extrabold text-xl sm:text-2xl text-white mt-1">Gastos Mensais no Trabalho</h2>
+                <p class="text-xs text-gray-400 mt-0.5">Gerencie seus custos fixos operacionais, previdência (MEI/INSS), seguros e provisões.</p>
+              </div>
+
+              <button id="btnOpenAddMonthlyExpense" type="button" class="px-4 py-2.5 rounded-xl bg-cardLight hover:bg-gray-800 border border-blue-500/40 text-blue-400 font-bold text-xs flex items-center gap-1.5 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                <span>+ Novo Gasto Mensal</span>
+              </button>
+            </div>
+
+            <!-- Grade de Métricas dos Gastos Mensais -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="p-4 rounded-2xl bg-amoled border border-borderSubtle flex flex-col justify-between">
+                <span class="text-xs text-gray-400 font-medium">Total de Gastos Fixos / Mês</span>
+                <div class="flex items-baseline gap-1 mt-2">
+                  <span id="monthlyExpensesTotal" class="font-mono font-extrabold text-2xl text-white">R$ 0,00</span>
+                  <span class="text-xs font-mono text-gray-500">/mês</span>
+                </div>
+                <span id="monthlyExpensesActiveCount" class="text-[11px] text-gray-500 mt-1">0 itens ativos</span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-amoled border border-borderSubtle flex flex-col justify-between">
+                <span class="text-xs text-gray-400 font-medium">Impacto por Dia Trabalhado</span>
+                <div class="flex items-baseline gap-1 mt-2">
+                  <span id="monthlyExpensesDaily" class="font-mono font-extrabold text-2xl text-amber-400">R$ 0,00</span>
+                  <span class="text-xs font-mono text-gray-500">/dia</span>
+                </div>
+                <span id="monthlyExpensesDaysInfo" class="text-[11px] text-gray-500 mt-1">Considerando dias de trabalho</span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-amoled border border-borderSubtle flex flex-col justify-between">
+                <span class="text-xs text-gray-400 font-medium">Impacto no Custo por KM (Est.)</span>
+                <div class="flex items-baseline gap-1 mt-2">
+                  <span id="monthlyExpensesPerKm" class="font-mono font-extrabold text-2xl text-neonGreen">R$ 0,000</span>
+                  <span class="text-xs font-mono text-gray-500">/km</span>
+                </div>
+                <span class="text-[11px] text-gray-500 mt-1">Rateio do custo fixo nas corridas</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Lista de 17 Itens Opcionais com Switch e Edição de Valor -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-base text-white">Itens de Investimento e Custo de Trabalho</h3>
+              <span class="text-xs text-gray-400">Ative ou desative conforme sua realidade</span>
+            </div>
+
+            <div id="monthlyExpensesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              <!-- Preenchido dinamicamente via JavaScript -->
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- VIEW 4: GESTÃO FINANCEIRA & HOLERITE DO MOTOBOY                   -->
         <!-- ================================================================= -->
         <div id="view-relatorios" class="view-panel hidden space-y-6">
 
-          <!-- Resumo DRE do Motoboy -->
-          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-5">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderSubtle pb-4">
+          <!-- Painel Superior: Controle de Apuração & Exportação -->
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4 no-print">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h3 class="font-bold text-lg text-white">DRE do Motoboy — Fechamento Financeiro</h3>
-                <p class="text-xs text-gray-400">Total acumulado de todos os seus turnos trabalhados</p>
+                <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full bg-neonGreen/15 text-neonGreen font-bold text-xs uppercase font-mono">Gestão Empresarial</span>
+                  <span class="text-xs text-gray-400">• Apuração de Resultados</span>
+                </div>
+                <h2 class="font-extrabold text-xl sm:text-2xl text-white mt-1">Gestão Financeira &amp; Holerite</h2>
+                <p class="text-xs text-gray-400">Visualize seu DRE profissional e gere a folha de pagamento do motoboy em PDF.</p>
               </div>
-              <div class="flex items-center gap-2">
-                <button id="btnExportCsv" type="button" class="px-3.5 py-2 rounded-xl bg-amoled hover:bg-gray-800 border border-borderSubtle text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition">
-                  <svg class="w-4 h-4 text-neonGreen" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                  <span>Exportar CSV</span>
-                </button>
-                <button id="btnExportJson" type="button" class="px-3.5 py-2 rounded-xl bg-amoled hover:bg-gray-800 border border-borderSubtle text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition">
-                  <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-                  <span>Backup JSON</span>
+
+              <!-- Seletor de Período do Holerite e Botão Exportar PDF -->
+              <div class="flex flex-wrap items-center gap-2.5">
+                <div class="flex p-1 rounded-2xl bg-amoled border border-borderSubtle text-xs font-semibold">
+                  <button type="button" data-holerite-period="diario" class="holerite-period-btn px-3.5 py-1.5 rounded-xl bg-neonGreen text-amoled font-bold transition">Diário</button>
+                  <button type="button" data-holerite-period="mensal" class="holerite-period-btn px-3.5 py-1.5 rounded-xl text-gray-400 hover:text-white transition">Mensal</button>
+                  <button type="button" data-holerite-period="anual" class="holerite-period-btn px-3.5 py-1.5 rounded-xl text-gray-400 hover:text-white transition">Anual</button>
+                </div>
+
+                <button id="btnPrintHoleritePdf" type="button" class="px-4 py-2.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-neonGreen/20 transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+                  <span>Exportar Holerite em PDF</span>
                 </button>
               </div>
             </div>
 
             <!-- Grade de Métricas DRE -->
-            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
               <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle">
                 <p class="text-[11px] text-gray-400 font-medium">Faturamento Bruto</p>
                 <p id="dreGross" class="font-mono font-extrabold text-lg sm:text-xl text-white mt-1">R$ 0,00</p>
@@ -776,19 +906,36 @@
                 <p id="dreWear" class="font-mono font-extrabold text-lg sm:text-xl text-amber-400 mt-1">R$ 0,00</p>
               </div>
               <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle">
-                <p class="text-[11px] text-gray-400 font-medium">(-) Extras Rua</p>
+                <p class="text-[11px] text-gray-400 font-medium">(-) Gastos Rua &amp; Fixos</p>
                 <p id="dreExtras" class="font-mono font-extrabold text-lg sm:text-xl text-blue-400 mt-1">R$ 0,00</p>
               </div>
               <div class="p-3.5 rounded-2xl bg-amoled border border-neonGreen/30 col-span-2 sm:col-span-1">
-                <p class="text-[11px] text-neonGreen font-bold uppercase">(=) Lucro Líquido</p>
+                <p class="text-[11px] text-neonGreen font-bold uppercase">(=) Salário Líquido</p>
                 <p id="dreNet" class="font-mono font-extrabold text-lg sm:text-xl text-neonGreen mt-1">R$ 0,00</p>
               </div>
             </div>
           </section>
 
+          <!-- ==================== O HOLERITE / RECIBO DE PAGAMENTO ==================== -->
+          <section id="holeriteCard">
+            <!-- Preenchido dinamicamente via renderHolerite() -->
+          </section>
+
           <!-- Tabela de Turnos Salvos -->
-          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
-            <h3 class="font-bold text-base text-white">Histórico Detalhado dos Turnos</h3>
+          <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4 no-print">
+            <div class="flex items-center justify-between pb-3 border-b border-borderSubtle">
+              <h3 class="font-bold text-base text-white">Histórico dos Turnos Registrados</h3>
+              <div class="flex gap-2">
+                <button id="btnExportCsv" type="button" class="px-3 py-1.5 rounded-xl bg-amoled hover:bg-gray-800 border border-borderSubtle text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition">
+                  <svg class="w-3.5 h-3.5 text-neonGreen" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  <span>CSV</span>
+                </button>
+                <button id="btnExportJson" type="button" class="px-3 py-1.5 rounded-xl bg-amoled hover:bg-gray-800 border border-borderSubtle text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition">
+                  <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                  <span>JSON</span>
+                </button>
+              </div>
+            </div>
             <div id="shiftsTableContainer" class="overflow-x-auto">
               <!-- Preenchido via JavaScript -->
             </div>
@@ -873,31 +1020,36 @@
   </div>
 
   <!-- ==================== BARRA DE NAVEGAÇÃO INFERIOR (Mobile / Tablet) ==================== -->
-  <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-card/95 backdrop-blur-md border-t border-borderSubtle px-2 py-2">
-    <div class="max-w-md mx-auto grid grid-cols-5 gap-1">
+  <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-card/95 backdrop-blur-md border-t border-borderSubtle px-1.5 py-1.5 no-print">
+    <div class="max-w-md mx-auto grid grid-cols-6 gap-1">
       <button data-nav-target="view-painel" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-neonGreen bg-neonGreen/10 font-semibold">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <span class="text-[10px] mt-1">Painel</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span class="text-[9px] mt-0.5">Painel</span>
       </button>
 
       <button data-nav-target="view-moto" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-        <span class="text-[10px] mt-1">Moto</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        <span class="text-[9px] mt-0.5">Moto</span>
       </button>
 
-      <button data-nav-target="view-metas" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-        <span class="text-[10px] mt-1">Metas</span>
+      <button data-nav-target="view-gastos-mensais" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        <span class="text-[9px] mt-0.5">Gastos</span>
       </button>
 
       <button data-nav-target="view-relatorios" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-        <span class="text-[10px] mt-1">DRE</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+        <span class="text-[9px] mt-0.5">Holerite</span>
+      </button>
+
+      <button data-nav-target="view-metas" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+        <span class="text-[9px] mt-0.5">Metas</span>
       </button>
 
       <button data-nav-target="view-config" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
-        <span class="text-[10px] mt-1">Turso</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+        <span class="text-[9px] mt-0.5">Turso</span>
       </button>
     </div>
   </nav>
@@ -1181,6 +1333,50 @@
     </div>
   </div>
 
+  <!-- ==================== MODAL 7: ADICIONAR GASTO MENSAL ==================== -->
+  <div id="modalAddMonthlyExpense" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="font-bold text-lg text-white">Novo Gasto Mensal</h3>
+        <button data-close-modal="modalAddMonthlyExpense" class="p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <p class="text-xs text-gray-400 mb-4">Adicione um custo fixo do seu negócio (ex: Faculdade, Curso, Academia, etc.).</p>
+
+      <div class="space-y-3 mb-5">
+        <div>
+          <label for="newExpenseName" class="block text-xs font-semibold text-gray-300 mb-1">Nome do Gasto</label>
+          <input id="newExpenseName" type="text" placeholder="Ex: Curso de Mecânica, Academia" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-sm text-white focus:border-neonGreen focus:outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="newExpenseValue" class="block text-xs font-semibold text-gray-300 mb-1">Valor / Mês (R$)</label>
+            <input id="newExpenseValue" type="number" step="5" min="1" placeholder="Ex: 80" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-neonGreen text-sm font-bold focus:border-neonGreen focus:outline-none" />
+          </div>
+          <div>
+            <label for="newExpenseCategory" class="block text-xs font-semibold text-gray-300 mb-1">Categoria</label>
+            <select id="newExpenseCategory" class="w-full px-3 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-xs text-white focus:border-neonGreen focus:outline-none">
+              <option value="Operação">Operação</option>
+              <option value="Proteção">Proteção</option>
+              <option value="Fiscal">Fiscal / Tributos</option>
+              <option value="Alimentação">Alimentação</option>
+              <option value="Veículo">Veículo</option>
+              <option value="Desenvolvimento">Desenvolvimento</option>
+              <option value="Diversos">Diversos</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2.5">
+        <button data-close-modal="modalAddMonthlyExpense" type="button" class="flex-1 py-3 rounded-xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-xs hover:bg-gray-800 transition">Cancelar</button>
+        <button id="btnConfirmAddMonthlyExpense" type="button" class="flex-1 py-3 rounded-xl bg-neonGreen hover:bg-emerald-400 text-amoled font-extrabold text-xs shadow-lg shadow-neonGreen/20 transition">Cadastrar Gasto</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== TOAST DISCRETO ==================== -->
   <div id="toast" class="pointer-events-none fixed top-16 left-1/2 -translate-x-1/2 z-50 opacity-0 translate-y-2 transition-all duration-300">
     <div class="px-4 py-2.5 rounded-2xl bg-gray-900/95 border border-gray-700 text-gray-100 text-xs sm:text-sm font-medium shadow-2xl flex items-center gap-2 whitespace-nowrap">
@@ -1216,6 +1412,27 @@
         { id: 'cabos', name: 'Cabos (Embreagem/Acelerador)', price: 80, lifespanKm: 15000, healthPct: 85, active: true, custom: false }
       ];
 
+      // 17 Itens essenciais de Gastos Mensais no Trabalho (Custos Fixos & Gestão Empreendedora)
+      const DEFAULT_MONTHLY_EXPENSES = [
+        { id: 'internet', name: 'Internet Móvel', value: 50.00, active: true, category: 'Operação', icon: '📶' },
+        { id: 'aluguel_moto', name: 'Aluguel da Moto', value: 700.00, active: false, category: 'Veículo', icon: '🛵' },
+        { id: 'plano_conquiste', name: 'Plano Conquiste', value: 350.00, active: false, category: 'Veículo', icon: '🎯' },
+        { id: 'seguro_vida', name: 'Seguro de Vida', value: 35.00, active: true, category: 'Proteção', icon: '🛡️' },
+        { id: 'seguro_moto', name: 'Seguro da Moto', value: 80.00, active: true, category: 'Proteção', icon: '🔒' },
+        { id: 'inss', name: 'INSS Autônomo', value: 150.00, active: true, category: 'Previdência', icon: '🏛️' },
+        { id: 'mei', name: 'MEI', value: 75.00, active: true, category: 'Tributos', icon: '📋' },
+        { id: 'refeicao', name: 'Refeição', value: 300.00, active: true, category: 'Alimentação', icon: '🍽️' },
+        { id: 'lanche', name: 'Lanche', value: 120.00, active: true, category: 'Alimentação', icon: '🍔' },
+        { id: 'passe_uber', name: 'Passe Uber', value: 30.00, active: false, category: 'Apps', icon: '🚗' },
+        { id: 'passe_99', name: 'Passe 99', value: 30.00, active: false, category: 'Apps', icon: '🚕' },
+        { id: 'manutencao', name: 'Manutenção', value: 150.00, active: true, category: 'Prevenção', icon: '⚙️' },
+        { id: 'suportes', name: 'Suportes', value: 40.00, active: true, category: 'Equipamentos', icon: '🎒' },
+        { id: 'multas', name: 'Multas', value: 50.00, active: true, category: 'Reserva', icon: '⚠️' },
+        { id: 'ipva', name: 'IPVA', value: 45.00, active: true, category: 'Impostos', icon: '📄' },
+        { id: 'licenciamento', name: 'Licenciamento', value: 20.00, active: true, category: 'Impostos', icon: '📑' },
+        { id: 'outros', name: 'Outros', value: 0.00, active: false, category: 'Diversos', icon: '💡' }
+      ];
+
       function getDefaultState() {
         return {
           pilot: {
@@ -1232,9 +1449,10 @@
             tankCapacity: 14.0
           },
           parts: DEFAULT_PARTS,
+          monthlyExpenses: DEFAULT_MONTHLY_EXPENSES,
           replacements: [
-            { id: 'rep_1', partId: 'oleo', partName: 'Óleo do Motor', date: '10/11/2026', cost: 40, notes: 'Mobil 20W50' },
-            { id: 'rep_2', partId: 'freio_dianteiro', partName: 'Freio Dianteiro (Pastilha)', date: '01/10/2026', cost: 48, notes: 'Cobreq' }
+            { id: 'rep_1', partId: 'oleo', partName: 'Consumo de Óleo por Km', date: '10/11/2026', cost: 40, notes: 'Mobil 20W50' },
+            { id: 'rep_2', partId: 'freio_dianteiro', partName: 'Consumo Freios Dianteiro', date: '01/10/2026', cost: 48, notes: 'Cobreq' }
           ],
           goals: {
             monthlyNetGoal: 3500,
@@ -1302,6 +1520,18 @@
                 return dp;
               }).concat(Array.from(existingMap.values()));
             })(),
+            monthlyExpenses: (() => {
+              if (!Array.isArray(parsed.monthlyExpenses) || !parsed.monthlyExpenses.length) return def.monthlyExpenses;
+              const existingMap = new Map(parsed.monthlyExpenses.map(e => [e.id, e]));
+              return def.monthlyExpenses.map(de => {
+                if (existingMap.has(de.id)) {
+                  const existing = existingMap.get(de.id);
+                  existingMap.delete(de.id);
+                  return { ...de, ...existing, name: de.name, category: de.category, icon: de.icon };
+                }
+                return de;
+              }).concat(Array.from(existingMap.values()));
+            })(),
             replacements: Array.isArray(parsed.replacements) ? parsed.replacements : def.replacements,
             shifts: Array.isArray(parsed.shifts) ? parsed.shifts : def.shifts,
             objectives: Array.isArray(parsed.objectives) ? parsed.objectives : def.objectives,
@@ -1321,6 +1551,26 @@
         } catch (err) {
           console.error('Falha ao persistir dados localmente:', err);
         }
+      }
+
+      function getMonthlyExpensesTotals() {
+        const expenses = state.monthlyExpenses || DEFAULT_MONTHLY_EXPENSES;
+        const activeItems = expenses.filter(e => e.active);
+        const totalMonthly = activeItems.reduce((sum, e) => sum + (parseFloat(e.value) || 0), 0);
+        const workDaysPerWeek = Math.max(1, (state.goals && Array.isArray(state.goals.workDays)) ? state.goals.workDays.length : 6);
+        const workDaysInMonth = Math.round(workDaysPerWeek * 4.33);
+        const dailyCost = totalMonthly / workDaysInMonth;
+        const estimatedKmMonth = 130 * workDaysInMonth;
+        const perKmCost = estimatedKmMonth > 0 ? (totalMonthly / estimatedKmMonth) : 0;
+
+        return {
+          expenses,
+          activeItems,
+          totalMonthly,
+          workDaysInMonth,
+          dailyCost,
+          perKmCost
+        };
       }
 
       // =======================================================================
@@ -1864,6 +2114,323 @@
       }
 
       // =======================================================================
+      // 5B. GASTOS MENSAIS NO TRABALHO (GESTÃO EMPREENDEDORA & CUSTOS FIXOS)
+      // =======================================================================
+      function renderGastosMensais() {
+        const container = document.getElementById('monthlyExpensesContainer');
+        if (!container) return;
+
+        const { expenses, activeItems, totalMonthly, workDaysInMonth, dailyCost, perKmCost } = getMonthlyExpensesTotals();
+
+        const elTotal = document.getElementById('monthlyExpensesTotal');
+        const elActive = document.getElementById('monthlyExpensesActiveCount');
+        const elDaily = document.getElementById('monthlyExpensesDaily');
+        const elDays = document.getElementById('monthlyExpensesDaysInfo');
+        const elPerKm = document.getElementById('monthlyExpensesPerKm');
+
+        if (elTotal) elTotal.textContent = formatBRL(totalMonthly);
+        if (elActive) elActive.textContent = `${activeItems.length} de ${expenses.length} itens ativos`;
+        if (elDaily) elDaily.textContent = formatBRL(dailyCost);
+        if (elDays) elDays.textContent = `Rateio em ${workDaysInMonth} dias trabalhados no mês`;
+        if (elPerKm) elPerKm.textContent = formatBRL(perKmCost, 3);
+
+        container.innerHTML = expenses.map(item => {
+          const isChecked = !!item.active;
+          const val = parseFloat(item.value) || 0;
+          return `
+            <div class="p-4 rounded-2xl bg-amoled border ${isChecked ? 'border-borderSubtle hover:border-blue-500/40' : 'border-dashed border-gray-800 opacity-60'} transition flex flex-col justify-between gap-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-xl">${item.icon || '💼'}</span>
+                  <div>
+                    <h4 class="font-bold text-sm text-white">${item.name}</h4>
+                    <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded-md bg-gray-800 text-gray-400 font-semibold">${item.category || 'Operação'}</span>
+                  </div>
+                </div>
+
+                <!-- Switch On/Off -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" data-expense-toggle="${item.id}" class="sr-only peer" ${isChecked ? 'checked' : ''}>
+                  <div class="w-11 h-6 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neonGreen"></div>
+                </label>
+              </div>
+
+              <div class="flex items-center justify-between gap-2 pt-2 border-t border-borderSubtle/60">
+                <div class="flex items-center gap-1.5 flex-1">
+                  <span class="text-xs text-gray-400 font-medium">R$</span>
+                  <input type="number" step="5" min="0" data-expense-input="${item.id}" value="${val}" class="w-28 px-2.5 py-1.5 rounded-xl bg-card border border-borderSubtle font-mono text-white text-sm font-bold focus:border-neonGreen focus:outline-none" />
+                  <span class="text-[11px] text-gray-500 font-mono">/mês</span>
+                </div>
+                ${item.custom ? `
+                  <button type="button" data-expense-delete="${item.id}" class="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition" title="Excluir Gasto">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // =======================================================================
+      // 5C. HOLERITE / RECIBO DE PAGAMENTO DE SALÁRIO DO MOTOBOY
+      // =======================================================================
+      let currentHoleritePeriod = 'mensal';
+
+      function renderHolerite(period = currentHoleritePeriod) {
+        currentHoleritePeriod = period;
+        const card = document.getElementById('holeriteCard');
+        if (!card) return;
+
+        const { totalMonthly, dailyCost, workDaysInMonth } = getMonthlyExpensesTotals();
+        const activeMonthlyExpenses = (state.monthlyExpenses || DEFAULT_MONTHLY_EXPENSES).filter(e => e.active);
+
+        // Turnos históricos
+        const totalGrossAll = state.shifts.reduce((s, x) => s + x.gross, 0);
+        const totalFuelAll = state.shifts.reduce((s, x) => s + x.fuelCost, 0);
+        const totalWearAll = state.shifts.reduce((s, x) => s + x.wearCost, 0);
+        const totalExtrasAll = state.shifts.reduce((s, x) => s + x.extrasCost, 0);
+        const totalKmAll = state.shifts.reduce((s, x) => s + x.km, 0);
+
+        const latest = state.shifts[0] || {
+          gross: 220.00,
+          fuelCost: 27.50,
+          wearCost: 18.20,
+          extrasCost: 15.00,
+          km: 130.0,
+          date: new Date().toLocaleDateString('pt-BR')
+        };
+
+        let periodTitle = '';
+        let periodDesc = '';
+        let kmTotal = 0;
+        let grossTotal = 0;
+        let fuelTotal = 0;
+        let wearTotal = 0;
+        let extrasTotal = 0;
+        let monthlyTotal = 0;
+
+        if (period === 'diario') {
+          periodTitle = 'DEMONSTRATIVO DIÁRIO DE PAGAMENTO (FOLHA DO DIA)';
+          periodDesc = `Apuração do Dia: ${latest.date || new Date().toLocaleDateString('pt-BR')} • Carga Horária Turno`;
+          kmTotal = latest.km || 130;
+          grossTotal = latest.gross || 220;
+          fuelTotal = latest.fuelCost || (kmTotal * (state.moto.fuelPrice / state.moto.fuelConsumption));
+          wearTotal = latest.wearCost || 18.20;
+          extrasTotal = latest.extrasCost || 15.00;
+          monthlyTotal = dailyCost;
+        } else if (period === 'mensal') {
+          const monthName = new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+          periodTitle = 'RECIBO DE PAGAMENTO DE SALÁRIO / PRÓ-LABORE MENSAL';
+          periodDesc = `Competência: ${monthName.toUpperCase()} • Rateio em ${workDaysInMonth} dias trabalhados`;
+          const mult = workDaysInMonth;
+          kmTotal = totalKmAll > 0 ? (totalKmAll * (mult / Math.max(1, state.shifts.length))) : (130 * mult);
+          grossTotal = totalGrossAll > 0 ? (totalGrossAll * (mult / Math.max(1, state.shifts.length))) : (latest.gross * mult);
+          fuelTotal = totalFuelAll > 0 ? (totalFuelAll * (mult / Math.max(1, state.shifts.length))) : (latest.fuelCost * mult);
+          wearTotal = totalWearAll > 0 ? (totalWearAll * (mult / Math.max(1, state.shifts.length))) : (latest.wearCost * mult);
+          extrasTotal = totalExtrasAll > 0 ? (totalExtrasAll * (mult / Math.max(1, state.shifts.length))) : (latest.extrasCost * mult);
+          monthlyTotal = totalMonthly;
+        } else {
+          // anual
+          const yearNum = new Date().getFullYear();
+          periodTitle = 'DEMONSTRATIVO ANUAL DE RENDIMENTOS & DESCONTOS';
+          periodDesc = `Exercício Fiscal: ${yearNum} • Consolidação Anual (12 Meses)`;
+          const mult = workDaysInMonth * 12;
+          kmTotal = (latest.km || 130) * mult;
+          grossTotal = (latest.gross || 220) * mult;
+          fuelTotal = (latest.fuelCost || 27.50) * mult;
+          wearTotal = (latest.wearCost || 18.20) * mult;
+          extrasTotal = (latest.extrasCost || 15.00) * mult;
+          monthlyTotal = totalMonthly * 12;
+        }
+
+        const totalDeductions = fuelTotal + wearTotal + extrasTotal + monthlyTotal;
+        const netSalario = grossTotal - totalDeductions;
+        const netPerKm = kmTotal > 0 ? (netSalario / kmTotal) : 0;
+        const realCostPerKm = kmTotal > 0 ? (totalDeductions / kmTotal) : 0;
+        const marginPct = grossTotal > 0 ? ((netSalario / grossTotal) * 100).toFixed(1) : '0';
+
+        card.innerHTML = `
+          <div class="bg-card border-2 border-borderSubtle rounded-3xl p-5 sm:p-7 space-y-6 shadow-2xl">
+            <!-- Cabeçalho do Holerite Oficial -->
+            <div class="border-b-2 border-borderSubtle pb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-neonGreen"></span>
+                  <span class="font-black text-sm tracking-widest uppercase text-white font-mono">MOTOCASH PRO • FOLHA DE PAGAMENTO</span>
+                </div>
+                <h3 class="text-base sm:text-lg font-black text-white mt-1">${periodTitle}</h3>
+                <p class="text-xs text-gray-400 font-medium">${periodDesc}</p>
+              </div>
+              <div class="text-left sm:text-right font-mono text-xs text-gray-400 bg-amoled px-3 py-2 rounded-xl border border-borderSubtle">
+                <p><span class="text-gray-500">Emissão:</span> ${new Date().toLocaleDateString('pt-BR')}</p>
+                <p><span class="text-gray-500">Status:</span> <strong class="text-neonGreen">APURADO</strong></p>
+              </div>
+            </div>
+
+            <!-- Dados Cadastrais do Motoboy / Autônomo -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-2xl bg-amoled border border-borderSubtle text-xs">
+              <div>
+                <span class="text-gray-500 block text-[10px] uppercase font-bold">Piloto / Autônomo</span>
+                <span class="text-white font-bold">${state.pilot.name || 'Carlos Silva'}</span>
+                <span class="text-gray-400 text-[11px] block">(${state.pilot.nickname || 'Carlão'})</span>
+              </div>
+              <div>
+                <span class="text-gray-500 block text-[10px] uppercase font-bold">Cidade / Praça</span>
+                <span class="text-white font-semibold">${state.pilot.city || 'Fortaleza - CE'}</span>
+              </div>
+              <div>
+                <span class="text-gray-500 block text-[10px] uppercase font-bold">Veículo / Moto</span>
+                <span class="text-white font-semibold">${state.moto.model || 'Honda CG 160'}</span>
+              </div>
+              <div>
+                <span class="text-gray-500 block text-[10px] uppercase font-bold">Odômetro Atual</span>
+                <span class="text-neonGreen font-mono font-bold">${(parseFloat(state.moto.odometer) || 0).toLocaleString('pt-BR')} km</span>
+              </div>
+            </div>
+
+            <!-- Tabela Estilo Holerite (Vencimentos vs Descontos) -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border border-borderSubtle rounded-2xl overflow-hidden font-mono">
+                <thead class="bg-cardLight text-gray-400 text-[11px] uppercase border-b border-borderSubtle font-sans">
+                  <tr>
+                    <th class="py-2.5 px-3 w-16">Cód.</th>
+                    <th class="py-2.5 px-3">Descrição do Evento</th>
+                    <th class="py-2.5 px-3 text-center">Referência</th>
+                    <th class="py-2.5 px-3 text-right text-emerald-400">Vencimentos (+)</th>
+                    <th class="py-2.5 px-3 text-right text-red-400">Descontos (-)</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-borderSubtle/60">
+                  <tr class="hover:bg-white/[0.02]">
+                    <td class="py-2.5 px-3 text-gray-500">001</td>
+                    <td class="py-2.5 px-3 text-white font-medium font-sans">
+                      Faturamento de Corridas (iFood, 99, Uber, Particular)
+                      <span class="block text-[10px] text-gray-500 font-sans">Entregas e fretes realizados</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-center text-gray-400">${kmTotal.toFixed(1)} km</td>
+                    <td class="py-2.5 px-3 text-right text-emerald-400 font-bold">${formatBRL(grossTotal)}</td>
+                    <td class="py-2.5 px-3 text-right text-gray-600">-</td>
+                  </tr>
+
+                  <tr class="hover:bg-white/[0.02]">
+                    <td class="py-2.5 px-3 text-gray-500">101</td>
+                    <td class="py-2.5 px-3 text-white font-medium font-sans">
+                      Consumo de Combustível (Gasolina)
+                      <span class="block text-[10px] text-gray-500 font-sans">R$ ${state.moto.fuelPrice.toFixed(2)}/L • ${state.moto.fuelConsumption} km/L</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-center text-gray-400">${(kmTotal / state.moto.fuelConsumption).toFixed(1)} L</td>
+                    <td class="py-2.5 px-3 text-right text-gray-600">-</td>
+                    <td class="py-2.5 px-3 text-right text-red-400 font-semibold">-${formatBRL(fuelTotal)}</td>
+                  </tr>
+
+                  <tr class="hover:bg-white/[0.02]">
+                    <td class="py-2.5 px-3 text-gray-500">102</td>
+                    <td class="py-2.5 px-3 text-white font-medium font-sans">
+                      Fundo Caixinha Manutenção &amp; Peças (Desgaste por KM)
+                      <span class="block text-[10px] text-gray-500 font-sans">Pneus, Kit Relação, Óleo motor/bengala, Freios dianteiro/traseiro</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-center text-gray-400">11 itens</td>
+                    <td class="py-2.5 px-3 text-right text-gray-600">-</td>
+                    <td class="py-2.5 px-3 text-right text-red-400 font-semibold">-${formatBRL(wearTotal)}</td>
+                  </tr>
+
+                  <tr class="hover:bg-white/[0.02]">
+                    <td class="py-2.5 px-3 text-gray-500">103</td>
+                    <td class="py-2.5 px-3 text-white font-medium font-sans">
+                      Alimentação &amp; Despesas de Rua (Almoço, Lanches, Borracharia)
+                      <span class="block text-[10px] text-gray-500 font-sans">Gastos extras e imprevistos diários</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-center text-gray-400">Rua</td>
+                    <td class="py-2.5 px-3 text-right text-gray-600">-</td>
+                    <td class="py-2.5 px-3 text-right text-red-400 font-semibold">-${formatBRL(extrasTotal)}</td>
+                  </tr>
+
+                  <tr class="hover:bg-white/[0.02]">
+                    <td class="py-2.5 px-3 text-gray-500">104</td>
+                    <td class="py-2.5 px-3 text-white font-medium font-sans">
+                      Gastos Mensais no Trabalho (Rateio de Custos Fixos &amp; Previdência)
+                      <span class="block text-[10px] text-gray-500 font-sans">MEI, INSS, Seguros, Net, Aluguel, IPVA, Licenciamento</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-center text-gray-400">${activeMonthlyExpenses.length} ativos</td>
+                    <td class="py-2.5 px-3 text-right text-gray-600">-</td>
+                    <td class="py-2.5 px-3 text-right text-red-400 font-semibold">-${formatBRL(monthlyTotal)}</td>
+                  </tr>
+                </tbody>
+
+                <!-- Totais do Holerite -->
+                <tfoot class="bg-cardLight border-t-2 border-borderSubtle text-xs">
+                  <tr>
+                    <td colspan="3" class="py-3 px-3 text-right text-gray-400 font-sans font-bold">TOTAIS CONSOLIDADOS:</td>
+                    <td class="py-3 px-3 text-right text-emerald-400 font-extrabold text-sm">${formatBRL(grossTotal)}</td>
+                    <td class="py-3 px-3 text-right text-red-400 font-extrabold text-sm">-${formatBRL(totalDeductions)}</td>
+                  </tr>
+                  <tr class="bg-amoled border-t border-borderSubtle">
+                    <td colspan="3" class="py-4 px-3 text-right text-white font-sans font-extrabold uppercase text-xs sm:text-sm">
+                      <span class="text-neonGreen">VALOR LÍQUIDO A RECEBER (PRÓ-LABORE):</span>
+                    </td>
+                    <td colspan="2" class="py-4 px-3 text-right text-neonGreen font-black text-lg sm:text-2xl">
+                      ${formatBRL(netSalario)}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <!-- Detalhamento dos Gastos Mensais Considerados -->
+            <div class="p-4 rounded-2xl bg-amoled border border-borderSubtle space-y-2">
+              <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block font-sans">
+                Itens de Custos Fixos &amp; Prevenção Considerados nesta Folha (${activeMonthlyExpenses.length} itens):
+              </span>
+              <div class="flex flex-wrap gap-2">
+                ${activeMonthlyExpenses.length ? activeMonthlyExpenses.map(e => `
+                  <span class="px-2.5 py-1 rounded-xl bg-card border border-borderSubtle text-[11px] font-medium text-gray-300 flex items-center gap-1.5">
+                    <span>${e.icon || '💼'}</span>
+                    <span>${e.name}:</span>
+                    <strong class="text-white font-mono">${formatBRL(parseFloat(e.value) || 0)}/mês</strong>
+                  </span>
+                `).join('') : '<span class="text-gray-500 text-xs">Nenhum custo mensal ativado no momento.</span>'}
+              </div>
+            </div>
+
+            <!-- Indicadores Executivos do Período -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="p-3 rounded-xl bg-amoled border border-borderSubtle text-center">
+                <span class="text-[10px] text-gray-400 uppercase font-semibold">Distância Percorrida</span>
+                <p class="font-mono font-bold text-sm text-white mt-0.5">${kmTotal.toFixed(1)} km</p>
+              </div>
+              <div class="p-3 rounded-xl bg-amoled border border-borderSubtle text-center">
+                <span class="text-[10px] text-gray-400 uppercase font-semibold">Custo Real por KM</span>
+                <p class="font-mono font-bold text-sm text-amber-400 mt-0.5">${formatBRL(realCostPerKm, 3)}/km</p>
+              </div>
+              <div class="p-3 rounded-xl bg-amoled border border-borderSubtle text-center">
+                <span class="text-[10px] text-gray-400 uppercase font-semibold">Lucro Real por KM</span>
+                <p class="font-mono font-bold text-sm text-neonGreen mt-0.5">${formatBRL(netPerKm, 3)}/km</p>
+              </div>
+              <div class="p-3 rounded-xl bg-amoled border border-borderSubtle text-center">
+                <span class="text-[10px] text-gray-400 uppercase font-semibold">Margem Líquida</span>
+                <p class="font-mono font-bold text-sm text-blue-400 mt-0.5">${marginPct}%</p>
+              </div>
+            </div>
+
+            <!-- Assinatura e Autenticação (Ideal para Impressão/PDF) -->
+            <div class="pt-6 border-t border-borderSubtle flex flex-col sm:flex-row justify-between items-center gap-6">
+              <div class="text-center sm:text-left">
+                <p class="text-[11px] text-gray-500">Documento Gerado pelo <strong>MotoCash Pro</strong></p>
+                <p class="text-[10px] text-gray-600 font-mono">Gestão Financeira &amp; Empreendedorismo para Entregadores</p>
+              </div>
+
+              <div class="text-center w-full sm:w-64">
+                <div class="border-b border-gray-600 mb-1 w-full"></div>
+                <p class="text-xs font-bold text-white">${state.pilot.name || 'Carlos Silva'}</p>
+                <p class="text-[10px] text-gray-400">Assinatura do Empreendedor Autônomo</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // =======================================================================
       // 6. NAVEGAÇÃO DE ABAS (SPA)
       // =======================================================================
       function switchView(targetViewId) {
@@ -1885,15 +2452,20 @@
         const titles = {
           'view-painel': 'Painel do Dia',
           'view-moto': 'Minha Moto & Peças',
+          'view-gastos-mensais': 'Gastos Mensais no Trabalho',
+          'view-relatorios': 'Gestão Financeira & Holerite',
           'view-metas': 'Metas Financeiras',
-          'view-relatorios': 'Relatórios & DRE',
           'view-config': 'Turso Cloud & Ajustes'
         };
         document.getElementById('headerScreenTitle').textContent = titles[targetViewId] || 'MotoCash Pro';
 
         if (targetViewId === 'view-moto') renderMotoParts();
+        if (targetViewId === 'view-gastos-mensais') renderGastosMensais();
         if (targetViewId === 'view-metas') renderMetas();
-        if (targetViewId === 'view-relatorios') renderRelatorios();
+        if (targetViewId === 'view-relatorios') {
+          renderRelatorios();
+          renderHolerite(currentHoleritePeriod);
+        }
       }
 
       // =======================================================================
@@ -2518,6 +3090,118 @@
         document.getElementById('inputTankCapacity').value = state.moto.tankCapacity;
         document.getElementById('inputMonthlyNetGoal').value = state.goals.monthlyNetGoal;
         document.getElementById('inputMonthlyFixedCosts').value = state.goals.monthlyFixedCosts;
+
+        // Alternador de Período do Holerite (Diário, Mensal, Anual)
+        document.querySelectorAll('.holerite-period-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            currentHoleritePeriod = btn.dataset.holeritePeriod;
+            document.querySelectorAll('.holerite-period-btn').forEach(b => {
+              const active = b.dataset.holeritePeriod === currentHoleritePeriod;
+              b.className = active
+                ? 'holerite-period-btn px-3.5 py-1.5 rounded-xl bg-neonGreen text-amoled font-bold transition'
+                : 'holerite-period-btn px-3.5 py-1.5 rounded-xl text-gray-400 hover:text-white transition';
+            });
+            renderHolerite(currentHoleritePeriod);
+          });
+        });
+
+        // Botão Exportar Holerite em PDF / Imprimir
+        const btnPrintPdf = document.getElementById('btnPrintHoleritePdf');
+        if (btnPrintPdf) {
+          btnPrintPdf.addEventListener('click', () => {
+            window.print();
+          });
+        }
+
+        // Delegação de Eventos para Gastos Mensais (Toggle, Input, Delete)
+        document.body.addEventListener('change', (e) => {
+          if (e.target.matches('[data-expense-toggle]')) {
+            const expId = e.target.dataset.expenseToggle;
+            const exp = state.monthlyExpenses.find(x => x.id === expId);
+            if (exp) {
+              exp.active = e.target.checked;
+              saveState();
+              renderGastosMensais();
+              renderHolerite(currentHoleritePeriod);
+              showToast(`${exp.name}: ${exp.active ? 'Ativado' : 'Desativado'}`, exp.active ? 'green' : 'amber');
+            }
+          }
+        });
+
+        document.body.addEventListener('input', (e) => {
+          if (e.target.matches('[data-expense-input]')) {
+            const expId = e.target.dataset.expenseInput;
+            const exp = state.monthlyExpenses.find(x => x.id === expId);
+            if (exp) {
+              exp.value = Math.max(0, parseFloat(e.target.value) || 0);
+              saveState();
+              const { totalMonthly, workDaysInMonth, dailyCost, perKmCost, activeItems, expenses } = getMonthlyExpensesTotals();
+              const elTotal = document.getElementById('monthlyExpensesTotal');
+              const elActive = document.getElementById('monthlyExpensesActiveCount');
+              const elDaily = document.getElementById('monthlyExpensesDaily');
+              const elDays = document.getElementById('monthlyExpensesDaysInfo');
+              const elPerKm = document.getElementById('monthlyExpensesPerKm');
+              if (elTotal) elTotal.textContent = formatBRL(totalMonthly);
+              if (elActive) elActive.textContent = `${activeItems.length} de ${expenses.length} itens ativos`;
+              if (elDaily) elDaily.textContent = formatBRL(dailyCost);
+              if (elDays) elDays.textContent = `Rateio em ${workDaysInMonth} dias trabalhados no mês`;
+              if (elPerKm) elPerKm.textContent = formatBRL(perKmCost, 3);
+            }
+          }
+        });
+
+        document.body.addEventListener('click', (e) => {
+          const delBtn = e.target.closest('[data-expense-delete]');
+          if (delBtn) {
+            const expId = delBtn.dataset.expenseDelete;
+            state.monthlyExpenses = state.monthlyExpenses.filter(x => x.id !== expId);
+            saveState();
+            renderGastosMensais();
+            renderHolerite(currentHoleritePeriod);
+            showToast('Gasto mensal removido.', 'amber');
+          }
+        });
+
+        // Adicionar Novo Gasto Mensal
+        const btnOpenAddMonthly = document.getElementById('btnOpenAddMonthlyExpense');
+        if (btnOpenAddMonthly) {
+          btnOpenAddMonthly.addEventListener('click', () => {
+            document.getElementById('modalAddMonthlyExpense').classList.remove('hidden');
+            document.getElementById('newExpenseName').value = '';
+            document.getElementById('newExpenseValue').value = '';
+            document.getElementById('newExpenseName').focus();
+          });
+        }
+
+        const btnConfirmAddMonthly = document.getElementById('btnConfirmAddMonthlyExpense');
+        if (btnConfirmAddMonthly) {
+          btnConfirmAddMonthly.addEventListener('click', () => {
+            const name = document.getElementById('newExpenseName').value.trim();
+            const val = parseFloat(document.getElementById('newExpenseValue').value);
+            const cat = document.getElementById('newExpenseCategory').value;
+
+            if (!name || isNaN(val) || val <= 0) {
+              showToast('Informe o nome e um valor válido.', 'amber');
+              return;
+            }
+
+            state.monthlyExpenses.push({
+              id: 'custom_exp_' + Date.now(),
+              name: name,
+              value: val,
+              active: true,
+              category: cat,
+              icon: '📌',
+              custom: true
+            });
+
+            document.getElementById('modalAddMonthlyExpense').classList.add('hidden');
+            saveState();
+            renderGastosMensais();
+            renderHolerite(currentHoleritePeriod);
+            showToast(`Gasto "${name}" adicionado!`, 'green');
+          });
+        }
       }
 
       // =======================================================================
@@ -2567,6 +3251,8 @@
       // Inicialização Geral
       initEvents();
       renderPainel();
+      renderGastosMensais();
+      renderHolerite('mensal');
     })();
   </script>
 </body>
