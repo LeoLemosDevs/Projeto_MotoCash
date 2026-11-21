@@ -467,8 +467,8 @@
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                 </div>
                 <div>
-                  <h3 class="font-bold text-base text-white">Saúde das Peças (Desgaste por KM)</h3>
-                  <p class="text-xs text-gray-400">Diminui automaticamente conforme você roda na moto</p>
+                  <h3 class="font-bold text-base text-white">Painel de Desgaste de Peças (por KM)</h3>
+                  <p class="text-xs text-gray-400">Consumo real e vida útil calculados em tempo real na moto</p>
                 </div>
               </div>
               <div class="flex items-center gap-3 text-[11px] text-gray-400 font-medium">
@@ -1203,14 +1203,14 @@
 
       // Lista completa e detalhada de itens que sofrem desgaste por KM
       const DEFAULT_PARTS = [
-        { id: 'oleo', name: 'Óleo do Motor', price: 40, lifespanKm: 1000, healthPct: 80, active: true, custom: false },
-        { id: 'pneu_dianteiro', name: 'Pneu Dianteiro', price: 180, lifespanKm: 18000, healthPct: 75, active: true, custom: false },
-        { id: 'pneu_traseiro', name: 'Pneu Traseiro', price: 220, lifespanKm: 12000, healthPct: 35, active: true, custom: false },
-        { id: 'kit_relacao', name: 'Kit Relação (Coroa/Pinhão/Corrente)', price: 150, lifespanKm: 15000, healthPct: 60, active: true, custom: false },
-        { id: 'freio_dianteiro', name: 'Freio Dianteiro (Pastilha)', price: 50, lifespanKm: 10000, healthPct: 65, active: true, custom: false },
-        { id: 'freio_traseiro', name: 'Freio Traseiro (Lona/Pastilha)', price: 45, lifespanKm: 8000, healthPct: 20, active: true, custom: false },
-        { id: 'oleo_bengalas', name: 'Óleo de Bengalas (Suspensão)', price: 80, lifespanKm: 15000, healthPct: 85, active: true, custom: false },
-        { id: 'revisao_geral', name: 'Revisão Geral Preventiva', price: 250, lifespanKm: 10000, healthPct: 90, active: true, custom: false },
+        { id: 'oleo', name: 'Consumo de Óleo por Km', price: 40, lifespanKm: 1000, healthPct: 80, active: true, custom: false },
+        { id: 'freio_traseiro', name: 'Consumo Freios Traseiro', price: 45, lifespanKm: 8000, healthPct: 20, active: true, custom: false },
+        { id: 'oleo_bengalas', name: 'Consumo Óleo de Bengalas', price: 80, lifespanKm: 15000, healthPct: 85, active: true, custom: false },
+        { id: 'revisao_geral', name: 'Consumo Revisão Geral', price: 250, lifespanKm: 10000, healthPct: 90, active: true, custom: false },
+        { id: 'pneu_dianteiro', name: 'Consumo Pneu Dianteiro', price: 180, lifespanKm: 18000, healthPct: 75, active: true, custom: false },
+        { id: 'pneu_traseiro', name: 'Consumo Pneu Traseiro', price: 220, lifespanKm: 12000, healthPct: 35, active: true, custom: false },
+        { id: 'kit_relacao', name: 'Consumo Kit Relação', price: 150, lifespanKm: 15000, healthPct: 60, active: true, custom: false },
+        { id: 'freio_dianteiro', name: 'Consumo Freios Dianteiro', price: 50, lifespanKm: 10000, healthPct: 65, active: true, custom: false },
         { id: 'filtro_ar', name: 'Filtro de Ar', price: 35, lifespanKm: 10000, healthPct: 50, active: true, custom: false },
         { id: 'vela', name: 'Vela de Ignição', price: 30, lifespanKm: 15000, healthPct: 70, active: true, custom: false },
         { id: 'cabos', name: 'Cabos (Embreagem/Acelerador)', price: 80, lifespanKm: 15000, healthPct: 85, active: true, custom: false }
@@ -1292,9 +1292,15 @@
             config: { ...def.config, ...(parsed.config || {}) },
             parts: (() => {
               if (!Array.isArray(parsed.parts) || !parsed.parts.length) return def.parts;
-              const existingIds = new Set(parsed.parts.map(p => p.id));
-              const missingDefaults = def.parts.filter(p => !existingIds.has(p.id));
-              return [...parsed.parts, ...missingDefaults];
+              const existingMap = new Map(parsed.parts.map(p => [p.id, p]));
+              return def.parts.map(dp => {
+                if (existingMap.has(dp.id)) {
+                  const existing = existingMap.get(dp.id);
+                  existingMap.delete(dp.id);
+                  return { ...dp, ...existing, name: dp.name };
+                }
+                return dp;
+              }).concat(Array.from(existingMap.values()));
             })(),
             replacements: Array.isArray(parsed.replacements) ? parsed.replacements : def.replacements,
             shifts: Array.isArray(parsed.shifts) ? parsed.shifts : def.shifts,
@@ -1614,20 +1620,22 @@
         const container = document.getElementById('panelPartsList');
         if (!container) return;
 
-        // Ordena por menor saúde para mostrar as mais críticas primeiro
+        // Mostra todas as peças no painel de desgaste ordenadas por saúde/urgência
         const sorted = [...state.parts].filter(p => p.active).sort((a, b) => a.healthPct - b.healthPct);
 
-        container.innerHTML = sorted.slice(0, 6).map(part => {
+        container.innerHTML = sorted.map(part => {
           const pct = Math.round(Math.max(0, Math.min(100, part.healthPct)));
+          const price = parseFloat(part.price) || 0;
           const lifespan = parseFloat(part.lifespanKm) || 1;
+          const costKm = price / lifespan;
           const remainingKm = Math.round(lifespan * (pct / 100));
           const color = getHealthColor(pct);
 
           return `
-            <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-xs text-white truncate max-w-[150px]">${part.name}</span>
-                <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${color.badgeBg}">
+            <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle space-y-2 hover:border-gray-700 transition">
+              <div class="flex items-center justify-between gap-1">
+                <span class="font-bold text-xs text-white truncate max-w-[170px]" title="${part.name}">${part.name}</span>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${color.badgeBg} shrink-0">
                   ${pct}% • ${color.label}
                 </span>
               </div>
@@ -1636,7 +1644,14 @@
               </div>
               <div class="flex items-center justify-between text-[11px] text-gray-400 font-mono">
                 <span>Resta: <strong class="text-gray-200">${remainingKm.toLocaleString('pt-BR')} km</strong></span>
-                <button type="button" data-replace-part="${part.id}" class="text-neonGreen hover:underline font-sans font-semibold">Troquei</button>
+                <span class="text-neonGreen font-bold font-mono">${formatBRL(costKm, 3)}/km</span>
+              </div>
+              <div class="pt-1.5 border-t border-borderSubtle/60 flex items-center justify-between text-[10px] text-gray-500 font-mono">
+                <span>${formatBRL(price)} a cada ${lifespan.toLocaleString('pt-BR')} km</span>
+                <button type="button" data-replace-part="${part.id}" class="text-neonGreen hover:text-emerald-300 font-sans font-extrabold text-xs flex items-center gap-0.5">
+                  <span>Troquei</span>
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </button>
               </div>
             </div>
           `;
