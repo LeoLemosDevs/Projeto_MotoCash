@@ -1,4 +1,3 @@
-# Arquivos ignorados no deploy da Vercel (para evitar que tente rodar server.js como Serverless Function)
-server.js
+scripts/
 turso-schema.sql
 Docs/

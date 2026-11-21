@@ -8,8 +8,8 @@
     "url": "https://github.com/LeoLemosDevs/Projeto_MotoCash.git"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node scripts/server.js",
+    "dev": "node scripts/server.js"
   },
   "keywords": [
     "motoboy",
@@ -17,12 +17,7 @@
     "pwa",
     "gps",
     "quilometragem",
-    "desgaste-moto",
-    "ifood",
-    "uber-moto",
-    "99moto",
-    "turso",
-    "vercel"
+    "desgaste-moto"
   ],
   "author": "Leo Lemos",
   "license": "MIT"
