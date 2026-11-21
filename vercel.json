@@ -4,7 +4,7 @@
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/((?!assets/|Docs/|sw\\.js|manifest\\.webmanifest|.*\\..*).*)",
+      "source": "/((?!assets/|sw\\.js|manifest\\.webmanifest|favicon\\.ico).*)",
       "destination": "/index.html"
     }
   ],
