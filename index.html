@@ -278,6 +278,12 @@
               <span class="hidden sm:inline">KM Manual</span>
             </button>
 
+            <!-- Botão Zerar Turno (Header) -->
+            <button id="btnOpenReset" type="button" class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-red-400 bg-card hover:bg-cardHover border border-borderSubtle transition" title="Zerar odômetro e gastos em caso de imprevisto">
+              <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+              <span>Zerar</span>
+            </button>
+
             <!-- Botão Instalar App (Se disponível) -->
             <button id="btnHeaderInstall" type="button" class="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-card border border-neonGreen/30 text-neonGreen hover:bg-neonGreen/10 transition">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
@@ -364,6 +370,15 @@
                 <button id="btnFinishDay" type="button" class="min-h-[56px] px-4 py-3.5 rounded-2xl bg-red-600/90 hover:bg-red-500 active:scale-[0.98] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 transition">
                   <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   <span>Finalizar Dia</span>
+                </button>
+              </div>
+
+              <!-- Atalho para Zerar em caso de imprevisto -->
+              <div class="flex items-center justify-between text-xs px-1 pt-1">
+                <span class="text-gray-500 font-medium">Teve algum imprevisto?</span>
+                <button id="btnOpenResetPanel" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card hover:bg-cardHover border border-borderSubtle text-gray-400 hover:text-red-400 font-semibold transition" title="Zerar dados do turno atual">
+                  <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                  <span>Zerar Turno</span>
                 </button>
               </div>
             </section>
@@ -892,12 +907,17 @@
       </div>
 
       <p class="text-xs text-gray-400 font-medium mb-2">Categoria rápida</p>
-      <div class="grid grid-cols-2 gap-2 mb-4">
-        <button type="button" data-extra-cat="Lanche" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-blue-500 bg-blue-500/15 text-blue-300 font-semibold text-sm text-left transition">🍔 Lanche</button>
-        <button type="button" data-extra-cat="Água" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-sm text-left transition">💧 Água</button>
-        <button type="button" data-extra-cat="Remendo" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-sm text-left transition">🔧 Remendo / Pneu</button>
-        <button type="button" data-extra-cat="Estacionamento" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-sm text-left transition">🅿️ Estacionamento</button>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
+        <button type="button" data-extra-cat="Almoço" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-blue-500 bg-blue-500/15 text-blue-300 font-semibold text-xs sm:text-sm text-left transition">🍽️ Almoço</button>
+        <button type="button" data-extra-cat="Lanche" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-xs sm:text-sm text-left transition">🍔 Lanche</button>
+        <button type="button" data-extra-cat="Água" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-xs sm:text-sm text-left transition">💧 Água</button>
+        <button type="button" data-extra-cat="Manutenção" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-xs sm:text-sm text-left transition">⚙️ Manutenção</button>
+        <button type="button" data-extra-cat="Remendo" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-xs sm:text-sm text-left transition">🔧 Remendo</button>
+        <button type="button" data-extra-cat="Estacionamento" class="extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-xs sm:text-sm text-left transition">🅿️ Estacionam.</button>
       </div>
+
+      <label for="inputExtraDesc" class="block text-xs text-gray-400 font-medium mb-1">Descrição (opcional)</label>
+      <input id="inputExtraDesc" type="text" placeholder="Ex: Marmita, lâmpada queimada, graxa..." class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-xs text-white mb-3 focus:border-blue-500 focus:outline-none" />
 
       <label for="inputExtraValue" class="block text-xs text-gray-400 font-medium mb-1.5">Valor em Reais (R$)</label>
       <div class="relative mb-5">
@@ -908,6 +928,23 @@
       <div class="flex gap-3">
         <button data-close-modal="modalExtra" type="button" class="flex-1 py-3.5 rounded-2xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-sm">Cancelar</button>
         <button id="btnConfirmExtra" type="button" class="flex-1 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg shadow-blue-600/25">Adicionar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL ZERAR TURNO ==================== -->
+  <div id="modalReset" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-card border border-borderSubtle rounded-3xl p-6 text-center shadow-2xl">
+      <div class="w-12 h-12 mx-auto rounded-2xl bg-red-500/15 text-red-400 flex items-center justify-center mb-3">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+      </div>
+      <h3 class="font-bold text-lg text-white">Zerar turno atual?</h3>
+      <p class="text-xs text-gray-400 mt-2 mb-5 leading-relaxed">
+        Caso tenha acontecido algum imprevisto, isso reiniciará a quilometragem do dia para <strong class="text-white">0.0 km</strong>, o tempo rodando e os gastos extras lançados hoje.
+      </p>
+      <div class="flex gap-3">
+        <button data-close-modal="modalReset" type="button" class="flex-1 py-3 rounded-2xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-xs hover:bg-gray-800 transition">Cancelar</button>
+        <button id="btnConfirmReset" type="button" class="flex-1 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-600/30 transition">Sim, Zerar</button>
       </div>
     </div>
   </div>
@@ -1495,6 +1532,8 @@
         document.getElementById('lblFuelKm').innerHTML = `${formatBRL(fuelPerKm, 3)}/km • <span id="pctFuel">${totalCost > 0 ? Math.round((fuelCost / totalCost) * 100) : 0}%</span>`;
         document.getElementById('lblWearKm').innerHTML = `${formatBRL(partsPerKm, 3)}/km • <span id="pctWear">${totalCost > 0 ? Math.round((wearCost / totalCost) * 100) : 0}%</span>`;
         document.getElementById('extraCountLabel').textContent = `${state.currentShift.extras.length} ${state.currentShift.extras.length === 1 ? 'item' : 'itens'}`;
+        const pctExtraEl = document.getElementById('pctExtra');
+        if (pctExtraEl) pctExtraEl.textContent = `${totalCost > 0 ? Math.round((extrasCost / totalCost) * 100) : 0}%`;
 
         if (totalCost > 0) {
           const segFuelLen = (fuelCost / totalCost) * CIRCUMFERENCE;
@@ -1872,10 +1911,12 @@
         });
 
         // Botão + Gasto Extra
-        let selectedExtraCat = 'Lanche';
+        let selectedExtraCat = 'Almoço';
         document.getElementById('btnOpenExtra').addEventListener('click', () => {
           document.getElementById('modalExtra').classList.remove('hidden');
           document.getElementById('inputExtraValue').value = '';
+          const descInput = document.getElementById('inputExtraDesc');
+          if (descInput) descInput.value = '';
           document.getElementById('inputExtraValue').focus();
         });
 
@@ -1883,21 +1924,57 @@
           btn.addEventListener('click', () => {
             selectedExtraCat = btn.dataset.extraCat;
             document.querySelectorAll('.extra-cat-btn').forEach(b => {
-              b.className = 'extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-sm text-left transition';
+              b.className = 'extra-cat-btn py-2.5 px-3 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-semibold text-xs sm:text-sm text-left transition';
             });
-            btn.className = 'extra-cat-btn py-2.5 px-3 rounded-xl border border-blue-500 bg-blue-500/15 text-blue-300 font-semibold text-sm text-left transition';
+            btn.className = 'extra-cat-btn py-2.5 px-3 rounded-xl border border-blue-500 bg-blue-500/15 text-blue-300 font-semibold text-xs sm:text-sm text-left transition';
           });
         });
 
         document.getElementById('btnConfirmExtra').addEventListener('click', () => {
           const val = parseFloat(document.getElementById('inputExtraValue').value);
+          const descInput = document.getElementById('inputExtraDesc');
+          const desc = descInput ? descInput.value.trim() : '';
           if (val > 0) {
-            state.currentShift.extras.push({ category: selectedExtraCat, value: val });
+            state.currentShift.extras.push({ category: selectedExtraCat, desc: desc, value: val });
             document.getElementById('modalExtra').classList.add('hidden');
             renderPainel();
             saveState();
-            showToast(`Gasto de ${formatBRL(val)} adicionado!`, 'blue');
+            const descLabel = desc ? ` (${desc})` : '';
+            showToast(`Gasto de ${formatBRL(val)} em ${selectedExtraCat}${descLabel} adicionado!`, 'blue');
           }
+        });
+
+        // Botões Zerar Turno (Header e Painel)
+        const openResetModal = () => document.getElementById('modalReset').classList.remove('hidden');
+        const btnOpenReset = document.getElementById('btnOpenReset');
+        if (btnOpenReset) btnOpenReset.addEventListener('click', openResetModal);
+        const btnOpenResetPanel = document.getElementById('btnOpenResetPanel');
+        if (btnOpenResetPanel) btnOpenResetPanel.addEventListener('click', openResetModal);
+
+        document.getElementById('btnConfirmReset').addEventListener('click', () => {
+          state.currentShift.km = 0.0;
+          state.currentShift.elapsedSeconds = 0;
+          state.currentShift.extras = [];
+          state.currentShift.currentSpeed = 0;
+          state.currentShift.isActive = false;
+          state.currentShift.isPaused = false;
+          stopSimulation();
+          stopGpsTracking();
+          releaseWakeLock();
+          clearInterval(timerInterval);
+
+          const btnStartPause = document.getElementById('btnStartPause');
+          btnStartPause.innerHTML = `
+            <svg id="iconStartPause" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+            <span id="textStartPause">Iniciar Dia</span>
+          `;
+          btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition';
+          updateGpsStatus('Pausado', 'amber');
+
+          document.getElementById('modalReset').classList.add('hidden');
+          renderPainel();
+          saveState();
+          showToast('Turno zerado com sucesso! Pronto para reiniciar.', 'amber');
         });
 
         // KM Manual
