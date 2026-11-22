@@ -450,21 +450,31 @@
                   </div>
                 </div>
 
-                <!-- Mini-Indicadores (Velocidade, Tempo e Custo/KM) -->
-                <div class="mt-4 pt-3.5 border-t border-gray-800/90 grid grid-cols-3 gap-2 text-center">
-                  <div class="bg-white/[0.02] rounded-xl py-2 px-1 border border-white/[0.04]">
-                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-medium">Velocidade</p>
-                    <p class="font-mono font-bold text-sm sm:text-base text-white mt-0.5 tabular-nums">
-                      <span id="displaySpeed">0</span> <span class="text-xs text-gray-400 font-normal">km/h</span>
-                    </p>
+                <!-- Indicadores em Destaque Alinhados: Velocidade, Tempo Rodando e Custo / KM (Padrão Verde Neon) -->
+                <div class="mt-4 pt-3.5 border-t border-gray-800/90 grid grid-cols-3 gap-2 sm:gap-3 text-center">
+                  <!-- Velocidade -->
+                  <div class="bg-amoled/90 rounded-2xl py-3 px-2 border border-neonGreen/30 flex flex-col items-center justify-between min-h-[76px] sm:min-h-[86px] shadow-lg shadow-black/40">
+                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-bold mb-1 truncate w-full text-center">Velocidade</p>
+                    <div class="flex items-baseline justify-center gap-1 font-mono font-black text-lg sm:text-2xl text-neonGreen digital-glow-green tabular-nums">
+                      <span id="displaySpeed">0</span>
+                      <span class="text-[11px] sm:text-xs text-neonGreen/80 font-semibold lowercase">km/h</span>
+                    </div>
                   </div>
-                  <div class="bg-white/[0.02] rounded-xl py-2 px-1 border border-white/[0.04]">
-                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-medium">Tempo Rodando</p>
-                    <p id="displayTimer" class="font-mono font-bold text-sm sm:text-base text-white mt-0.5 tabular-nums">00:00:00</p>
+
+                  <!-- Tempo Rodando -->
+                  <div class="bg-amoled/90 rounded-2xl py-3 px-2 border border-neonGreen/30 flex flex-col items-center justify-between min-h-[76px] sm:min-h-[86px] shadow-lg shadow-black/40">
+                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-bold mb-1 truncate w-full text-center">Tempo Rodando</p>
+                    <div class="flex items-baseline justify-center font-mono font-black text-base sm:text-xl lg:text-2xl text-neonGreen digital-glow-green tabular-nums">
+                      <span id="displayTimer">00:00:00</span>
+                    </div>
                   </div>
-                  <div class="bg-white/[0.02] rounded-xl py-2 px-1 border border-white/[0.04]">
-                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-medium">Custo / KM</p>
-                    <p id="displayCostPerKm" class="font-mono font-bold text-sm sm:text-base text-neonGreen mt-0.5 tabular-nums">R$ 0,295</p>
+
+                  <!-- Custo / KM -->
+                  <div class="bg-amoled/90 rounded-2xl py-3 px-2 border border-neonGreen/30 flex flex-col items-center justify-between min-h-[76px] sm:min-h-[86px] shadow-lg shadow-black/40">
+                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-bold mb-1 truncate w-full text-center">Custo / KM</p>
+                    <div class="flex items-baseline justify-center font-mono font-black text-base sm:text-xl lg:text-2xl text-neonGreen digital-glow-green tabular-nums">
+                      <span id="displayCostPerKm">R$ 0,295</span>
+                    </div>
                   </div>
                 </div>
               </div>
