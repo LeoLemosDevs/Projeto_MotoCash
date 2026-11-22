@@ -6,7 +6,6 @@
   <title>MotoCash Pro — Finanças e Odômetro Digital para Motoboys</title>
   
   <!-- PWA Metadata -->
-  <link rel="manifest" href="assets/manifest.webmanifest" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#070A0E" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -4636,8 +4635,8 @@
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           const tryRegister = (url, opts) => navigator.serviceWorker.register(url, opts);
-          tryRegister('./assets/sw.js', { scope: './' })
-            .catch(() => tryRegister('./sw.js'))
+          tryRegister('./sw.js')
+            .catch(() => tryRegister('./assets/sw.js', { scope: './' }))
             .then((reg) => {
               console.log('[PWA] Service Worker registrado com sucesso:', reg.scope);
             }).catch((err) => {
