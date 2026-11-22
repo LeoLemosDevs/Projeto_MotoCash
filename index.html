@@ -6,6 +6,7 @@
   <title>MotoCash Pro — Finanças e Odômetro Digital para Motoboys</title>
   
   <!-- PWA Metadata -->
+  <link rel="manifest" href="assets/manifest.webmanifest" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#070A0E" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -4634,11 +4635,14 @@
       // Registra o Service Worker para cache e uso offline
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').then((reg) => {
-            console.log('[PWA] Service Worker registrado com escopo:', reg.scope);
-          }).catch((err) => {
-            console.warn('[PWA] Registro do Service Worker falhou:', err);
-          });
+          const tryRegister = (url, opts) => navigator.serviceWorker.register(url, opts);
+          tryRegister('./assets/sw.js', { scope: './' })
+            .catch(() => tryRegister('./sw.js'))
+            .then((reg) => {
+              console.log('[PWA] Service Worker registrado com sucesso:', reg.scope);
+            }).catch((err) => {
+              console.warn('[PWA] Registro do Service Worker falhou:', err);
+            });
         });
       }
 
