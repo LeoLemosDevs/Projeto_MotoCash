@@ -12,7 +12,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="MotoCash" />
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
-  <link rel="icon" type="image/svg+xml" href="assets/icons/icon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/icon-512.png" />
+  <link rel="shortcut icon" href="assets/icons/icon-192.png" />
 
   <!-- Google Fonts: Inter para UI e JetBrains Mono / Orbitron para o visor digital do painel -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -234,14 +236,7 @@
     <aside class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-card border-r border-borderSubtle z-30">
       <!-- Marca -->
       <div class="px-6 py-5 border-b border-borderSubtle flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-neonGreen/15 border border-neonGreen/30 flex items-center justify-center text-neonGreen shrink-0 shadow-inner">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="5.5" cy="17.5" r="3.5" />
-            <circle cx="18.5" cy="17.5" r="3.5" />
-            <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5V14l-3-3 4-3 2 3h2" />
-            <path d="M8.5 17.5H12" />
-          </svg>
-        </div>
+        <img src="assets/icons/logo.png" class="w-10 h-10 rounded-xl object-contain border border-neonGreen/30 bg-amoled shadow-md shrink-0" alt="MotoCash Pro" />
         <div>
           <div class="flex items-center gap-2">
             <h1 class="font-black text-lg tracking-tight text-white leading-none">MotoCash <span class="text-neonGreen">Pro</span></h1>
@@ -309,60 +304,56 @@
     <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
 
       <!-- CABEÇALHO GLOBAL RESPONSIVO -->
-      <header id="topAppHeader" class="sticky top-0 z-20 bg-amoled/90 backdrop-blur-md border-b border-borderSubtle px-4 sm:px-6 py-3 transition-all">
-        <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
-          <!-- Logo no Mobile e Título da Tela Ativa -->
-          <div class="flex items-center gap-3">
-            <div class="lg:hidden w-9 h-9 rounded-xl bg-neonGreen/15 border border-neonGreen/30 flex items-center justify-center text-neonGreen shrink-0">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="5.5" cy="17.5" r="3.5" />
-                <circle cx="18.5" cy="17.5" r="3.5" />
-                <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5V14l-3-3 4-3 2 3h2" />
-              </svg>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 id="headerScreenTitle" class="font-extrabold text-base sm:text-lg text-white leading-tight">Painel do Dia</h2>
-                <!-- Badge de Status do GPS -->
-                <span id="gpsStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30">
-                  <span id="gpsStatusDot" class="w-2 h-2 rounded-full bg-amber-400"></span>
-                  <span id="gpsStatusText">Pausado</span>
-                </span>
+      <header id="topAppHeader" class="sticky top-0 z-20 bg-amoled/90 backdrop-blur-md border-b border-borderSubtle px-4 sm:px-6 py-2.5 sm:py-3 transition-all">
+        <div class="max-w-6xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 sm:gap-3">
+          <!-- Linha Superior: Logo, Título da Tela e Botão Retangular de Desocultar no Mobile -->
+          <div class="flex items-center justify-between gap-2 w-full lg:w-auto">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <img src="assets/icons/logo.png" class="lg:hidden w-8 h-8 rounded-xl object-contain border border-neonGreen/30 bg-amoled shadow-md shrink-0" alt="MotoCash Pro" />
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 truncate">
+                  <h2 id="headerScreenTitle" class="font-extrabold text-sm sm:text-lg text-white leading-tight truncate">Painel do Dia</h2>
+                  <!-- Badge de Status do GPS -->
+                  <span id="gpsStatusBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 shrink-0">
+                    <span id="gpsStatusDot" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    <span id="gpsStatusText">Pausado</span>
+                  </span>
+                </div>
+                <p id="headerDateSubtitle" class="text-[11px] sm:text-xs text-gray-400 font-medium truncate block">Hoje • Turno pronto</p>
               </div>
-              <p id="headerDateSubtitle" class="text-xs text-gray-400 font-medium">Hoje • Turno pronto</p>
             </div>
+
+            <!-- Botão Retangular de Desocultar/Ações (Exclusivo Mobile, mantém cabeçalho limpo) -->
+            <button id="btnToggleMobileActions" type="button" class="lg:hidden px-3 py-1.5 rounded-xl bg-card hover:bg-cardHover border border-neonGreen/40 text-neonGreen font-bold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-sm shrink-0" title="Mostrar ou ocultar atalhos rápidos">
+              <svg id="iconToggleMobileActions" class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+              <span id="textToggleMobileActions">Ações</span>
+            </button>
           </div>
 
-          <!-- Ações Rápidas do Cabeçalho -->
-          <div class="flex items-center gap-2">
+          <!-- Barra de Ações Rápidas (No celular fica oculta por padrão, expandindo apenas quando o motoboy clica em Ações) -->
+          <div id="headerActionsGroup" class="hidden lg:flex items-center gap-2 w-full lg:w-auto pt-2.5 lg:pt-0 border-t lg:border-t-0 border-borderSubtle/60 flex-wrap sm:flex-nowrap justify-start lg:justify-end">
             <!-- Botão Simulação (Para testar no PC ou sem sair de moto) -->
-            <button id="btnToggleSim" type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40 hover:bg-neonGreen/25" title="Alternar entre modo simulação de teste (~50 km/h) e GPS real">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-              <span id="simLabel">Simulação: ON</span>
+            <button id="btnToggleSim" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40 hover:bg-neonGreen/25" title="Alternar entre modo simulação de teste (~50 km/h) e GPS real">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              <span id="simLabel" class="truncate">Simulação: ON</span>
             </button>
 
             <!-- Botão KM Manual -->
-            <button id="btnOpenManualKm" type="button" class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold bg-card hover:bg-cardHover text-gray-200 border border-borderSubtle transition">
-              <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-              <span class="hidden sm:inline">KM Manual</span>
+            <button id="btnOpenManualKm" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold bg-card hover:bg-cardHover text-gray-200 border border-borderSubtle transition">
+              <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+              <span class="truncate">KM Manual</span>
             </button>
 
             <!-- Botão Zerar Turno (Header) -->
-            <button id="btnOpenReset" type="button" class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-red-400 bg-card hover:bg-cardHover border border-borderSubtle transition" title="Zerar odômetro e gastos em caso de imprevisto">
-              <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-              <span>Zerar</span>
+            <button id="btnOpenReset" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-red-400 bg-card hover:bg-cardHover border border-borderSubtle transition" title="Zerar odômetro e gastos em caso de imprevisto">
+              <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+              <span class="truncate">Zerar</span>
             </button>
 
             <!-- Botão Instalar App (APK / WebAPK Android) -->
-            <button id="btnHeaderInstall" type="button" class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold bg-card border border-neonGreen/40 text-neonGreen hover:bg-neonGreen/10 transition" title="Instalar aplicativo APK no seu celular">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-              <span>Instalar</span>
-            </button>
-
-            <!-- Botão Ocultar Cabeçalho (Modo Foco / Espaço Total no Celular) -->
-            <button id="btnToggleHeader" type="button" class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white bg-card hover:bg-cardHover border border-borderSubtle transition" title="Ocultar Cabeçalho para liberar espaço total na tela">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" /></svg>
-              <span class="hidden sm:inline">Ocultar Barra</span>
+            <button id="btnHeaderInstall" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold bg-card border border-neonGreen/40 text-neonGreen hover:bg-neonGreen/10 transition" title="Instalar aplicativo APK no seu celular">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              <span class="truncate">Instalar</span>
             </button>
           </div>
         </div>
@@ -3909,7 +3900,49 @@
           });
         }
 
-        // Ocultar e Restaurar Barra Superior
+        // Ocultar e Desocultar Ações no Cabeçalho (Otimizado para Celular)
+        const headerActionsGroup = document.getElementById('headerActionsGroup');
+        const btnToggleMobileActions = document.getElementById('btnToggleMobileActions');
+        const iconToggleMobileActions = document.getElementById('iconToggleMobileActions');
+        const textToggleMobileActions = document.getElementById('textToggleMobileActions');
+
+        const isMobileDevice = () => window.innerWidth < 1024 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+        // Inicializa estado mobile: ações recolhidas por padrão no celular
+        const initMobileHeader = () => {
+          if (!headerActionsGroup) return;
+          if (isMobileDevice()) {
+            headerActionsGroup.classList.add('hidden');
+            headerActionsGroup.classList.remove('flex');
+            if (textToggleMobileActions) textToggleMobileActions.textContent = 'Ações';
+            if (iconToggleMobileActions) iconToggleMobileActions.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />';
+          } else {
+            headerActionsGroup.classList.remove('hidden');
+            headerActionsGroup.classList.add('flex');
+          }
+        };
+
+        if (btnToggleMobileActions && headerActionsGroup) {
+          btnToggleMobileActions.addEventListener('click', () => {
+            const isHidden = headerActionsGroup.classList.contains('hidden');
+            if (isHidden) {
+              headerActionsGroup.classList.remove('hidden');
+              headerActionsGroup.classList.add('flex');
+              if (textToggleMobileActions) textToggleMobileActions.textContent = 'Ocultar';
+              if (iconToggleMobileActions) iconToggleMobileActions.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />';
+            } else {
+              headerActionsGroup.classList.add('hidden');
+              headerActionsGroup.classList.remove('flex');
+              if (textToggleMobileActions) textToggleMobileActions.textContent = 'Ações';
+              if (iconToggleMobileActions) iconToggleMobileActions.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />';
+            }
+          });
+        }
+
+        window.addEventListener('resize', initMobileHeader);
+        initMobileHeader();
+
+        // Ocultar e Restaurar Barra Superior Total
         const topHeader = document.getElementById('topAppHeader');
         const btnToggleHeader = document.getElementById('btnToggleHeader');
         const btnRestoreHeader = document.getElementById('btnRestoreHeader');
