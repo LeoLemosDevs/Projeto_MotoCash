@@ -419,19 +419,30 @@
                     <span class="font-digital text-xl sm:text-2xl lg:text-3xl font-bold text-neonGreen/80">km</span>
                   </div>
 
-                  <!-- Linha de Faturamento e Lucro Líquido (Compacta em Linha Única) -->
-                  <div class="mt-2 flex items-center justify-center gap-1.5 flex-nowrap whitespace-nowrap overflow-x-auto">
-                    <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xl bg-white/[0.04] border border-white/10 text-[11px] shrink-0">
-                      <span class="text-gray-400 font-semibold uppercase text-[9px] sm:text-[10px]">Gasto:</span>
-                      <span id="displayTotalCost" class="font-mono font-extrabold text-amber-400 tabular-nums">R$ 0,00</span>
+                  <!-- Grid de Valores Financeiros do Dia: Gastos, Ganhos, Líquido (Padrão Âmbar da Identidade Visual) -->
+                  <div class="mt-3 grid grid-cols-3 gap-2 sm:gap-3 text-center">
+                    <!-- Gastos -->
+                    <div class="bg-amoled/90 rounded-2xl py-2.5 sm:py-3 px-1.5 sm:px-2 border border-amber-500/30 flex flex-col items-center justify-between min-h-[68px] sm:min-h-[78px] shadow-lg shadow-black/40">
+                      <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-bold mb-1 truncate w-full text-center">Gastos</p>
+                      <div class="flex items-baseline justify-center font-mono font-black text-xs sm:text-base lg:text-xl text-amber-400 digital-glow-amber tabular-nums">
+                        <span id="displayTotalCost">R$ 0,00</span>
+                      </div>
                     </div>
-                    <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xl bg-neonGreen/10 border border-neonGreen/30 text-[11px] shrink-0">
-                      <span class="text-gray-300 font-semibold uppercase text-[9px] sm:text-[10px]">Ganhos:</span>
-                      <span id="displayTotalGains" class="font-mono font-extrabold text-neonGreen tabular-nums">R$ 0,00</span>
+
+                    <!-- Ganhos -->
+                    <div class="bg-amoled/90 rounded-2xl py-2.5 sm:py-3 px-1.5 sm:px-2 border border-amber-500/30 flex flex-col items-center justify-between min-h-[68px] sm:min-h-[78px] shadow-lg shadow-black/40">
+                      <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-bold mb-1 truncate w-full text-center">Ganhos</p>
+                      <div class="flex items-baseline justify-center font-mono font-black text-xs sm:text-base lg:text-xl text-amber-400 digital-glow-amber tabular-nums">
+                        <span id="displayTotalGains">R$ 0,00</span>
+                      </div>
                     </div>
-                    <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-[11px] shrink-0">
-                      <span class="text-gray-300 font-semibold uppercase text-[9px] sm:text-[10px]">Líquido:</span>
-                      <span id="displayNetProfit" class="font-mono font-extrabold text-white tabular-nums">R$ 0,00</span>
+
+                    <!-- Líquido -->
+                    <div class="bg-amoled/90 rounded-2xl py-2.5 sm:py-3 px-1.5 sm:px-2 border border-amber-500/30 flex flex-col items-center justify-between min-h-[68px] sm:min-h-[78px] shadow-lg shadow-black/40">
+                      <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-bold mb-1 truncate w-full text-center">Líquido</p>
+                      <div class="flex items-baseline justify-center font-mono font-black text-xs sm:text-base lg:text-xl text-amber-400 digital-glow-amber tabular-nums">
+                        <span id="displayNetProfit">R$ 0,00</span>
+                      </div>
                     </div>
                   </div>
 
@@ -2464,7 +2475,7 @@
         const displayProfitEl = document.getElementById('displayNetProfit');
         if (displayProfitEl) {
           displayProfitEl.textContent = formatBRL(netProfit);
-          displayProfitEl.className = `font-mono font-black text-sm sm:text-base tabular-nums mt-0.5 ${netProfit >= 0 ? 'text-neonGreen' : 'text-red-400'}`;
+          displayProfitEl.className = `font-mono font-black text-xs sm:text-base lg:text-xl tabular-nums digital-glow-amber ${netProfit < 0 ? 'text-red-400' : 'text-amber-400'}`;
         }
 
         // Atualiza botões de filtro de custos (Combustível, Peças, Extras - Linha Única Compacta)
