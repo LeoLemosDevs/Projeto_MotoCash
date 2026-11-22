@@ -23,14 +23,36 @@ function handler(req, res) {
   let rawUrl = req.url || '/';
   let reqPath = decodeURI(rawUrl.split('?')[0]);
 
+  if (reqPath === '/api-debug') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    try {
+      res.end(JSON.stringify({
+        __dirname,
+        cwd: process.cwd(),
+        dirnameFiles: fs.readdirSync(__dirname),
+        cwdFiles: fs.readdirSync(process.cwd())
+      }));
+    } catch (e) {
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
+
   if (reqPath === '/' || reqPath === '') {
     reqPath = '/index.html';
   } else if (reqPath === '/favicon.ico') {
     reqPath = '/assets/icons/icon-192.png';
   }
 
-  const safePath = path.normalize(reqPath).replace(/^(\.\.[\/\\])+/, '');
+  const safePath = path.normalize(reqPath).replace(/^(\.\.[\/\\])+/, '').replace(/^[\\\/]/, '');
   let filePath = path.join(__dirname, safePath);
+
+  if (!fs.existsSync(filePath)) {
+    const cwdPath = path.join(process.cwd(), safePath);
+    if (fs.existsSync(cwdPath)) {
+      filePath = cwdPath;
+    }
+  }
 
   // Se o arquivo não existir ou for diretório, faz fallback para index.html (SPA)
   if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
