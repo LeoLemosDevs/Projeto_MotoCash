@@ -23,21 +23,6 @@ function handler(req, res) {
   let rawUrl = req.url || '/';
   let reqPath = decodeURI(rawUrl.split('?')[0]);
 
-  if (reqPath === '/api-debug') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    try {
-      res.end(JSON.stringify({
-        __dirname,
-        cwd: process.cwd(),
-        dirnameFiles: fs.readdirSync(__dirname),
-        cwdFiles: fs.readdirSync(process.cwd())
-      }));
-    } catch (e) {
-      res.end(JSON.stringify({ error: e.message }));
-    }
-    return;
-  }
-
   if (reqPath === '/' || reqPath === '') {
     reqPath = '/index.html';
   } else if (reqPath === '/favicon.ico') {
