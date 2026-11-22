@@ -83,6 +83,21 @@
       transition: stroke-dasharray 0.45s ease, stroke-dashoffset 0.45s ease;
     }
 
+    /* Animação e brilho do Troféu de Meta Diária Concluída */
+    @keyframes trophyBounceGlow {
+      0%, 100% {
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.9));
+      }
+      50% {
+        transform: scale(1.18) rotate(-7deg);
+        filter: drop-shadow(0 0 25px rgba(255, 215, 0, 1)) drop-shadow(0 0 12px rgba(0, 230, 118, 0.8));
+      }
+    }
+    .trophy-winner {
+      animation: trophyBounceGlow 1.2s infinite ease-in-out;
+    }
+
     /* Sliders táteis grandes para dedos/luvas */
     input[type="range"].part-slider {
       -webkit-appearance: none;
@@ -454,6 +469,48 @@
                 </div>
               </div>
 
+              <!-- BARRA DE PROGRESSO DA META DIÁRIA COM TROFÉU ILUMINADO -->
+              <div id="dailyGoalCard" class="bg-card rounded-3xl border border-neonGreen/30 p-4 sm:p-5 shadow-xl shadow-neonGreen/5 transition-all">
+                <div class="flex items-center justify-between gap-2 mb-2.5">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-8 h-8 rounded-xl bg-neonGreen/15 border border-neonGreen/30 flex items-center justify-center text-base shrink-0">🎯</span>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="font-extrabold text-xs sm:text-sm text-white">Meta Diária:</span>
+                        <span id="displayDailyGoalProgress" class="font-mono font-black text-xs sm:text-sm text-neonGreen tabular-nums">R$ 0,00 / R$ 200,00</span>
+                      </div>
+                      <span id="displayDailyGoalStatus" class="text-[10px] text-gray-400 font-medium block mt-0.5">Faltam R$ 200,00 para bater a meta de hoje</span>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span id="badgeDailyGoalPct" class="font-mono font-black text-xs sm:text-sm px-2.5 py-1 rounded-xl bg-amoled border border-borderSubtle text-neonGreen tabular-nums">0%</span>
+                    <button id="btnOpenDailyGoalModal" type="button" class="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 border border-white/10 text-gray-300 hover:text-white text-xs font-bold flex items-center gap-1.5 transition" title="Definir valor da meta diária">
+                      <svg class="w-3.5 h-3.5 text-neonGreen" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                      <span>Ajustar Meta</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Barra com Troféu no Final -->
+                <div class="flex items-center gap-3">
+                  <div class="flex-1 h-4 sm:h-5 rounded-full bg-amoled border border-borderSubtle overflow-hidden p-0.5 relative">
+                    <div id="barDailyGoalFill" class="h-full rounded-full bg-gradient-to-r from-emerald-600 via-neonGreen to-emerald-300 transition-all duration-500 shadow-[0_0_12px_rgba(0,230,118,0.5)]" style="width: 0%;"></div>
+                  </div>
+
+                  <!-- Troféu Iluminado e Animado no Final -->
+                  <div id="trophyContainer" class="shrink-0 relative">
+                    <div id="trophyIconWrapper" class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amoled border border-borderSubtle flex items-center justify-center text-xl sm:text-2xl opacity-50 grayscale transition-all duration-300 cursor-pointer" title="Conclua a meta diária para desbloquear o troféu!">
+                      🏆
+                    </div>
+                    <!-- Badge Flutuante de Parabéns quando Bate a Meta -->
+                    <span id="trophyCelebrationBadge" class="hidden absolute -top-8 -right-2 px-2 py-0.5 rounded-full bg-amber-400 text-amoled font-black text-[9px] uppercase tracking-wider shadow-lg shadow-amber-400/40 whitespace-nowrap animate-pulse">
+                      Meta Batida! 🎉
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               <!-- BOTÕES DE CONTROLE RÁPIDO (Tamanho grande para luvas e rua) -->
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 <button id="btnStartPause" type="button" class="min-h-[56px] px-3 py-3 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-sm sm:text-base flex items-center justify-center gap-1.5 shadow-lg shadow-neonGreen/20 transition">
@@ -531,7 +588,7 @@
                     <div class="flex items-center gap-2">
                       <span class="w-3 h-3 rounded-full bg-neonAmber shrink-0"></span>
                       <div>
-                        <p class="text-xs font-semibold text-gray-200">Desgaste Peças (Caixinha)</p>
+                        <p class="text-xs font-semibold text-gray-200">Desgaste de Peças</p>
                         <p id="lblWearKm" class="text-[10px] text-gray-500 font-mono">R$ 0,120/km • <span id="pctWear">0%</span></p>
                       </div>
                     </div>
@@ -1110,7 +1167,7 @@
                 <p id="dreFuel" class="font-mono font-extrabold text-lg sm:text-xl text-red-400 mt-1">R$ 0,00</p>
               </div>
               <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle">
-                <p class="text-[11px] text-gray-400 font-medium">(-) Caixinha Peças</p>
+                <p class="text-[11px] text-gray-400 font-medium">(-) Desgaste Peças</p>
                 <p id="dreWear" class="font-mono font-extrabold text-lg sm:text-xl text-amber-400 mt-1">R$ 0,00</p>
               </div>
               <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle">
@@ -1348,6 +1405,46 @@
     </div>
   </div>
 
+  <!-- ==================== MODAL DEFINIR META DIÁRIA ==================== -->
+  <div id="modalDailyGoal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+    <div class="w-full max-w-md bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-9 h-9 rounded-xl bg-neonGreen/15 border border-neonGreen/30 text-neonGreen flex items-center justify-center text-lg shrink-0">🎯</span>
+          <div>
+            <h3 class="font-extrabold text-lg text-white">Meta Diária de Trabalho</h3>
+            <p class="text-xs text-gray-400">Quanto você planeja faturar hoje?</p>
+          </div>
+        </div>
+        <button data-close-modal="modalDailyGoal" class="p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-300 mb-2 font-medium">Metas rápidas:</p>
+      <div class="grid grid-cols-4 gap-2 mb-4">
+        <button type="button" data-preset-goal="150" class="btn-preset-goal py-2 px-2 rounded-xl border border-borderSubtle bg-amoled hover:border-neonGreen hover:text-neonGreen text-white font-mono font-bold text-xs transition">R$ 150</button>
+        <button type="button" data-preset-goal="200" class="btn-preset-goal py-2 px-2 rounded-xl border border-borderSubtle bg-amoled hover:border-neonGreen hover:text-neonGreen text-white font-mono font-bold text-xs transition">R$ 200</button>
+        <button type="button" data-preset-goal="250" class="btn-preset-goal py-2 px-2 rounded-xl border border-borderSubtle bg-amoled hover:border-neonGreen hover:text-neonGreen text-white font-mono font-bold text-xs transition">R$ 250</button>
+        <button type="button" data-preset-goal="300" class="btn-preset-goal py-2 px-2 rounded-xl border border-borderSubtle bg-amoled hover:border-neonGreen hover:text-neonGreen text-white font-mono font-bold text-xs transition">R$ 300</button>
+      </div>
+
+      <div class="mb-5">
+        <label for="inputDailyGoalValue" class="block text-xs font-semibold text-gray-300 mb-1">Valor da Meta de Hoje (R$)</label>
+        <div class="relative">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-mono font-bold text-base">R$</span>
+          <input id="inputDailyGoalValue" type="number" step="10" min="10" placeholder="200" class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-amoled border border-borderSubtle font-mono text-neonGreen text-2xl font-black focus:border-neonGreen focus:outline-none" />
+        </div>
+        <p class="text-[11px] text-gray-500 mt-1.5">A barra de progresso no painel sobe automaticamente com suas corridas!</p>
+      </div>
+
+      <div class="flex gap-2.5">
+        <button type="button" data-close-modal="modalDailyGoal" class="flex-1 py-3.5 rounded-xl bg-card hover:bg-cardHover border border-borderSubtle text-gray-300 font-semibold text-sm transition">Cancelar</button>
+        <button id="btnConfirmDailyGoal" type="button" class="flex-1 py-3.5 rounded-xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-sm shadow-lg shadow-neonGreen/20 transition">Definir Meta</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== MODAL INSTALADOR APK ANDROID ==================== -->
   <div id="modalInstallApk" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
     <div class="w-full max-w-md bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
@@ -1485,7 +1582,7 @@
           <span id="closeFuel" class="font-mono font-semibold text-red-400">- R$ 0,00</span>
         </div>
         <div class="flex justify-between text-gray-400">
-          <span>(-) Caixinha da Moto (Peças)</span>
+          <span>(-) Desgaste de Peças</span>
           <span id="closeWear" class="font-mono font-semibold text-amber-400">- R$ 0,00</span>
         </div>
         <div class="flex justify-between text-gray-400">
@@ -1778,6 +1875,7 @@
             { id: 'rep_2', partId: 'freio_dianteiro', partName: 'Consumo Freios Dianteiro', date: '01/10/2026', cost: 48, notes: 'Cobreq' }
           ],
           goals: {
+            dailyTarget: 200, // Meta diária padrão em R$
             monthlyNetGoal: 3500,
             monthlyFixedCosts: 500,
             workDays: [0, 1, 2, 3, 4, 5] // Seg a Sáb
@@ -2381,6 +2479,67 @@
           btnExtras.innerHTML = filters.extras ? '✓ Extras' : '+ Extras';
         }
 
+        // Barra de Progresso da Meta Diária e Troféu Iluminado
+        const dailyTarget = Math.max(1, parseFloat(state.goals?.dailyTarget) || 200);
+        const currentProgress = totalGains; // Faturamento recebido no dia
+        const goalPct = Math.round((currentProgress / dailyTarget) * 100);
+        const clampedPct = Math.min(100, Math.max(0, goalPct));
+        const diffToGoal = dailyTarget - currentProgress;
+
+        const displayGoalProgEl = document.getElementById('displayDailyGoalProgress');
+        if (displayGoalProgEl) {
+          displayGoalProgEl.textContent = `${formatBRL(currentProgress)} / ${formatBRL(dailyTarget)}`;
+        }
+
+        const displayGoalStatusEl = document.getElementById('displayDailyGoalStatus');
+        if (displayGoalStatusEl) {
+          if (diffToGoal > 0) {
+            displayGoalStatusEl.textContent = `Faltam ${formatBRL(diffToGoal)} para bater a meta de hoje`;
+            displayGoalStatusEl.className = 'text-[10px] text-gray-400 font-medium block mt-0.5';
+          } else {
+            const surplus = currentProgress - dailyTarget;
+            displayGoalStatusEl.textContent = surplus > 0
+              ? `🔥 Meta superada em +${formatBRL(surplus)}! Excelente trabalho!`
+              : `🎉 Parabéns! Meta de ${formatBRL(dailyTarget)} atingida hoje!`;
+            displayGoalStatusEl.className = 'text-[10px] text-neonGreen font-bold block mt-0.5';
+          }
+        }
+
+        const badgeGoalPctEl = document.getElementById('badgeDailyGoalPct');
+        if (badgeGoalPctEl) {
+          badgeGoalPctEl.textContent = `${goalPct}%`;
+          if (goalPct >= 100) {
+            badgeGoalPctEl.className = 'font-mono font-black text-xs sm:text-sm px-2.5 py-1 rounded-xl bg-amber-400/20 border border-amber-400 text-amber-300 tabular-nums animate-pulse';
+          } else {
+            badgeGoalPctEl.className = 'font-mono font-black text-xs sm:text-sm px-2.5 py-1 rounded-xl bg-amoled border border-borderSubtle text-neonGreen tabular-nums';
+          }
+        }
+
+        const barGoalFillEl = document.getElementById('barDailyGoalFill');
+        if (barGoalFillEl) {
+          barGoalFillEl.style.width = `${clampedPct}%`;
+          if (goalPct >= 100) {
+            barGoalFillEl.className = 'h-full rounded-full bg-gradient-to-r from-emerald-500 via-neonGreen to-amber-400 transition-all duration-500 shadow-[0_0_15px_rgba(245,158,11,0.7)]';
+          } else {
+            barGoalFillEl.className = 'h-full rounded-full bg-gradient-to-r from-emerald-600 via-neonGreen to-emerald-300 transition-all duration-500 shadow-[0_0_12px_rgba(0,230,118,0.5)]';
+          }
+        }
+
+        // Troféu Iluminado e Animado no Final da Barra
+        const trophyWrapperEl = document.getElementById('trophyIconWrapper');
+        const trophyBadgeEl = document.getElementById('trophyCelebrationBadge');
+        if (trophyWrapperEl) {
+          if (goalPct >= 100) {
+            trophyWrapperEl.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 border-2 border-amber-200 text-amoled flex items-center justify-center text-xl sm:text-2xl shadow-[0_0_25px_rgba(245,158,11,0.9)] trophy-winner cursor-pointer transition-all';
+            trophyWrapperEl.title = '🏆 Parabéns! Meta diária batida com sucesso!';
+            if (trophyBadgeEl) trophyBadgeEl.classList.remove('hidden');
+          } else {
+            trophyWrapperEl.className = 'w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amoled border border-borderSubtle flex items-center justify-center text-xl sm:text-2xl opacity-50 grayscale transition-all duration-300 cursor-pointer';
+            trophyWrapperEl.title = `Conclua a meta diária (${goalPct}%) para desbloquear o troféu!`;
+            if (trophyBadgeEl) trophyBadgeEl.classList.add('hidden');
+          }
+        }
+
         // Sidebar
         document.getElementById('sbCostPerKm').textContent = `${formatBRL(totalPerKm, 3)}/km`;
         document.getElementById('sbFuelText').textContent = `${formatBRL(state.moto.fuelPrice)} (${state.moto.fuelConsumption} km/L)`;
@@ -2391,8 +2550,8 @@
         document.getElementById('valFuel').textContent = formatBRL(fuelCost);
         document.getElementById('valWear').textContent = formatBRL(wearCost);
         document.getElementById('valExtra').textContent = formatBRL(extrasCost);
-        const caixinhaEl = document.getElementById('caixinhaHighlight');
-        if (caixinhaEl) caixinhaEl.textContent = formatBRL(wearCost);
+        const wearEl = document.getElementById('wearHighlight');
+        if (wearEl) wearEl.textContent = formatBRL(wearCost);
         document.getElementById('lblFuelKm').innerHTML = `${formatBRL(fuelPerKm, 3)}/km • <span id="pctFuel">${totalCost > 0 ? Math.round((fuelCost / totalCost) * 100) : 0}%</span>`;
         document.getElementById('lblWearKm').innerHTML = `${formatBRL(partsPerKm, 3)}/km • <span id="pctWear">${totalCost > 0 ? Math.round((wearCost / totalCost) * 100) : 0}%</span>`;
         document.getElementById('extraCountLabel').textContent = `${state.currentShift.extras.length} ${state.currentShift.extras.length === 1 ? 'item' : 'itens'}`;
@@ -3025,7 +3184,7 @@
             </div>
 
             <div class="p-3 rounded-xl bg-card border border-borderSubtle">
-              <span class="text-[10px] uppercase font-bold text-gray-400 block">Caixinha Peças</span>
+              <span class="text-[10px] uppercase font-bold text-gray-400 block">Desgaste Peças</span>
               <span class="font-mono font-bold text-base text-amber-400 mt-0.5 block">-${formatBRL(shift.wearCost)}</span>
             </div>
 
@@ -3074,7 +3233,7 @@
                 <th class="py-2.5 px-3">KM</th>
                 <th class="py-2.5 px-3">Bruto</th>
                 <th class="py-2.5 px-3">Combustível</th>
-                <th class="py-2.5 px-3">Caixinha Moto</th>
+                <th class="py-2.5 px-3">Desgaste Peças</th>
                 <th class="py-2.5 px-3">Extras</th>
                 <th class="py-2.5 px-3 text-neonGreen font-bold">Lucro Líquido</th>
                 <th class="py-2.5 px-3">R$/KM</th>
@@ -3310,7 +3469,7 @@
                   <tr class="hover:bg-white/[0.02]">
                     <td class="py-2.5 px-3 text-gray-500">102</td>
                     <td class="py-2.5 px-3 text-white font-medium font-sans">
-                      Fundo Caixinha Manutenção &amp; Peças (Desgaste por KM)
+                      Fundo de Manutenção &amp; Peças (Desgaste por KM)
                       <span class="block text-[10px] text-gray-500 font-sans">Pneus, Kit Relação, Óleo motor/bengala, Freios dianteiro/traseiro</span>
                     </td>
                     <td class="py-2.5 px-3 text-center text-gray-400">11 itens</td>
@@ -3688,6 +3847,46 @@
         // CONTROLES ADICIONAIS: CABEÇALHO, FILTROS, GANHOS, CLOCK & APK
         // ---------------------------------------------------------------------
 
+        // Modal Meta Diária (Definir objetivo diário e animar troféu)
+        const modalDailyGoal = document.getElementById('modalDailyGoal');
+        const btnOpenDailyGoal = document.getElementById('btnOpenDailyGoalModal');
+        const trophyWrapper = document.getElementById('trophyIconWrapper');
+        const inputDailyGoal = document.getElementById('inputDailyGoalValue');
+        const btnConfirmDailyGoal = document.getElementById('btnConfirmDailyGoal');
+
+        const openDailyGoalModal = () => {
+          if (!modalDailyGoal) return;
+          if (inputDailyGoal) inputDailyGoal.value = state.goals?.dailyTarget || 200;
+          modalDailyGoal.classList.remove('hidden');
+          if (inputDailyGoal) inputDailyGoal.focus();
+        };
+
+        if (btnOpenDailyGoal) btnOpenDailyGoal.addEventListener('click', openDailyGoalModal);
+        if (trophyWrapper) trophyWrapper.addEventListener('click', openDailyGoalModal);
+
+        document.querySelectorAll('.btn-preset-goal').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const presetVal = btn.dataset.presetGoal;
+            if (inputDailyGoal) inputDailyGoal.value = presetVal;
+          });
+        });
+
+        if (btnConfirmDailyGoal) {
+          btnConfirmDailyGoal.addEventListener('click', () => {
+            const val = parseFloat(inputDailyGoal.value);
+            if (!val || val <= 0) {
+              showToast('Digite um valor de meta diária válido.', 'amber');
+              return;
+            }
+            if (!state.goals) state.goals = {};
+            state.goals.dailyTarget = val;
+            modalDailyGoal.classList.add('hidden');
+            saveState();
+            renderPainel();
+            showToast(`Meta diária definida para ${formatBRL(val)}!`, 'green');
+          });
+        }
+
         // Ocultar e Restaurar Barra Superior
         const topHeader = document.getElementById('topAppHeader');
         const btnToggleHeader = document.getElementById('btnToggleHeader');
@@ -4018,7 +4217,7 @@
             showToast('Nenhum turno registrado para exportar.', 'amber');
             return;
           }
-          let csv = 'Data;Quilometros;Faturamento_Bruto;Combustivel;Caixinha_Peças;Extras;Lucro_Liquido;Lucro_Por_KM\n';
+          let csv = 'Data;Quilometros;Faturamento_Bruto;Combustivel;Desgaste_Peças;Extras;Lucro_Liquido;Lucro_Por_KM\n';
           state.shifts.forEach(s => {
             csv += `${s.date};${s.km.toFixed(1)};${s.gross.toFixed(2)};${s.fuelCost.toFixed(2)};${s.wearCost.toFixed(2)};${s.extrasCost.toFixed(2)};${s.netProfit.toFixed(2)};${s.perKm.toFixed(2)}\n`;
           });
