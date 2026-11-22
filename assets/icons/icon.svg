@@ -1,44 +1,110 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <radialGradient id="bgGrad" cx="50%" cy="30%" r="70%">
-      <stop offset="0%" stop-color="#0E1622" />
-      <stop offset="60%" stop-color="#05080C" />
-      <stop offset="100%" stop-color="#020305" />
-    </radialGradient>
-    <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00E676" />
-      <stop offset="100%" stop-color="#00B0FF" />
+    <!-- Gradiente de Fundo AMOLED Metálico -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A1118" />
+      <stop offset="50%" stop-color="#05080D" />
+      <stop offset="100%" stop-color="#020306" />
     </linearGradient>
-    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="10" result="blur" />
+
+    <!-- Gradiente Neon Verde & Ciano MotoCash -->
+    <linearGradient id="neonGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00FF87" />
+      <stop offset="100%" stop-color="#60EFFF" />
+    </linearGradient>
+
+    <!-- Gradiente Dourado de Moeda / Cash -->
+    <linearGradient id="goldCashGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082" />
+      <stop offset="50%" stop-color="#FFB300" />
+      <stop offset="100%" stop-color="#FF8F00" />
+    </linearGradient>
+
+    <!-- Efeito de Brilho Neon -->
+    <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
       <feMerge>
         <feMergeNode in="blur" />
         <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
+
+    <!-- Brilho Dourado Forte para o Dinheiro -->
+    <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blurGold" />
+      <feMerge>
+        <feMergeNode in="blurGold" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
   </defs>
 
-  <!-- Fundo Circular AMOLED -->
-  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" />
-  <rect width="504" height="504" x="4" y="4" rx="106" fill="none" stroke="#1F2A37" stroke-width="6" />
+  <!-- Fundo App Tradicional (Retângulo Arredondado - Squircle) -->
+  <rect width="512" height="512" rx="116" fill="url(#bgGrad)" />
+  <rect width="502" height="502" x="5" y="5" rx="111" fill="none" stroke="#1E2A38" stroke-width="4" />
+  <rect width="494" height="494" x="9" y="9" rx="107" fill="none" stroke="#00E676" stroke-width="2" stroke-opacity="0.3" />
 
-  <!-- Arco do Velocímetro -->
-  <path d="M 106 330 A 160 160 0 1 1 406 330" fill="none" stroke="#1A2433" stroke-width="26" stroke-linecap="round" />
-  <path d="M 106 330 A 160 160 0 1 1 350 160" fill="none" stroke="url(#neonGrad)" stroke-width="26" stroke-linecap="round" filter="url(#neonGlow)" />
+  <!-- Arco do Odômetro / Velocímetro Digital Superior -->
+  <path d="M 86 320 A 176 176 0 1 1 426 320" fill="none" stroke="#121D28" stroke-width="20" stroke-linecap="round" />
+  <path d="M 86 320 A 176 176 0 1 1 370 146" fill="none" stroke="url(#neonGreenGrad)" stroke-width="20" stroke-linecap="round" filter="url(#neonGlow)" />
 
-  <!-- Silhueta da Moto / Guidão -->
-  <g transform="translate(136, 175) scale(1.0)" stroke="#FFFFFF" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <!-- Rodas -->
-    <circle cx="45" cy="125" r="32" stroke="#00E676" stroke-width="14" fill="#05080C" />
-    <circle cx="195" cy="125" r="32" stroke="#00E676" stroke-width="14" fill="#05080C" />
-    <!-- Quadro e Guidão -->
-    <path d="M 45 125 L 95 125 L 135 75 L 180 75" />
-    <path d="M 135 75 L 195 125" />
-    <path d="M 120 48 L 145 75 L 115 125" stroke="#00B0FF" />
-    <circle cx="112" cy="38" r="8" fill="#00E676" stroke="none" />
+  <!-- Traços de Velocidade / Aerodinâmica -->
+  <line x1="60" y1="210" x2="110" y2="210" stroke="#00E676" stroke-width="5" stroke-linecap="round" stroke-opacity="0.5" />
+  <line x1="45" y1="240" x2="100" y2="240" stroke="#00B0FF" stroke-width="4" stroke-linecap="round" stroke-opacity="0.4" />
+  <line x1="70" y1="270" x2="115" y2="270" stroke="#00E676" stroke-width="4" stroke-linecap="round" stroke-opacity="0.3" />
+
+  <!-- ================= MOTO DE ENTREGADOR COM BAÚ ================= -->
+  <g transform="translate(10, 0)">
+    <!-- Baú / Mochila de Entrega Traseira -->
+    <rect x="135" y="150" width="70" height="75" rx="14" fill="#0C141E" stroke="#00E676" stroke-width="7" />
+    <line x1="145" y1="187" x2="195" y2="187" stroke="#00E676" stroke-width="5" stroke-dasharray="6,4" stroke-linecap="round" />
+    <!-- Faixa Refletiva Amarela no Baú -->
+    <rect x="141" y="200" width="58" height="12" rx="4" fill="#FFC107" opacity="0.9" />
+
+    <!-- Piloto / Capacete Aerodinâmico com Viseira -->
+    <circle cx="242" cy="148" r="24" fill="#0F1824" stroke="#FFFFFF" stroke-width="6" />
+    <path d="M 244 140 Q 262 144 258 156 Q 248 158 240 154 Z" fill="#00E676" filter="url(#neonGlow)" />
+
+    <!-- Corpo do Piloto Inclinado para Frente (Entrega Rápida) -->
+    <path d="M 215 178 Q 235 168 250 178 L 275 225 L 235 235 Z" fill="#141E2B" />
+
+    <!-- Guidão e Garfo Dianteiro -->
+    <line x1="265" y1="195" x2="285" y2="185" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" />
+    <line x1="285" y1="185" x2="340" y2="305" stroke="#60EFFF" stroke-width="9" stroke-linecap="round" />
+
+    <!-- Farol Dianteiro Projetando Luz de LED -->
+    <polygon points="295,190 410,165 410,230 295,215" fill="url(#neonGreenGrad)" opacity="0.18" />
+    <circle cx="295" cy="202" r="9" fill="#FFFFFF" filter="url(#neonGlow)" />
+
+    <!-- Chassi / Motor da Moto -->
+    <path d="M 175 275 L 245 275 L 290 235 L 245 220 L 195 240 Z" fill="#111B26" stroke="#253545" stroke-width="5" stroke-linejoin="round" />
+
+    <!-- RODA TRASEIRA ESPORTIVA -->
+    <g transform="translate(155, 305)">
+      <circle cx="0" cy="0" r="44" fill="#05080C" stroke="#263445" stroke-width="12" />
+      <circle cx="0" cy="0" r="44" fill="none" stroke="#00E676" stroke-width="7" stroke-dasharray="24 16" filter="url(#neonGlow)" />
+      <circle cx="0" cy="0" r="14" fill="#00E676" />
+    </g>
+
+    <!-- RODA DIANTEIRA ESPORTIVA -->
+    <g transform="translate(340, 305)">
+      <circle cx="0" cy="0" r="44" fill="#05080C" stroke="#263445" stroke-width="12" />
+      <circle cx="0" cy="0" r="44" fill="none" stroke="#00E676" stroke-width="7" stroke-dasharray="24 16" filter="url(#neonGlow)" />
+      <circle cx="0" cy="0" r="14" fill="#00E676" />
+    </g>
   </g>
 
-  <!-- Badge Digital em R$ -->
-  <rect x="156" y="375" width="200" height="56" rx="28" fill="#070A0E" stroke="#00E676" stroke-width="3" filter="url(#neonGlow)" />
-  <text x="256" y="413" fill="#00E676" font-family="'Orbitron', monospace, sans-serif" font-size="26" font-weight="900" text-anchor="middle" letter-spacing="2">R$ / KM</text>
+  <!-- ================= SÍMBOLO DE DINHEIRO (MOEDA / ESCUDO CASH) ================= -->
+  <g transform="translate(256, 395)">
+    <!-- Placa Estilizada Oval / Badge Dinheiro -->
+    <rect x="-140" y="-36" width="280" height="72" rx="36" fill="#080E16" stroke="url(#goldCashGrad)" stroke-width="4" filter="url(#goldGlow)" />
+    <!-- Moeda Dourada com Cifrão -->
+    <circle cx="-86" cy="0" r="24" fill="url(#goldCashGrad)" stroke="#FFE082" stroke-width="3" />
+    <text x="-86" y="9" fill="#05080D" font-family="'Inter', -apple-system, sans-serif" font-size="28" font-weight="900" text-anchor="middle">$</text>
+
+    <!-- Texto de Marca MOTOCASH -->
+    <text x="24" y="9" fill="#FFFFFF" font-family="'Orbitron', monospace, sans-serif" font-size="28" font-weight="900" text-anchor="middle" letter-spacing="2">
+      MOTO<tspan fill="#00E676">CASH</tspan>
+    </text>
+  </g>
 </svg>

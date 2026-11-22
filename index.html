@@ -265,7 +265,7 @@
 
         <button data-nav-target="view-config" class="nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-          Turso Cloud &amp; Ajustes
+          Configurações
         </button>
       </nav>
 
@@ -276,7 +276,7 @@
           <span id="sbMotoModel" class="text-gray-200 font-semibold truncate max-w-[120px]">CG 160 Fan</span>
         </div>
         <div class="flex justify-between text-gray-400">
-          <span>Gasolina (Ceará):</span>
+          <span>Combustível (Ceará):</span>
           <span id="sbFuelText" class="text-neonGreen font-mono font-bold">R$ 7,00 (40 km/L)</span>
         </div>
         <div class="flex justify-between text-gray-400">
@@ -284,7 +284,7 @@
           <span id="sbCostPerKm" class="text-amber-400 font-mono font-bold">R$ 0,295/km</span>
         </div>
         <div class="pt-2 border-t border-borderSubtle/60 flex items-center justify-between text-[11px] text-gray-500">
-          <span>Versão 1.5</span>
+          <span>Versão 1.6</span>
           <span class="text-neonGreen font-semibold">● Estável</span>
         </div>
       </div>
@@ -294,7 +294,7 @@
     <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
 
       <!-- CABEÇALHO GLOBAL RESPONSIVO -->
-      <header class="sticky top-0 z-20 bg-amoled/90 backdrop-blur-md border-b border-borderSubtle px-4 sm:px-6 py-3">
+      <header id="topAppHeader" class="sticky top-0 z-20 bg-amoled/90 backdrop-blur-md border-b border-borderSubtle px-4 sm:px-6 py-3 transition-all">
         <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
           <!-- Logo no Mobile e Título da Tela Ativa -->
           <div class="flex items-center gap-3">
@@ -338,14 +338,26 @@
               <span>Zerar</span>
             </button>
 
-            <!-- Botão Instalar App (Se disponível) -->
-            <button id="btnHeaderInstall" type="button" class="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-card border border-neonGreen/30 text-neonGreen hover:bg-neonGreen/10 transition">
+            <!-- Botão Instalar App (APK / WebAPK Android) -->
+            <button id="btnHeaderInstall" type="button" class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold bg-card border border-neonGreen/40 text-neonGreen hover:bg-neonGreen/10 transition" title="Instalar aplicativo APK no seu celular">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               <span>Instalar</span>
+            </button>
+
+            <!-- Botão Ocultar Cabeçalho (Modo Foco / Espaço Total no Celular) -->
+            <button id="btnToggleHeader" type="button" class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white bg-card hover:bg-cardHover border border-borderSubtle transition" title="Ocultar Cabeçalho para liberar espaço total na tela">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" /></svg>
+              <span class="hidden sm:inline">Ocultar Barra</span>
             </button>
           </div>
         </div>
       </header>
+
+      <!-- Botão Flutuante para Restaurar Cabeçalho quando Oculto -->
+      <button id="btnRestoreHeader" type="button" class="hidden fixed top-3 right-4 z-50 px-3.5 py-1.5 rounded-full bg-card/95 backdrop-blur-md border border-neonGreen/50 text-neonGreen text-xs font-extrabold flex items-center gap-1.5 shadow-xl active:scale-95 transition">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+        <span>Mostrar Barra</span>
+      </button>
 
       <!-- ==================== CONTEÚDO DAS VIEWS / ABAS ==================== -->
       <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 pt-4 sm:pt-6 pb-24 lg:pb-12 space-y-6">
@@ -364,7 +376,18 @@
               <div class="cluster-frame landscape-compact-cluster relative rounded-3xl border-2 border-borderSubtle/90 p-5 sm:p-7 overflow-hidden">
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-2/5 h-1 rounded-b-full bg-gradient-to-r from-transparent via-neonGreen/70 to-transparent"></div>
 
-                <div class="flex items-center justify-between text-[11px] uppercase tracking-widest text-gray-500 font-semibold mb-3">
+                <!-- Hora e Data em Tempo Real (Grande e Nítida para o Piloto no Suporte) -->
+                <div class="flex items-center justify-between py-2.5 px-4 mb-3 rounded-2xl bg-white/[0.04] border border-white/10">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-neonGreen animate-pulse"></span>
+                    <span id="displayLiveTime" class="font-digital text-2xl sm:text-3xl font-extrabold text-white tracking-wider tabular-nums digital-glow-green">--:--:--</span>
+                  </div>
+                  <div class="text-right">
+                    <span id="displayLiveDate" class="font-mono text-xs sm:text-sm font-bold text-gray-300 block uppercase">--</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between text-[11px] uppercase tracking-widest text-gray-500 font-semibold mb-2">
                   <span class="flex items-center gap-1.5">
                     <span id="clusterStatusDot" class="w-2 h-2 rounded-full bg-gray-600"></span>
                     <span id="clusterStatusText">Odômetro do Dia</span>
@@ -376,22 +399,44 @@
                 <div class="text-center py-2 sm:py-3">
                   <div class="flex items-baseline justify-center gap-2">
                     <span id="displayKm" class="landscape-km-text font-digital font-extrabold text-5xl sm:text-6xl lg:text-7xl tracking-tight text-neonGreen digital-glow-green tabular-nums">
-                      0.0
+                      0.00
                     </span>
                     <span class="font-digital text-lg sm:text-2xl font-bold text-neonGreen/80">km</span>
                   </div>
 
-                  <!-- Valor Gasto Acumulado em Reais -->
-                  <div class="mt-3 sm:mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-white/[0.04] border border-white/10">
-                    <span class="text-xs uppercase tracking-wider text-gray-400 font-semibold">Gasto do Dia</span>
-                    <span id="displayTotalCost" class="font-mono font-extrabold text-2xl sm:text-3xl text-amber-400 digital-glow-amber tabular-nums">
-                      R$ 0,00
-                    </span>
+                  <!-- Linha de Faturamento e Lucro Líquido -->
+                  <div class="mt-3 flex items-center justify-center gap-2 flex-wrap">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/[0.04] border border-white/10 text-xs">
+                      <span class="text-gray-400 font-semibold uppercase text-[10px]">Gasto:</span>
+                      <span id="displayTotalCost" class="font-mono font-extrabold text-amber-400 tabular-nums">R$ 0,00</span>
+                    </div>
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-neonGreen/10 border border-neonGreen/30 text-xs">
+                      <span class="text-gray-300 font-semibold uppercase text-[10px]">Ganhos:</span>
+                      <span id="displayTotalGains" class="font-mono font-extrabold text-neonGreen tabular-nums">R$ 0,00</span>
+                    </div>
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-500/10 border border-blue-500/30 text-xs">
+                      <span class="text-gray-300 font-semibold uppercase text-[10px]">Líquido:</span>
+                      <span id="displayNetProfit" class="font-mono font-extrabold text-white tabular-nums">R$ 0,00</span>
+                    </div>
+                  </div>
+
+                  <!-- Filtro Interativo de Gastos Incluídos -->
+                  <div class="mt-3 pt-2.5 border-t border-gray-800/80 flex items-center justify-center gap-1.5 flex-wrap">
+                    <span class="text-[10px] uppercase font-bold text-gray-500 mr-1">Calcular:</span>
+                    <button id="toggleFilterFuel" type="button" class="cost-filter-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40">
+                      ✓ Combustível
+                    </button>
+                    <button id="toggleFilterParts" type="button" class="cost-filter-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-amber-500/15 text-amber-400 border-amber-500/40">
+                      ✓ Peças
+                    </button>
+                    <button id="toggleFilterExtras" type="button" class="cost-filter-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-500/15 text-blue-400 border-blue-500/40">
+                      ✓ Extras
+                    </button>
                   </div>
                 </div>
 
                 <!-- Mini-Indicadores (Velocidade, Tempo e Custo/KM) -->
-                <div class="mt-5 pt-4 border-t border-gray-800/90 grid grid-cols-3 gap-2 text-center">
+                <div class="mt-4 pt-3.5 border-t border-gray-800/90 grid grid-cols-3 gap-2 text-center">
                   <div class="bg-white/[0.02] rounded-xl py-2 px-1 border border-white/[0.04]">
                     <p class="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-medium">Velocidade</p>
                     <p class="font-mono font-bold text-sm sm:text-base text-white mt-0.5 tabular-nums">
@@ -410,20 +455,25 @@
               </div>
 
               <!-- BOTÕES DE CONTROLE RÁPIDO (Tamanho grande para luvas e rua) -->
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <button id="btnStartPause" type="button" class="col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition">
-                  <svg id="iconStartPause" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <button id="btnStartPause" type="button" class="min-h-[56px] px-3 py-3 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-sm sm:text-base flex items-center justify-center gap-1.5 shadow-lg shadow-neonGreen/20 transition">
+                  <svg id="iconStartPause" class="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                   <span id="textStartPause">Iniciar Dia</span>
                 </button>
 
-                <button id="btnOpenExtra" type="button" class="min-h-[56px] px-4 py-3.5 rounded-2xl bg-card hover:bg-cardHover active:scale-[0.98] text-blue-400 border border-blue-500/35 font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition">
-                  <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                  <span>+ Gasto Extra</span>
+                <button id="btnOpenGain" type="button" class="min-h-[56px] px-3 py-3 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25 active:scale-[0.98] text-neonGreen border border-neonGreen/40 font-bold text-sm sm:text-base flex items-center justify-center gap-1.5 shadow-md shadow-neonGreen/10 transition" title="Registrar corrida ou entrega recebida">
+                  <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <span>+ Ganho</span>
                 </button>
 
-                <button id="btnFinishDay" type="button" class="min-h-[56px] px-4 py-3.5 rounded-2xl bg-red-600/90 hover:bg-red-500 active:scale-[0.98] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 transition">
+                <button id="btnOpenExtra" type="button" class="min-h-[56px] px-3 py-3 rounded-2xl bg-card hover:bg-cardHover active:scale-[0.98] text-blue-400 border border-blue-500/35 font-bold text-sm sm:text-base flex items-center justify-center gap-1.5 transition">
+                  <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                  <span>+ Extra</span>
+                </button>
+
+                <button id="btnFinishDay" type="button" class="min-h-[56px] px-3 py-3 rounded-2xl bg-red-600/90 hover:bg-red-500 active:scale-[0.98] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-1.5 shadow-lg shadow-red-600/20 transition">
                   <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  <span>Finalizar Dia</span>
+                  <span>Finalizar</span>
                 </button>
               </div>
 
@@ -470,7 +520,7 @@
                     <div class="flex items-center gap-2">
                       <span class="w-3 h-3 rounded-full bg-neonGreen shrink-0"></span>
                       <div>
-                        <p class="text-xs font-semibold text-gray-200">Gasolina</p>
+                        <p class="text-xs font-semibold text-gray-200">Combustível</p>
                         <p id="lblFuelKm" class="text-[10px] text-gray-500 font-mono">R$ 0,175/km • <span id="pctFuel">0%</span></p>
                       </div>
                     </div>
@@ -499,16 +549,6 @@
                     <span id="valExtra" class="font-mono font-bold text-sm text-blue-400 tabular-nums">R$ 0,00</span>
                   </div>
                 </div>
-              </div>
-
-              <!-- Destaque Educativo: Caixinha da Moto -->
-              <div class="rounded-2xl bg-amber-500/10 border border-amber-500/30 px-3.5 py-2.5 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                </div>
-                <p class="text-xs text-amber-100/90 leading-snug">
-                  Separe <strong id="caixinhaHighlight" class="font-mono text-amber-400">R$ 0,00</strong> na <strong>Caixinha da Moto</strong> hoje para pneus, relação e trocas de óleo.
-                </p>
               </div>
             </section>
           </div>
@@ -559,7 +599,7 @@
                 <span class="text-xs font-mono text-gray-400">/km</span>
               </div>
               <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-borderSubtle/80 font-mono">
-                <span>Gasolina: <strong id="motoSummaryFuelPerKm" class="text-gray-200">R$ 0,175</strong></span>
+                <span>Combustível: <strong id="motoSummaryFuelPerKm" class="text-gray-200">R$ 0,175</strong></span>
                 <span>Peças: <strong id="motoSummaryPartsPerKm" class="text-amber-400">R$ 0,120</strong></span>
               </div>
             </div>
@@ -1066,7 +1106,7 @@
                 <p id="dreGross" class="font-mono font-extrabold text-lg sm:text-xl text-white mt-1">R$ 0,00</p>
               </div>
               <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle">
-                <p class="text-[11px] text-gray-400 font-medium">(-) Gasolina</p>
+                <p class="text-[11px] text-gray-400 font-medium">(-) Combustível</p>
                 <p id="dreFuel" class="font-mono font-extrabold text-lg sm:text-xl text-red-400 mt-1">R$ 0,00</p>
               </div>
               <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle">
@@ -1139,7 +1179,7 @@
           <section class="bg-card rounded-3xl border border-borderSubtle p-5 sm:p-6 space-y-4">
             <div class="flex items-center justify-between border-b border-borderSubtle pb-3">
               <div>
-                <h3 class="font-bold text-base text-white">Sincronização em Nuvem — Turso (libSQL)</h3>
+                <h3 class="font-bold text-base text-white">Sincronização em Nuvem (Configurações &amp; Backup)</h3>
                 <p class="text-xs text-gray-400">Banco de dados gratuito e ultra-rápido na borda para sincronizar com seu PC.</p>
               </div>
               <span id="tursoStatusBadge" class="text-xs font-mono font-semibold px-2.5 py-1 rounded-full bg-gray-800 text-gray-400">Local-Only</span>
@@ -1188,36 +1228,36 @@
   </div>
 
   <!-- ==================== BARRA DE NAVEGAÇÃO INFERIOR (Mobile / Tablet) ==================== -->
-  <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-card/95 backdrop-blur-md border-t border-borderSubtle px-1.5 py-1.5 no-print">
-    <div class="max-w-md mx-auto grid grid-cols-6 gap-1">
-      <button data-nav-target="view-painel" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-neonGreen bg-neonGreen/10 font-semibold">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <span class="text-[9px] mt-0.5">Painel</span>
+  <nav id="mobileBottomNav" class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-card/95 backdrop-blur-md border-t border-borderSubtle px-1.5 py-1.5 no-print">
+    <div class="max-w-md mx-auto grid grid-cols-6 gap-1 text-center">
+      <button data-nav-target="view-painel" type="button" class="nav-tab-btn w-full flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl text-neonGreen bg-neonGreen/15 font-extrabold text-center transition">
+        <svg class="w-4 h-4 mx-auto shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span class="text-[9px] mt-0.5 leading-tight truncate w-full text-center">Painel</span>
       </button>
 
-      <button data-nav-target="view-moto" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-        <span class="text-[9px] mt-0.5">Moto</span>
+      <button data-nav-target="view-moto" type="button" class="nav-tab-btn w-full flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl text-gray-400 hover:text-gray-200 font-medium text-center transition">
+        <svg class="w-4 h-4 mx-auto shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        <span class="text-[9px] mt-0.5 leading-tight truncate w-full text-center">Moto</span>
       </button>
 
-      <button data-nav-target="view-gastos-mensais" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-        <span class="text-[9px] mt-0.5">Gastos</span>
+      <button data-nav-target="view-gastos-mensais" type="button" class="nav-tab-btn w-full flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl text-gray-400 hover:text-gray-200 font-medium text-center transition">
+        <svg class="w-4 h-4 mx-auto shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        <span class="text-[9px] mt-0.5 leading-tight truncate w-full text-center">Gastos</span>
       </button>
 
-      <button data-nav-target="view-relatorios" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-        <span class="text-[9px] mt-0.5">Holerite</span>
+      <button data-nav-target="view-relatorios" type="button" class="nav-tab-btn w-full flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl text-gray-400 hover:text-gray-200 font-medium text-center transition">
+        <svg class="w-4 h-4 mx-auto shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+        <span class="text-[9px] mt-0.5 leading-tight truncate w-full text-center">Holerite</span>
       </button>
 
-      <button data-nav-target="view-metas" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-        <span class="text-[9px] mt-0.5">Metas</span>
+      <button data-nav-target="view-metas" type="button" class="nav-tab-btn w-full flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl text-gray-400 hover:text-gray-200 font-medium text-center transition">
+        <svg class="w-4 h-4 mx-auto shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+        <span class="text-[9px] mt-0.5 leading-tight truncate w-full text-center">Metas</span>
       </button>
 
-      <button data-nav-target="view-config" type="button" class="nav-tab-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
-        <span class="text-[9px] mt-0.5">Turso</span>
+      <button data-nav-target="view-config" type="button" class="nav-tab-btn w-full flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl text-gray-400 hover:text-gray-200 font-medium text-center transition">
+        <svg class="w-4 h-4 mx-auto shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+        <span class="text-[9px] mt-0.5 leading-tight truncate w-full text-center">Config</span>
       </button>
     </div>
   </nav>
@@ -1255,6 +1295,99 @@
         <button data-close-modal="modalExtra" type="button" class="flex-1 py-3.5 rounded-2xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-sm">Cancelar</button>
         <button id="btnConfirmExtra" type="button" class="flex-1 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg shadow-blue-600/25">Adicionar</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL NOVO: + GANHO / CORRIDA ==================== -->
+  <div id="modalGain" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+    <div class="w-full max-w-md bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-neonGreen/15 border border-neonGreen/30 text-neonGreen flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </span>
+          <h3 class="font-bold text-lg text-white">Adicionar Ganho / Corrida</h3>
+        </div>
+        <button data-close-modal="modalGain" class="p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-400 font-medium mb-2">Plataforma / Tipo de Entrega</p>
+      <div class="grid grid-cols-3 gap-2 mb-4">
+        <button type="button" data-gain-platform="iFood" class="gain-platform-btn py-2.5 px-2 rounded-xl border border-neonGreen bg-neonGreen/15 text-neonGreen font-bold text-xs text-center transition">🍔 iFood</button>
+        <button type="button" data-gain-platform="99" class="gain-platform-btn py-2.5 px-2 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-bold text-xs text-center transition">🟡 99 Moto</button>
+        <button type="button" data-gain-platform="Uber" class="gain-platform-btn py-2.5 px-2 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-bold text-xs text-center transition">⚫ Uber</button>
+        <button type="button" data-gain-platform="InDrive" class="gain-platform-btn py-2.5 px-2 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-bold text-xs text-center transition">🟢 InDrive</button>
+        <button type="button" data-gain-platform="Particular" class="gain-platform-btn py-2.5 px-2 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-bold text-xs text-center transition">📦 Particular</button>
+        <button type="button" data-gain-platform="Outros" class="gain-platform-btn py-2.5 px-2 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-bold text-xs text-center transition">📌 Outros</button>
+      </div>
+
+      <div class="space-y-3 mb-5">
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">Valor Recebido (R$)*</label>
+          <input id="inputGainValue" type="number" step="0.50" min="0" placeholder="Ex: 18.50" class="w-full px-4 py-3 rounded-xl bg-amoled border border-borderSubtle font-mono text-neonGreen text-xl font-extrabold focus:border-neonGreen focus:outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">KM Rodados (Opcional)</label>
+            <input id="inputGainKm" type="number" step="0.1" min="0" placeholder="Ex: 5.2" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle font-mono text-white text-sm focus:border-neonGreen focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 mb-1">Observação / Destino</label>
+            <input id="inputGainNotes" type="text" placeholder="Ex: Corrida Aldeota" class="w-full px-3.5 py-2.5 rounded-xl bg-amoled border border-borderSubtle text-xs text-white focus:border-neonGreen focus:outline-none" />
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2.5">
+        <button type="button" data-close-modal="modalGain" class="flex-1 py-3 rounded-xl bg-card hover:bg-cardHover border border-borderSubtle text-gray-300 font-semibold text-sm transition">Cancelar</button>
+        <button id="btnConfirmGain" type="button" class="flex-1 py-3 rounded-xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-sm shadow-lg shadow-neonGreen/20 transition">Salvar Ganho</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL INSTALADOR APK ANDROID ==================== -->
+  <div id="modalInstallApk" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+    <div class="w-full max-w-md bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2.5">
+          <img src="./assets/icons/icon-192.png" class="w-10 h-10 rounded-2xl shadow-lg border border-neonGreen/30" alt="MotoCash Pro" />
+          <div>
+            <h3 class="font-extrabold text-lg text-white">Instalar MotoCash Pro</h3>
+            <span class="text-[11px] font-mono text-neonGreen font-semibold">APK Oficial Android / WebAPK</span>
+          </div>
+        </div>
+        <button data-close-modal="modalInstallApk" class="p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-300 leading-relaxed mb-4">
+        O MotoCash Pro pode ser instalado nativamente no seu celular Android. Ele ganha ícone oficial na gaveta de aplicativos, funciona offline na rua e abre em tela cheia sem barras do navegador!
+      </p>
+
+      <div class="space-y-3 mb-5">
+        <button id="btnTriggerNativeInstall" type="button" class="w-full py-3.5 px-4 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/25 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          <span>Instalar Agora no Celular</span>
+        </button>
+
+        <div class="p-3.5 rounded-2xl bg-amoled border border-borderSubtle text-xs space-y-2">
+          <p class="font-bold text-white flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+            Como instalar manualmente no Chrome do Android:
+          </p>
+          <ol class="list-decimal list-inside text-gray-400 space-y-1 text-[11px] leading-relaxed">
+            <li>No Chrome, toque nos <strong>3 pontinhos (⋮)</strong> no canto superior direito.</li>
+            <li>Selecione <strong>"Instalar aplicativo"</strong> ou <strong>"Adicionar à tela inicial"</strong>.</li>
+            <li>Confirme para o Android criar o app nativo instantaneamente!</li>
+          </ol>
+        </div>
+      </div>
+
+      <button type="button" data-close-modal="modalInstallApk" class="w-full py-2.5 rounded-xl bg-card hover:bg-cardHover text-gray-400 font-semibold text-xs transition">Entendido / Fechar</button>
     </div>
   </div>
 
@@ -1348,7 +1481,7 @@
           <span id="closeGross" class="font-mono font-bold text-white">R$ 0,00</span>
         </div>
         <div class="flex justify-between text-gray-400">
-          <span>(-) Gasolina estimada</span>
+          <span>(-) Combustível estimado</span>
           <span id="closeFuel" class="font-mono font-semibold text-red-400">- R$ 0,00</span>
         </div>
         <div class="flex justify-between text-gray-400">
@@ -1661,12 +1794,18 @@
             km: 0.0,
             elapsedSeconds: 0,
             currentSpeed: 0,
-            extras: [] // { category: 'Lanche', value: 12.00 }
+            extras: [], // { category: 'Lanche', value: 12.00 }
+            gains: [] // { id: 'gain_1', platform: 'iFood', value: 18.5, km: 5.2, notes: '' }
           },
           config: {
             minSpeedKmh: 5.4,
             wakeLockEnabled: true,
-            simulationMode: true // Inicia ON para facilitar testes
+            simulationMode: true, // Inicia ON para facilitar testes
+            costFilters: {
+              fuel: true,
+              parts: true,
+              extras: true
+            }
           }
         };
       }
@@ -1683,7 +1822,11 @@
             pilot: { ...def.pilot, ...(parsed.pilot || {}) },
             moto: { ...def.moto, ...(parsed.moto || {}) },
             goals: { ...def.goals, ...(parsed.goals || {}) },
-            config: { ...def.config, ...(parsed.config || {}) },
+            config: {
+              ...def.config,
+              ...(parsed.config || {}),
+              costFilters: { ...def.config.costFilters, ...(parsed.config?.costFilters || {}) }
+            },
             parts: (() => {
               if (!Array.isArray(parsed.parts) || !parsed.parts.length) return def.parts;
               const existingMap = new Map(parsed.parts.map(p => [p.id, p]));
@@ -1716,7 +1859,12 @@
               return Array.from(map.values()).sort((a, b) => new Date(b.date) - new Date(a.date));
             })(),
             objectives: Array.isArray(parsed.objectives) ? parsed.objectives : def.objectives,
-            currentShift: { ...def.currentShift, ...(parsed.currentShift || {}) }
+            currentShift: {
+              ...def.currentShift,
+              ...(parsed.currentShift || {}),
+              extras: Array.isArray(parsed.currentShift?.extras) ? parsed.currentShift.extras : [],
+              gains: Array.isArray(parsed.currentShift?.gains) ? parsed.currentShift.gains : []
+            }
           };
         } catch (err) {
           console.warn('Erro ao ler estado do storage, usando padrão:', err);
@@ -1827,9 +1975,13 @@
           }
         });
 
+        const filters = state.config.costFilters || { fuel: true, parts: true, extras: true };
+        const activePerKm = (filters.fuel ? fuelPerKm : 0) + (filters.parts ? partsPerKm : 0);
+
         return {
           fuelPerKm,
           partsPerKm,
+          activePerKm,
           totalPerKm: fuelPerKm + partsPerKm
         };
       }
@@ -2103,6 +2255,7 @@
         state.currentShift.km = 0.0;
         state.currentShift.elapsedSeconds = 0;
         state.currentShift.extras = [];
+        state.currentShift.gains = [];
         state.currentShift.currentSpeed = 0;
         simCycleSeconds = 0;
 
@@ -2176,19 +2329,57 @@
       // 5. RENDERIZAÇÃO DAS VIEWS E COMPONENTES
       // =======================================================================
       function renderPainel() {
-        const { fuelPerKm, partsPerKm, totalPerKm } = getCostPerKm();
+        const { fuelPerKm, partsPerKm, activePerKm, totalPerKm } = getCostPerKm();
         const km = state.currentShift.km;
         const fuelCost = km * fuelPerKm;
         const wearCost = km * partsPerKm;
-        const extrasCost = state.currentShift.extras.reduce((sum, item) => sum + item.value, 0);
+        const extrasCost = (state.currentShift.extras || []).reduce((sum, item) => sum + item.value, 0);
         const totalCost = fuelCost + wearCost + extrasCost;
+
+        const filters = state.config.costFilters || { fuel: true, parts: true, extras: true };
+        const activeCost = (filters.fuel ? fuelCost : 0) + (filters.parts ? wearCost : 0) + (filters.extras ? extrasCost : 0);
 
         // Cockpit: mostra 2 casas decimais para ver o odômetro rolando metro a metro em tempo real
         document.getElementById('displayKm').textContent = km >= 100 ? km.toFixed(1) : km.toFixed(2);
-        document.getElementById('displayTotalCost').textContent = formatBRL(totalCost);
+        document.getElementById('displayTotalCost').textContent = formatBRL(activeCost);
         document.getElementById('displaySpeed').textContent = state.currentShift.isActive && !state.currentShift.isPaused ? state.currentShift.currentSpeed : 0;
         document.getElementById('displayTimer').textContent = formatTime(state.currentShift.elapsedSeconds);
-        document.getElementById('displayCostPerKm').textContent = formatBRL(totalPerKm, 3);
+        document.getElementById('displayCostPerKm').textContent = formatBRL(activePerKm, 3);
+
+        // Ganhos e Lucro Líquido no Painel Digital
+        const totalGains = (state.currentShift.gains || []).reduce((sum, g) => sum + (parseFloat(g.value) || 0), 0);
+        const displayGainsEl = document.getElementById('displayTotalGains');
+        if (displayGainsEl) displayGainsEl.textContent = formatBRL(totalGains);
+
+        const netProfit = totalGains - activeCost;
+        const displayProfitEl = document.getElementById('displayNetProfit');
+        if (displayProfitEl) {
+          displayProfitEl.textContent = formatBRL(netProfit);
+          displayProfitEl.className = `font-mono font-black text-sm sm:text-base tabular-nums mt-0.5 ${netProfit >= 0 ? 'text-neonGreen' : 'text-red-400'}`;
+        }
+
+        // Atualiza botões de filtro de custos (Combustível, Peças, Extras)
+        const btnFuel = document.getElementById('toggleFilterFuel');
+        const btnParts = document.getElementById('toggleFilterParts');
+        const btnExtras = document.getElementById('toggleFilterExtras');
+        if (btnFuel) {
+          btnFuel.className = filters.fuel
+            ? 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40'
+            : 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-card text-gray-500 border-borderSubtle hover:text-gray-300';
+          btnFuel.innerHTML = filters.fuel ? '✓ Combustível' : '+ Combustível';
+        }
+        if (btnParts) {
+          btnParts.className = filters.parts
+            ? 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-amber-500/15 text-amber-400 border-amber-500/40'
+            : 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-card text-gray-500 border-borderSubtle hover:text-gray-300';
+          btnParts.innerHTML = filters.parts ? '✓ Peças' : '+ Peças';
+        }
+        if (btnExtras) {
+          btnExtras.className = filters.extras
+            ? 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-blue-500/15 text-blue-400 border-blue-500/40'
+            : 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-card text-gray-500 border-borderSubtle hover:text-gray-300';
+          btnExtras.innerHTML = filters.extras ? '✓ Extras' : '+ Extras';
+        }
 
         // Sidebar
         document.getElementById('sbCostPerKm').textContent = `${formatBRL(totalPerKm, 3)}/km`;
@@ -2200,7 +2391,8 @@
         document.getElementById('valFuel').textContent = formatBRL(fuelCost);
         document.getElementById('valWear').textContent = formatBRL(wearCost);
         document.getElementById('valExtra').textContent = formatBRL(extrasCost);
-        document.getElementById('caixinhaHighlight').textContent = formatBRL(wearCost);
+        const caixinhaEl = document.getElementById('caixinhaHighlight');
+        if (caixinhaEl) caixinhaEl.textContent = formatBRL(wearCost);
         document.getElementById('lblFuelKm').innerHTML = `${formatBRL(fuelPerKm, 3)}/km • <span id="pctFuel">${totalCost > 0 ? Math.round((fuelCost / totalCost) * 100) : 0}%</span>`;
         document.getElementById('lblWearKm').innerHTML = `${formatBRL(partsPerKm, 3)}/km • <span id="pctWear">${totalCost > 0 ? Math.round((wearCost / totalCost) * 100) : 0}%</span>`;
         document.getElementById('extraCountLabel').textContent = `${state.currentShift.extras.length} ${state.currentShift.extras.length === 1 ? 'item' : 'itens'}`;
@@ -2315,16 +2507,29 @@
 
           return `
             <div data-part-id="${part.id}" class="p-4 rounded-2xl bg-amoled border ${part.active ? 'border-borderSubtle' : 'border-gray-800 opacity-60'} space-y-3">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h4 class="font-bold text-sm text-white">${part.name}</h4>
-                  <p class="text-[11px] text-gray-400 font-mono">
+              <div class="flex items-center justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-bold text-sm text-white truncate">${part.name}</h4>
+                    ${!part.active ? '<span class="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-gray-800 text-gray-400 font-semibold">Inativa</span>' : ''}
+                  </div>
+                  <p class="text-[11px] text-gray-400 font-mono mt-0.5">
                     ${formatBRL(price)} a cada ${lifespan.toLocaleString('pt-BR')} km • <span class="text-neonGreen font-bold">${formatBRL(costKm, 3)}/km</span>
                   </p>
                 </div>
-                <button type="button" data-replace-part="${part.id}" class="px-2.5 py-1 rounded-lg bg-neonGreen/10 border border-neonGreen/30 text-neonGreen font-bold text-xs hover:bg-neonGreen/20 transition">
-                  Troquei
-                </button>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <!-- Switch Ativar/Desativar -->
+                  <label class="relative inline-flex items-center cursor-pointer" title="${part.active ? 'Desativar Peça' : 'Ativar Peça'}">
+                    <input type="checkbox" data-part-toggle="${part.id}" class="sr-only peer" ${part.active ? 'checked' : ''}>
+                    <div class="w-9 h-5 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-neonGreen"></div>
+                  </label>
+                  <button type="button" data-replace-part="${part.id}" class="px-2.5 py-1 rounded-lg bg-neonGreen/10 border border-neonGreen/30 text-neonGreen font-bold text-xs hover:bg-neonGreen/20 transition">
+                    Troquei
+                  </button>
+                  <button type="button" data-delete-part="${part.id}" class="p-1 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition" title="Excluir Peça">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                  </button>
+                </div>
               </div>
 
               <!-- Slider de Saúde -->
@@ -2815,7 +3020,7 @@
             </div>
 
             <div class="p-3 rounded-xl bg-card border border-borderSubtle">
-              <span class="text-[10px] uppercase font-bold text-gray-400 block">Gasolina Gasta</span>
+              <span class="text-[10px] uppercase font-bold text-gray-400 block">Combustível Gasto</span>
               <span class="font-mono font-bold text-base text-red-400 mt-0.5 block">-${formatBRL(shift.fuelCost)}</span>
             </div>
 
@@ -2868,7 +3073,7 @@
                 <th class="py-2.5 px-3">Data</th>
                 <th class="py-2.5 px-3">KM</th>
                 <th class="py-2.5 px-3">Bruto</th>
-                <th class="py-2.5 px-3">Gasolina</th>
+                <th class="py-2.5 px-3">Combustível</th>
                 <th class="py-2.5 px-3">Caixinha Moto</th>
                 <th class="py-2.5 px-3">Extras</th>
                 <th class="py-2.5 px-3 text-neonGreen font-bold">Lucro Líquido</th>
@@ -2941,11 +3146,9 @@
                   <input type="number" step="5" min="0" data-expense-input="${item.id}" value="${val}" class="w-28 px-2.5 py-1.5 rounded-xl bg-card border border-borderSubtle font-mono text-white text-sm font-bold focus:border-neonGreen focus:outline-none" />
                   <span class="text-[11px] text-gray-500 font-mono">/mês</span>
                 </div>
-                ${item.custom ? `
-                  <button type="button" data-expense-delete="${item.id}" class="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition" title="Excluir Gasto">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                  </button>
-                ` : ''}
+                <button type="button" data-expense-delete="${item.id}" class="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition" title="Excluir Gasto">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
               </div>
             </div>
           `;
@@ -3096,7 +3299,7 @@
                   <tr class="hover:bg-white/[0.02]">
                     <td class="py-2.5 px-3 text-gray-500">101</td>
                     <td class="py-2.5 px-3 text-white font-medium font-sans">
-                      Consumo de Combustível (Gasolina)
+                      Consumo de Combustível
                       <span class="block text-[10px] text-gray-500 font-sans">R$ ${state.moto.fuelPrice.toFixed(2)}/L • ${state.moto.fuelConsumption} km/L</span>
                     </td>
                     <td class="py-2.5 px-3 text-center text-gray-400">${(kmTotal / state.moto.fuelConsumption).toFixed(1)} L</td>
@@ -3218,13 +3421,23 @@
         const targetView = document.getElementById(targetViewId);
         if (targetView) targetView.classList.remove('hidden');
 
-        // Atualiza botões de navegação
+        // Atualiza botões de navegação (diferenciando desktop e mobile para alinhamento perfeito)
         document.querySelectorAll('.nav-tab-btn').forEach(btn => {
           const isTarget = btn.dataset.navTarget === targetViewId;
-          if (isTarget) {
-            btn.className = 'nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-neonGreen/15 text-neonGreen border border-neonGreen/30 font-bold text-sm transition';
+          const isMobileBottom = btn.closest('nav.lg\\:hidden') !== null || btn.parentElement.classList.contains('grid-cols-6');
+
+          if (isMobileBottom) {
+            if (isTarget) {
+              btn.className = 'nav-tab-btn w-full flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl text-neonGreen bg-neonGreen/15 font-extrabold text-center transition';
+            } else {
+              btn.className = 'nav-tab-btn w-full flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl text-gray-400 hover:text-gray-200 font-medium text-center transition';
+            }
           } else {
-            btn.className = 'nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition';
+            if (isTarget) {
+              btn.className = 'nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-neonGreen/15 text-neonGreen border border-neonGreen/30 font-bold text-sm transition';
+            } else {
+              btn.className = 'nav-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-cardHover border border-transparent font-medium text-sm transition';
+            }
           }
         });
 
@@ -3235,7 +3448,7 @@
           'view-gastos-mensais': 'Gastos Mensais no Trabalho',
           'view-relatorios': 'Gestão Financeira & Holerite',
           'view-metas': 'Metas Financeiras',
-          'view-config': 'Turso Cloud & Ajustes'
+          'view-config': 'Configurações'
         };
         document.getElementById('headerScreenTitle').textContent = titles[targetViewId] || 'MotoCash Pro';
 
@@ -3405,6 +3618,20 @@
           ['closeGainIfood', 'closeGain99', 'closeGainUber', 'closeGainPart', 'closeGainTips'].forEach(id => {
             document.getElementById(id).oninput = updateCheckoutPreview;
           });
+
+          // Pré-preenche ganhos por aplicativo a partir dos lançamentos ao vivo do turno
+          if (Array.isArray(state.currentShift.gains) && state.currentShift.gains.length > 0) {
+            const ifoodTotal = state.currentShift.gains.filter(g => g.platform === 'iFood').reduce((s, g) => s + g.value, 0);
+            const n99Total = state.currentShift.gains.filter(g => g.platform === '99').reduce((s, g) => s + g.value, 0);
+            const uberTotal = state.currentShift.gains.filter(g => g.platform === 'Uber').reduce((s, g) => s + g.value, 0);
+            const partTotal = state.currentShift.gains.filter(g => g.platform === 'Particular' || g.platform === 'InDrive' || g.platform === 'Outros').reduce((s, g) => s + g.value, 0);
+
+            if (ifoodTotal > 0) document.getElementById('closeGainIfood').value = ifoodTotal;
+            if (n99Total > 0) document.getElementById('closeGain99').value = n99Total;
+            if (uberTotal > 0) document.getElementById('closeGainUber').value = uberTotal;
+            if (partTotal > 0) document.getElementById('closeGainPart').value = partTotal;
+          }
+
           updateCheckoutPreview();
 
           document.getElementById('modalFinishDay').classList.remove('hidden');
@@ -3455,6 +3682,151 @@
             const modalId = btn.dataset.closeModal;
             document.getElementById(modalId).classList.add('hidden');
           });
+        });
+
+        // ---------------------------------------------------------------------
+        // CONTROLES ADICIONAIS: CABEÇALHO, FILTROS, GANHOS, CLOCK & APK
+        // ---------------------------------------------------------------------
+
+        // Ocultar e Restaurar Barra Superior
+        const topHeader = document.getElementById('topAppHeader');
+        const btnToggleHeader = document.getElementById('btnToggleHeader');
+        const btnRestoreHeader = document.getElementById('btnRestoreHeader');
+        if (btnToggleHeader && topHeader && btnRestoreHeader) {
+          btnToggleHeader.addEventListener('click', () => {
+            topHeader.classList.add('hidden');
+            btnRestoreHeader.classList.remove('hidden');
+            showToast('Barra superior oculta! Toque no botão flutuante para reexibir.', 'blue');
+          });
+          btnRestoreHeader.addEventListener('click', () => {
+            topHeader.classList.remove('hidden');
+            btnRestoreHeader.classList.add('hidden');
+          });
+        }
+
+        // Filtros de Custo (Combustível, Peças, Extras)
+        const toggleCostFilter = (type) => {
+          if (!state.config.costFilters) {
+            state.config.costFilters = { fuel: true, parts: true, extras: true };
+          }
+          state.config.costFilters[type] = !state.config.costFilters[type];
+          saveState();
+          renderPainel();
+          const map = { fuel: 'Combustível', parts: 'Peças', extras: 'Extras' };
+          showToast(`Cálculo de ${map[type]}: ${state.config.costFilters[type] ? 'Incluído' : 'Ocultado'}`, state.config.costFilters[type] ? 'green' : 'amber');
+        };
+        const btnFiltFuel = document.getElementById('toggleFilterFuel');
+        if (btnFiltFuel) btnFiltFuel.addEventListener('click', () => toggleCostFilter('fuel'));
+        const btnFiltParts = document.getElementById('toggleFilterParts');
+        if (btnFiltParts) btnFiltParts.addEventListener('click', () => toggleCostFilter('parts'));
+        const btnFiltExtras = document.getElementById('toggleFilterExtras');
+        if (btnFiltExtras) btnFiltExtras.addEventListener('click', () => toggleCostFilter('extras'));
+
+        // Modal + Ganho / Corrida
+        let selectedGainPlatform = 'iFood';
+        const modalGain = document.getElementById('modalGain');
+        const btnOpenGain = document.getElementById('btnOpenGain');
+        const inputGainValue = document.getElementById('inputGainValue');
+        const inputGainKm = document.getElementById('inputGainKm');
+        const inputGainNotes = document.getElementById('inputGainNotes');
+        const btnConfirmGain = document.getElementById('btnConfirmGain');
+
+        if (btnOpenGain && modalGain) {
+          btnOpenGain.addEventListener('click', () => {
+            modalGain.classList.remove('hidden');
+            if (inputGainValue) inputGainValue.value = '';
+            if (inputGainKm) inputGainKm.value = '';
+            if (inputGainNotes) inputGainNotes.value = '';
+            if (inputGainValue) inputGainValue.focus();
+          });
+        }
+
+        document.querySelectorAll('.gain-platform-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            selectedGainPlatform = btn.dataset.gainPlatform;
+            document.querySelectorAll('.gain-platform-btn').forEach(b => {
+              b.className = 'gain-platform-btn py-2.5 px-2 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-bold text-xs text-center transition';
+            });
+            btn.className = 'gain-platform-btn py-2.5 px-2 rounded-xl border border-neonGreen bg-neonGreen/15 text-neonGreen font-bold text-xs text-center transition';
+          });
+        });
+
+        if (btnConfirmGain) {
+          btnConfirmGain.addEventListener('click', () => {
+            const val = parseFloat(inputGainValue.value);
+            if (!val || val <= 0) {
+              showToast('Informe o valor recebido na corrida.', 'amber');
+              return;
+            }
+            const gainKm = parseFloat(inputGainKm.value) || 0;
+            const notes = inputGainNotes ? inputGainNotes.value.trim() : '';
+
+            if (!state.currentShift.gains) state.currentShift.gains = [];
+            state.currentShift.gains.push({
+              id: 'gain_' + Date.now(),
+              platform: selectedGainPlatform,
+              value: val,
+              km: gainKm,
+              notes: notes,
+              timestamp: Date.now()
+            });
+
+            if (gainKm > 0) {
+              addDistance(gainKm);
+            }
+
+            modalGain.classList.add('hidden');
+            renderPainel();
+            saveState();
+            showToast(`Ganho de ${formatBRL(val)} (${selectedGainPlatform}) computado!`, 'green');
+          });
+        }
+
+        // Modal Instalar APK Android
+        const openInstallApkModal = () => {
+          const m = document.getElementById('modalInstallApk');
+          if (m) m.classList.remove('hidden');
+        };
+        const btnHeaderInstall = document.getElementById('btnHeaderInstall');
+        if (btnHeaderInstall) btnHeaderInstall.addEventListener('click', openInstallApkModal);
+        const btnPwaInstall = document.getElementById('btnPwaInstall');
+        if (btnPwaInstall) btnPwaInstall.addEventListener('click', openInstallApkModal);
+
+        const btnTriggerNativeInstall = document.getElementById('btnTriggerNativeInstall');
+        if (btnTriggerNativeInstall) {
+          btnTriggerNativeInstall.addEventListener('click', () => {
+            handleInstallClick();
+          });
+        }
+
+        // Ativar / Desativar Peça
+        document.body.addEventListener('change', (e) => {
+          if (e.target.matches('[data-part-toggle]')) {
+            const partId = e.target.dataset.partToggle;
+            const part = state.parts.find(p => p.id === partId);
+            if (part) {
+              part.active = e.target.checked;
+              saveState();
+              renderMotoParts();
+              renderPainel();
+              showToast(`${part.name}: ${part.active ? 'Ativado' : 'Desativado'}`, part.active ? 'green' : 'amber');
+            }
+          }
+        });
+
+        // Excluir Peça
+        document.body.addEventListener('click', (e) => {
+          const delPartBtn = e.target.closest('[data-delete-part]');
+          if (delPartBtn) {
+            const partId = delPartBtn.dataset.deletePart;
+            const part = state.parts.find(p => p.id === partId);
+            const name = part ? part.name : 'Peça';
+            state.parts = state.parts.filter(p => p.id !== partId);
+            saveState();
+            renderMotoParts();
+            renderPainel();
+            showToast(`Peça "${name}" excluída com sucesso!`, 'amber');
+          }
         });
 
         // Troca de Peça (Botão 'Troquei')
@@ -3646,7 +4018,7 @@
             showToast('Nenhum turno registrado para exportar.', 'amber');
             return;
           }
-          let csv = 'Data;Quilometros;Faturamento_Bruto;Gasolina;Caixinha_Peças;Extras;Lucro_Liquido;Lucro_Por_KM\n';
+          let csv = 'Data;Quilometros;Faturamento_Bruto;Combustivel;Caixinha_Peças;Extras;Lucro_Liquido;Lucro_Por_KM\n';
           state.shifts.forEach(s => {
             csv += `${s.date};${s.km.toFixed(1)};${s.gross.toFixed(2)};${s.fuelCost.toFixed(2)};${s.wearCost.toFixed(2)};${s.extrasCost.toFixed(2)};${s.netProfit.toFixed(2)};${s.perKm.toFixed(2)}\n`;
           });
@@ -4019,8 +4391,33 @@
         saveState();
       });
 
+      // Relógio e Data ao Vivo de Alta Visibilidade para Suporte de Guidão (Horário e Data do Dia)
+      function updateLiveClock() {
+        const timeEl = document.getElementById('displayLiveTime');
+        const dateEl = document.getElementById('displayLiveDate');
+        if (!timeEl && !dateEl) return;
+
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const secs = String(now.getSeconds()).padStart(2, '0');
+
+        if (timeEl) timeEl.textContent = `${hrs}:${mins}:${secs}`;
+
+        if (dateEl) {
+          const days = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
+          const months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+          const dayName = days[now.getDay()];
+          const dayNum = String(now.getDate()).padStart(2, '0');
+          const monthName = months[now.getMonth()];
+          dateEl.textContent = `${dayName}, ${dayNum} ${monthName}`;
+        }
+      }
+
       // Inicialização Geral
       initEvents();
+      updateLiveClock();
+      setInterval(updateLiveClock, 1000);
       restoreShiftStateOnLoad();
       renderPainel();
       renderGastosMensais();

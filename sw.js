@@ -59,7 +59,7 @@ self.addEventListener('fetch', (event) => {
           if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse.clone()));
           }
-        }).catch(() => {/* Offline */});
+        }).catch(() => {/* Offline */ });
 
         return cachedResponse;
       }
