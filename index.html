@@ -1957,74 +1957,194 @@
       // 240s-265s: Sinal abre! Arrancada progressiva de 0 até 48 km/h
       // 265s-300s: Cruza o fluxo entre 40 e 50 km/h completando o ciclo de 5 minutos, e reinicia!
       function startSimulation() {
-        clearInterval(simInterval);
-        simInterval = setInterval(() => {
-          if (state.currentShift.isActive && !state.currentShift.isPaused) {
-            simCycleSeconds = (simCycleSeconds + 1) % 300;
-            const t = simCycleSeconds;
+        stopSimulation();
 
-            let currentSpeed = 0;
-            let statusText = 'Rodando na Moto';
-            let statusColor = 'green';
+        const tickSimulation = () => {
+          if (!state.currentShift.isActive || state.currentShift.isPaused) return;
 
-            if (t >= 0 && t < 25) {
-              // 1. Partida progressiva: sai do 0 e acelera até 60 km/h
-              const progress = t / 25;
-              currentSpeed = Math.max(0, Math.min(60, Math.round(progress * 60 + (Math.random() * 2 - 1))));
-              statusText = `Acelerando (${currentSpeed} km/h)`;
-              statusColor = 'green';
-            } else if (t >= 25 && t < 175) {
-              // 2. Fluxo da cidade por ~3 minutos: variando suavemente entre 40 e 50 km/h
-              const wave = Math.sin((t - 25) * 0.16) * 4.2;
-              const jitter = (Math.random() * 1.8 - 0.9);
-              currentSpeed = Math.max(40, Math.min(50, Math.round(45 + wave + jitter)));
-              statusText = `Fluxo Urbano (${currentSpeed} km/h)`;
-              statusColor = 'green';
-            } else if (t >= 175 && t < 180) {
-              // 3. Frenagem suave para o semáforo
-              const decel = 1 - ((t - 175) / 5);
-              currentSpeed = Math.max(0, Math.round(45 * decel));
-              statusText = 'Freando para o Sinal';
-              statusColor = 'amber';
-            } else if (t >= 180 && t < 240) {
-              // 4. PARADA EM SINAL DE 1 MINUTO (60 segundos: 180s até 240s)
-              currentSpeed = 0;
-              const secondsLeft = 240 - t;
-              statusText = `Sinal Vermelho (${secondsLeft}s)`;
-              statusColor = 'amber';
-            } else if (t >= 240 && t < 265) {
-              // 5. Sinal verde abriu! Arrancada progressiva de 0 a 48 km/h
-              const progress = (t - 240) / 25;
-              currentSpeed = Math.max(0, Math.min(48, Math.round(progress * 48 + (Math.random() * 2 - 1))));
-              statusText = `Sinal Verde • Arrancando (${currentSpeed} km/h)`;
-              statusColor = 'green';
-            } else {
-              // 6. Fechando o ciclo de 5 minutos: rodando entre 40 e 50 km/h
-              const wave = Math.cos((t - 265) * 0.18) * 4.2;
-              const jitter = (Math.random() * 1.8 - 0.9);
-              currentSpeed = Math.max(40, Math.min(50, Math.round(45 + wave + jitter)));
-              statusText = `Rodando na Moto (${currentSpeed} km/h)`;
-              statusColor = 'green';
-            }
+          simCycleSeconds = (simCycleSeconds + 1) % 300;
+          const t = simCycleSeconds;
 
-            state.currentShift.currentSpeed = currentSpeed;
-            updateGpsStatus(statusText, statusColor);
+          let currentSpeed = 0;
+          let statusText = 'Rodando na Moto';
+          let statusColor = 'green';
 
-            if (currentSpeed > 0) {
-              // Distância em 1 segundo: velocidade (km/h) / 3600
-              const deltaKm = currentSpeed / 3600;
-              addDistance(deltaKm);
-            } else {
-              // Parado no semáforo: odômetro e peças não desgastam, atualiza painel em tempo real
-              renderPainel();
-            }
+          if (t >= 0 && t < 25) {
+            // 1. Partida progressiva: sai do repouso e progride até 60 km/h
+            const progress = (t + 1) / 25;
+            currentSpeed = Math.max(8, Math.min(60, Math.round(progress * 60 + (Math.random() * 2 - 1))));
+            statusText = `Acelerando (${currentSpeed} km/h)`;
+            statusColor = 'green';
+          } else if (t >= 25 && t < 175) {
+            // 2. Fluxo da cidade por ~3 minutos: variando suavemente entre 40 e 50 km/h
+            const wave = Math.sin((t - 25) * 0.16) * 4.2;
+            const jitter = (Math.random() * 1.8 - 0.9);
+            currentSpeed = Math.max(40, Math.min(50, Math.round(45 + wave + jitter)));
+            statusText = `Fluxo Urbano (${currentSpeed} km/h)`;
+            statusColor = 'green';
+          } else if (t >= 175 && t < 180) {
+            // 3. Frenagem suave para o semáforo
+            const decel = 1 - ((t - 175) / 5);
+            currentSpeed = Math.max(0, Math.round(45 * decel));
+            statusText = 'Freando para o Sinal';
+            statusColor = 'amber';
+          } else if (t >= 180 && t < 240) {
+            // 4. PARADA EM SINAL DE 1 MINUTO (60 segundos: 180s até 240s)
+            currentSpeed = 0;
+            const secondsLeft = 240 - t;
+            statusText = `Sinal Vermelho (${secondsLeft}s)`;
+            statusColor = 'amber';
+          } else if (t >= 240 && t < 265) {
+            // 5. Sinal verde abriu! Arrancada progressiva de 0 a 48 km/h
+            const progress = (t - 240 + 1) / 25;
+            currentSpeed = Math.max(8, Math.min(48, Math.round(progress * 48 + (Math.random() * 2 - 1))));
+            statusText = `Sinal Verde • Arrancando (${currentSpeed} km/h)`;
+            statusColor = 'green';
+          } else {
+            // 6. Fechando o ciclo de 5 minutos: rodando entre 40 e 50 km/h
+            const wave = Math.cos((t - 265) * 0.18) * 4.2;
+            const jitter = (Math.random() * 1.8 - 0.9);
+            currentSpeed = Math.max(40, Math.min(50, Math.round(45 + wave + jitter)));
+            statusText = `Rodando na Moto (${currentSpeed} km/h)`;
+            statusColor = 'green';
           }
-        }, 1000);
+
+          state.currentShift.currentSpeed = currentSpeed;
+          updateGpsStatus(statusText, statusColor);
+
+          if (currentSpeed > 0) {
+            const deltaKm = currentSpeed / 3600;
+            addDistance(deltaKm);
+          } else {
+            renderPainel();
+          }
+
+          // Persiste dados a cada 5s para segurança contra recarregamento
+          if (simCycleSeconds % 5 === 0) {
+            saveState();
+          }
+        };
+
+        tickSimulation();
+        simInterval = setInterval(tickSimulation, 1000);
       }
 
       function stopSimulation() {
-        clearInterval(simInterval);
-        simInterval = null;
+        if (simInterval !== null) {
+          clearInterval(simInterval);
+          simInterval = null;
+        }
+      }
+
+      function startOrResumeShift() {
+        state.currentShift.isActive = true;
+        state.currentShift.isPaused = false;
+
+        const btnStartPause = document.getElementById('btnStartPause');
+        if (btnStartPause) {
+          btnStartPause.innerHTML = `
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <span>Pausar Dia</span>
+          `;
+          btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition';
+        }
+
+        updateGpsStatus('Rodando na Moto', 'green');
+        requestWakeLock();
+
+        // Cronômetro do Turno
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          if (state.currentShift.isActive && !state.currentShift.isPaused) {
+            state.currentShift.elapsedSeconds += 1;
+            const timerEl = document.getElementById('displayTimer');
+            if (timerEl) timerEl.textContent = formatTime(state.currentShift.elapsedSeconds);
+          }
+        }, 1000);
+
+        // Movimentação (Simulação vs GPS)
+        if (state.config.simulationMode) {
+          stopGpsTracking();
+          startSimulation();
+        } else {
+          stopSimulation();
+          startGpsTracking();
+        }
+
+        renderPainel();
+        saveState();
+      }
+
+      function pauseShift() {
+        state.currentShift.isPaused = true;
+        state.currentShift.currentSpeed = 0;
+
+        const btnStartPause = document.getElementById('btnStartPause');
+        if (btnStartPause) {
+          btnStartPause.innerHTML = `
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+            <span>Continuar Dia</span>
+          `;
+          btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition';
+        }
+
+        updateGpsStatus('Pausado', 'amber');
+        lastGpsPoint = null;
+        stopSimulation();
+        stopGpsTracking();
+        clearInterval(timerInterval);
+        renderPainel();
+        saveState();
+      }
+
+      function stopOrResetShift() {
+        state.currentShift.isActive = false;
+        state.currentShift.isPaused = false;
+        state.currentShift.km = 0.0;
+        state.currentShift.elapsedSeconds = 0;
+        state.currentShift.extras = [];
+        state.currentShift.currentSpeed = 0;
+        simCycleSeconds = 0;
+
+        const btnStartPause = document.getElementById('btnStartPause');
+        if (btnStartPause) {
+          btnStartPause.innerHTML = `
+            <svg id="iconStartPause" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+            <span id="textStartPause">Iniciar Dia</span>
+          `;
+          btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition';
+        }
+
+        updateGpsStatus('Pronto para Rodar', 'amber');
+        stopSimulation();
+        stopGpsTracking();
+        releaseWakeLock();
+        clearInterval(timerInterval);
+        renderPainel();
+        saveState();
+      }
+
+      function restoreShiftStateOnLoad() {
+        if (state.currentShift.isActive) {
+          if (state.currentShift.isPaused) {
+            pauseShift();
+          } else {
+            startOrResumeShift();
+          }
+        } else {
+          const btnStartPause = document.getElementById('btnStartPause');
+          if (btnStartPause) {
+            btnStartPause.innerHTML = `
+              <svg id="iconStartPause" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+              <span id="textStartPause">Iniciar Dia</span>
+            `;
+            btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition';
+          }
+          updateGpsStatus('Pronto para Rodar', 'amber');
+          stopSimulation();
+          stopGpsTracking();
+          clearInterval(timerInterval);
+        }
       }
 
       function updateGpsStatus(text, color) {
@@ -3140,83 +3260,55 @@
           });
         });
 
-        // Botão Iniciar / Pausar Turno
+        // Botão Iniciar / Pausar / Continuar Turno (Máquina de Estados)
         const btnStartPause = document.getElementById('btnStartPause');
         btnStartPause.addEventListener('click', () => {
           if (!state.currentShift.isActive) {
-            // Iniciar Turno
-            state.currentShift.isActive = true;
-            state.currentShift.isPaused = false;
-            btnStartPause.innerHTML = `
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-              <span>Pausar Dia</span>
-            `;
-            btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition';
-            updateGpsStatus('Rodando na Moto', 'green');
-            requestWakeLock();
-
-            if (state.config.simulationMode) {
-              startSimulation();
-            } else {
-              startGpsTracking();
-            }
-
-            // Cronômetro do Turno
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-              if (state.currentShift.isActive && !state.currentShift.isPaused) {
-                state.currentShift.elapsedSeconds += 1;
-                document.getElementById('displayTimer').textContent = formatTime(state.currentShift.elapsedSeconds);
-              }
-            }, 1000);
-
+            startOrResumeShift();
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-            showToast('Turno iniciado! Tela mantida acesa.', 'green');
+            showToast('Turno iniciado! Moto em movimento.', 'green');
           } else if (!state.currentShift.isPaused) {
-            // Pausar Turno
-            state.currentShift.isPaused = true;
-            btnStartPause.innerHTML = `
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-              <span>Continuar Dia</span>
-            `;
-            btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition';
-            updateGpsStatus('Pausado', 'amber');
-            lastGpsPoint = null; // Reseta ponto para evitar salto de distância ao despausar em outro local
+            pauseShift();
             showToast('Turno pausado.', 'amber');
           } else {
-            // Retomar Turno
-            state.currentShift.isPaused = false;
-            btnStartPause.innerHTML = `
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-              <span>Pausar Dia</span>
-            `;
-            btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition';
-            updateGpsStatus('Rodando na Moto', 'green');
-            showToast('Turno retomado!', 'green');
+            startOrResumeShift();
+            showToast('Turno retomado! Moto rodando.', 'green');
           }
-          saveState();
         });
 
         // Alternar Modo Simulação vs GPS Real
         const btnToggleSim = document.getElementById('btnToggleSim');
-        btnToggleSim.addEventListener('click', () => {
-          state.config.simulationMode = !state.config.simulationMode;
+        const syncSimToggleUI = () => {
           const label = document.getElementById('simLabel');
+          if (!btnToggleSim || !label) return;
           if (state.config.simulationMode) {
             btnToggleSim.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40 hover:bg-neonGreen/25';
             label.textContent = 'Simulação: ON';
-            stopGpsTracking();
-            if (state.currentShift.isActive && !state.currentShift.isPaused) startSimulation();
-            showToast('Modo Simulação ativado (~48 km/h)', 'green');
           } else {
             btnToggleSim.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-card text-gray-400 border-borderSubtle hover:bg-cardHover';
             label.textContent = 'GPS Real: ON';
+          }
+        };
+
+        btnToggleSim.addEventListener('click', () => {
+          state.config.simulationMode = !state.config.simulationMode;
+          syncSimToggleUI();
+          if (state.config.simulationMode) {
+            stopGpsTracking();
+            if (state.currentShift.isActive && !state.currentShift.isPaused) {
+              startSimulation();
+            }
+            showToast('Modo Simulação ativado (Ciclo inteligente)', 'green');
+          } else {
             stopSimulation();
-            if (state.currentShift.isActive && !state.currentShift.isPaused) startGpsTracking();
+            if (state.currentShift.isActive && !state.currentShift.isPaused) {
+              startGpsTracking();
+            }
             showToast('GPS Real ativado!', 'blue');
           }
           saveState();
         });
+        syncSimToggleUI();
 
         // Botão + Gasto Extra
         let selectedExtraCat = 'Almoço';
@@ -3260,29 +3352,8 @@
         if (btnOpenResetPanel) btnOpenResetPanel.addEventListener('click', openResetModal);
 
         document.getElementById('btnConfirmReset').addEventListener('click', () => {
-          state.currentShift.km = 0.0;
-          state.currentShift.elapsedSeconds = 0;
-          state.currentShift.extras = [];
-          state.currentShift.currentSpeed = 0;
-          state.currentShift.isActive = false;
-          state.currentShift.isPaused = false;
-          simCycleSeconds = 0;
-          stopSimulation();
-          stopGpsTracking();
-          releaseWakeLock();
-          clearInterval(timerInterval);
-
-          const btnStartPause = document.getElementById('btnStartPause');
-          btnStartPause.innerHTML = `
-            <svg id="iconStartPause" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-            <span id="textStartPause">Iniciar Dia</span>
-          `;
-          btnStartPause.className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition';
-          updateGpsStatus('Pausado', 'amber');
-
+          stopOrResetShift();
           document.getElementById('modalReset').classList.add('hidden');
-          renderPainel();
-          saveState();
           showToast('Turno zerado com sucesso! Pronto para reiniciar.', 'amber');
         });
 
@@ -3371,29 +3442,10 @@
             perHour: timeSec > 0 ? (netProfit / (timeSec / 3600)) : 0
           });
 
-          // Reseta turno ativo
-          state.currentShift.isActive = false;
-          state.currentShift.isPaused = false;
-          state.currentShift.km = 0.0;
-          state.currentShift.elapsedSeconds = 0;
-          state.currentShift.extras = [];
-          simCycleSeconds = 0;
-
-          stopSimulation();
-          stopGpsTracking();
-          releaseWakeLock();
-          clearInterval(timerInterval);
-
-          document.getElementById('btnStartPause').innerHTML = `
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-            <span>Iniciar Dia</span>
-          `;
-          document.getElementById('btnStartPause').className = 'col-span-2 sm:col-span-1 min-h-[56px] px-4 py-3.5 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-base flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 transition';
-          updateGpsStatus('Pausado', 'amber');
+          // Reseta turno ativo usando a máquina de estados centralizada
+          stopOrResetShift();
 
           document.getElementById('modalFinishDay').classList.add('hidden');
-          renderPainel();
-          saveState();
           showToast(`Fechamento salvo! Lucro Líquido: ${formatBRL(netProfit)}`, 'green');
         });
 
@@ -3962,8 +4014,14 @@
         });
       }
 
+      // Persistência segura ao descarregar a página
+      window.addEventListener('beforeunload', () => {
+        saveState();
+      });
+
       // Inicialização Geral
       initEvents();
+      restoreShiftStateOnLoad();
       renderPainel();
       renderGastosMensais();
       renderHolerite('mensal');
