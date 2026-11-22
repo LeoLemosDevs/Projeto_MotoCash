@@ -413,38 +413,38 @@
                 <!-- Leitura Gigante de KM -->
                 <div class="text-center py-2 sm:py-3">
                   <div class="flex items-baseline justify-center gap-2">
-                    <span id="displayKm" class="landscape-km-text font-digital font-extrabold text-5xl sm:text-6xl lg:text-7xl tracking-tight text-neonGreen digital-glow-green tabular-nums">
+                    <span id="displayKm" class="landscape-km-text font-digital font-extrabold text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-neonGreen digital-glow-green tabular-nums">
                       0.00
                     </span>
-                    <span class="font-digital text-lg sm:text-2xl font-bold text-neonGreen/80">km</span>
+                    <span class="font-digital text-xl sm:text-2xl lg:text-3xl font-bold text-neonGreen/80">km</span>
                   </div>
 
-                  <!-- Linha de Faturamento e Lucro Líquido -->
-                  <div class="mt-3 flex items-center justify-center gap-2 flex-wrap">
-                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/[0.04] border border-white/10 text-xs">
-                      <span class="text-gray-400 font-semibold uppercase text-[10px]">Gasto:</span>
+                  <!-- Linha de Faturamento e Lucro Líquido (Compacta em Linha Única) -->
+                  <div class="mt-2 flex items-center justify-center gap-1.5 flex-nowrap whitespace-nowrap overflow-x-auto">
+                    <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xl bg-white/[0.04] border border-white/10 text-[11px] shrink-0">
+                      <span class="text-gray-400 font-semibold uppercase text-[9px] sm:text-[10px]">Gasto:</span>
                       <span id="displayTotalCost" class="font-mono font-extrabold text-amber-400 tabular-nums">R$ 0,00</span>
                     </div>
-                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-neonGreen/10 border border-neonGreen/30 text-xs">
-                      <span class="text-gray-300 font-semibold uppercase text-[10px]">Ganhos:</span>
+                    <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xl bg-neonGreen/10 border border-neonGreen/30 text-[11px] shrink-0">
+                      <span class="text-gray-300 font-semibold uppercase text-[9px] sm:text-[10px]">Ganhos:</span>
                       <span id="displayTotalGains" class="font-mono font-extrabold text-neonGreen tabular-nums">R$ 0,00</span>
                     </div>
-                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-500/10 border border-blue-500/30 text-xs">
-                      <span class="text-gray-300 font-semibold uppercase text-[10px]">Líquido:</span>
+                    <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-[11px] shrink-0">
+                      <span class="text-gray-300 font-semibold uppercase text-[9px] sm:text-[10px]">Líquido:</span>
                       <span id="displayNetProfit" class="font-mono font-extrabold text-white tabular-nums">R$ 0,00</span>
                     </div>
                   </div>
 
-                  <!-- Filtro Interativo de Gastos Incluídos -->
-                  <div class="mt-3 pt-2.5 border-t border-gray-800/80 flex items-center justify-center gap-1.5 flex-wrap">
-                    <span class="text-[10px] uppercase font-bold text-gray-500 mr-1">Calcular:</span>
-                    <button id="toggleFilterFuel" type="button" class="cost-filter-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40">
+                  <!-- Filtro Interativo de Gastos Incluídos (Estritamente em 1 Linha Única e Super Compacto) -->
+                  <div class="mt-2 pt-2 border-t border-gray-800/80 flex items-center justify-center gap-1 sm:gap-1.5 flex-nowrap whitespace-nowrap overflow-x-auto w-full">
+                    <span class="text-[9px] sm:text-[10px] uppercase font-extrabold text-gray-500 tracking-wider shrink-0 mr-0.5">Calcular:</span>
+                    <button id="toggleFilterFuel" type="button" class="cost-filter-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40 whitespace-nowrap shrink-0">
                       ✓ Combustível
                     </button>
-                    <button id="toggleFilterParts" type="button" class="cost-filter-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-amber-500/15 text-amber-400 border-amber-500/40">
+                    <button id="toggleFilterParts" type="button" class="cost-filter-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold border transition bg-amber-500/15 text-amber-400 border-amber-500/40 whitespace-nowrap shrink-0">
                       ✓ Peças
                     </button>
-                    <button id="toggleFilterExtras" type="button" class="cost-filter-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-blue-500/15 text-blue-400 border-blue-500/40">
+                    <button id="toggleFilterExtras" type="button" class="cost-filter-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold border transition bg-blue-500/15 text-blue-400 border-blue-500/40 whitespace-nowrap shrink-0">
                       ✓ Extras
                     </button>
                   </div>
@@ -2467,26 +2467,26 @@
           displayProfitEl.className = `font-mono font-black text-sm sm:text-base tabular-nums mt-0.5 ${netProfit >= 0 ? 'text-neonGreen' : 'text-red-400'}`;
         }
 
-        // Atualiza botões de filtro de custos (Combustível, Peças, Extras)
+        // Atualiza botões de filtro de custos (Combustível, Peças, Extras - Linha Única Compacta)
         const btnFuel = document.getElementById('toggleFilterFuel');
         const btnParts = document.getElementById('toggleFilterParts');
         const btnExtras = document.getElementById('toggleFilterExtras');
         if (btnFuel) {
           btnFuel.className = filters.fuel
-            ? 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40'
-            : 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-card text-gray-500 border-borderSubtle hover:text-gray-300';
+            ? 'cost-filter-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40 whitespace-nowrap shrink-0'
+            : 'cost-filter-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold border transition bg-card text-gray-500 border-borderSubtle hover:text-gray-300 whitespace-nowrap shrink-0';
           btnFuel.innerHTML = filters.fuel ? '✓ Combustível' : '+ Combustível';
         }
         if (btnParts) {
           btnParts.className = filters.parts
-            ? 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-amber-500/15 text-amber-400 border-amber-500/40'
-            : 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-card text-gray-500 border-borderSubtle hover:text-gray-300';
+            ? 'cost-filter-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold border transition bg-amber-500/15 text-amber-400 border-amber-500/40 whitespace-nowrap shrink-0'
+            : 'cost-filter-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold border transition bg-card text-gray-500 border-borderSubtle hover:text-gray-300 whitespace-nowrap shrink-0';
           btnParts.innerHTML = filters.parts ? '✓ Peças' : '+ Peças';
         }
         if (btnExtras) {
           btnExtras.className = filters.extras
-            ? 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-blue-500/15 text-blue-400 border-blue-500/40'
-            : 'cost-filter-btn px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold border transition bg-card text-gray-500 border-borderSubtle hover:text-gray-300';
+            ? 'cost-filter-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold border transition bg-blue-500/15 text-blue-400 border-blue-500/40 whitespace-nowrap shrink-0'
+            : 'cost-filter-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold border transition bg-card text-gray-500 border-borderSubtle hover:text-gray-300 whitespace-nowrap shrink-0';
           btnExtras.innerHTML = filters.extras ? '✓ Extras' : '+ Extras';
         }
 
