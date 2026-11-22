@@ -2,7 +2,7 @@
 // MotoCash Pro — Service Worker (Offline-First para Motoboys na Rua)
 // ============================================================================
 
-const CACHE_NAME = 'motocash-pro-v1.6.2';
+const CACHE_NAME = 'motocash-pro-v1.6.4';
 
 const PRECACHE_URLS = [
   './',
@@ -12,6 +12,7 @@ const PRECACHE_URLS = [
   './assets/icons/icon-512.png',
   './assets/icons/icon-maskable.png',
   './assets/icons/logo.png',
+  './assets/icons/logo-128.png',
   './img/logo.png',
   './img/logo moto 300p.png',
   'https://cdn.tailwindcss.com',

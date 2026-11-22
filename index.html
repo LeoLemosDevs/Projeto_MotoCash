@@ -236,7 +236,7 @@
     <aside class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-card border-r border-borderSubtle z-30">
       <!-- Marca -->
       <div class="px-6 py-5 border-b border-borderSubtle flex items-center gap-3">
-        <img src="assets/icons/logo.png" class="w-10 h-10 rounded-xl object-contain border border-neonGreen/30 bg-amoled shadow-md shrink-0" alt="MotoCash Pro" />
+        <img src="assets/icons/logo.png" onerror="this.onerror=null; this.src='img/logo moto 300p.png';" class="w-10 h-10 rounded-xl object-contain border border-neonGreen/30 bg-amoled shadow-md shrink-0" alt="MotoCash Pro" />
         <div>
           <div class="flex items-center gap-2">
             <h1 class="font-black text-lg tracking-tight text-white leading-none">MotoCash <span class="text-neonGreen">Pro</span></h1>
@@ -309,16 +309,9 @@
           <!-- Linha Superior: Logo, Título da Tela e Botão Retangular de Desocultar no Mobile -->
           <div class="flex items-center justify-between gap-2 w-full lg:w-auto">
             <div class="flex items-center gap-2.5 min-w-0">
-              <img src="assets/icons/logo.png" class="lg:hidden w-8 h-8 rounded-xl object-contain border border-neonGreen/30 bg-amoled shadow-md shrink-0" alt="MotoCash Pro" />
+              <img src="assets/icons/logo.png" onerror="this.onerror=null; this.src='img/logo moto 300p.png';" class="lg:hidden w-8 h-8 rounded-xl object-contain border border-neonGreen/30 bg-amoled shadow-md shrink-0" alt="MotoCash Pro" />
               <div class="min-w-0">
-                <div class="flex items-center gap-2 truncate">
-                  <h2 id="headerScreenTitle" class="font-extrabold text-sm sm:text-lg text-white leading-tight truncate">Painel do Dia</h2>
-                  <!-- Badge de Status do GPS -->
-                  <span id="gpsStatusBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 shrink-0">
-                    <span id="gpsStatusDot" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                    <span id="gpsStatusText">Pausado</span>
-                  </span>
-                </div>
+                <h2 id="headerScreenTitle" class="font-extrabold text-base sm:text-lg text-white leading-tight truncate">Painel do Dia</h2>
                 <p id="headerDateSubtitle" class="text-[11px] sm:text-xs text-gray-400 font-medium truncate block">Hoje • Turno pronto</p>
               </div>
             </div>
@@ -332,6 +325,13 @@
 
           <!-- Barra de Ações Rápidas (No celular fica oculta por padrão, expandindo apenas quando o motoboy clica em Ações) -->
           <div id="headerActionsGroup" class="hidden lg:flex items-center gap-2 w-full lg:w-auto pt-2.5 lg:pt-0 border-t lg:border-t-0 border-borderSubtle/60 flex-wrap sm:flex-nowrap justify-start lg:justify-end">
+            <!-- Balão de Status do GPS / Simulador (Oculto no celular por padrão, só aparece junto com as ações ao desocultar) -->
+            <div class="w-full lg:w-auto flex items-center justify-center">
+              <span id="gpsStatusBadge" class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 w-full sm:w-auto shrink-0 shadow-sm">
+                <span id="gpsStatusDot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+                <span id="gpsStatusText">Pausado</span>
+              </span>
+            </div>
             <!-- Botão Simulação (Para testar no PC ou sem sair de moto) -->
             <button id="btnToggleSim" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40 hover:bg-neonGreen/25" title="Alternar entre modo simulação de teste (~50 km/h) e GPS real">
               <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -1463,7 +1463,7 @@
     <div class="w-full max-w-md bg-card border border-borderSubtle rounded-3xl p-5 sm:p-6 shadow-2xl">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2.5">
-          <img src="./assets/icons/icon-192.png" class="w-10 h-10 rounded-2xl shadow-lg border border-neonGreen/30" alt="MotoCash Pro" />
+          <img src="assets/icons/icon-192.png" onerror="this.onerror=null; this.src='img/logo moto 300p.png';" class="w-10 h-10 rounded-2xl shadow-lg border border-neonGreen/30 shrink-0" alt="MotoCash Pro" />
           <div>
             <h3 class="font-extrabold text-lg text-white">Instalar MotoCash Pro</h3>
             <span class="text-[11px] font-mono text-neonGreen font-semibold">APK Oficial Android / WebAPK</span>
@@ -2421,18 +2421,20 @@
         label.textContent = text;
         if (clusterText) clusterText.textContent = text;
 
-        if (color === 'green') {
-          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-neonGreen/15 text-neonGreen border border-neonGreen/30';
-          dot.className = 'w-2 h-2 rounded-full bg-neonGreen animate-pulse';
-          if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-neonGreen';
-        } else if (color === 'amber') {
-          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30';
-          dot.className = 'w-2 h-2 rounded-full bg-amber-400';
-          if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-amber-400';
-        } else {
-          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-red-500/15 text-red-400 border border-red-500/30';
-          dot.className = 'w-2 h-2 rounded-full bg-red-400';
-          if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-red-400';
+        if (badge && dot) {
+          if (color === 'green') {
+            badge.className = 'inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-neonGreen/15 text-neonGreen border border-neonGreen/30 w-full sm:w-auto shrink-0 shadow-sm';
+            dot.className = 'w-2 h-2 rounded-full bg-neonGreen animate-pulse';
+            if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-neonGreen';
+          } else if (color === 'amber') {
+            badge.className = 'inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 w-full sm:w-auto shrink-0 shadow-sm';
+            dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+            if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-amber-400';
+          } else {
+            badge.className = 'inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-500/15 text-red-400 border border-red-500/30 w-full sm:w-auto shrink-0 shadow-sm';
+            dot.className = 'w-2 h-2 rounded-full bg-red-400';
+            if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-red-400';
+          }
         }
       }
 
