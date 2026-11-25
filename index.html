@@ -390,6 +390,12 @@
               <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
               <span class="truncate">Atualizar</span>
             </button>
+
+            <!-- Botão Fechar App (Encerra o aplicativo) -->
+            <button id="btnHeaderCloseApp" type="button" class="btn-trigger-close-app flex-1 sm:flex-none flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold bg-red-500/20 border border-red-500/50 text-red-400 hover:bg-red-500/30 hover:text-red-300 transition active:scale-95 shadow-sm" title="Fechar e encerrar o aplicativo MotoCash">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+              <span class="truncate">Fechar App</span>
+            </button>
           </div>
         </div>
       </header>
@@ -1501,6 +1507,25 @@
 
 
 
+  <!-- ==================== MODAL FECHAR APLICATIVO ==================== -->
+  <div id="modalConfirmCloseApp" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-card border border-red-500/40 rounded-3xl p-6 text-center shadow-2xl space-y-4">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-red-500/20 text-red-400 flex items-center justify-center shadow-lg shadow-red-500/20">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+      </div>
+      <div>
+        <h3 class="font-bold text-lg text-white">Fechar o MotoCash?</h3>
+        <p class="text-xs text-gray-400 mt-1 leading-relaxed">
+          Todos os seus dados de km rodado, corridas, custos e metas do dia estão salvos com segurança no seu aparelho.
+        </p>
+      </div>
+      <div class="flex gap-3 pt-1">
+        <button id="btnCancelCloseApp" data-close-modal="modalConfirmCloseApp" type="button" class="flex-1 py-3 rounded-2xl bg-amoled border border-borderSubtle text-gray-300 font-semibold text-xs hover:bg-gray-800 transition">Cancelar</button>
+        <button id="btnConfirmCloseApp" type="button" class="flex-1 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs shadow-lg shadow-red-600/30 active:scale-95 transition">Sim, Fechar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== MODAL ZERAR TURNO ==================== -->
   <div id="modalReset" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="w-full max-w-sm bg-card border border-borderSubtle rounded-3xl p-6 text-center shadow-2xl">
@@ -1872,14 +1897,20 @@
       </button>
 
       <!-- Fechar / Voltar ao App -->
-      <div class="flex gap-2">
-        <button type="button" id="btnDismissBubbleFromMini" class="flex-1 py-2.5 rounded-xl bg-amoled border border-red-500/30 text-red-400 hover:bg-red-500/10 font-bold text-xs transition">
+      <div class="grid grid-cols-2 gap-2">
+        <button type="button" id="btnDismissBubbleFromMini" class="py-2.5 rounded-xl bg-amoled border border-red-500/30 text-red-400 hover:bg-red-500/10 font-bold text-xs transition">
           Fechar Bolha
         </button>
-        <button type="button" data-close-modal="modalMiniCockpit" class="flex-1 py-2.5 rounded-xl bg-card hover:bg-cardHover border border-borderSubtle text-gray-300 font-semibold text-xs transition">
+        <button type="button" data-close-modal="modalMiniCockpit" class="py-2.5 rounded-xl bg-card hover:bg-cardHover border border-borderSubtle text-gray-300 font-semibold text-xs transition">
           Voltar ao Painel
         </button>
       </div>
+
+      <!-- Botão Fechar App no Mini Cockpit -->
+      <button type="button" class="btn-trigger-close-app w-full py-2.5 px-3 rounded-xl bg-red-500/15 hover:bg-red-500/25 border border-red-500/40 text-red-400 font-extrabold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-sm">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+        <span>Fechar Aplicativo</span>
+      </button>
     </div>
   </div>
 
@@ -4844,125 +4875,266 @@
       // =======================================================================
       let pipVideoElement = null;
       let pipCanvas = null;
-      let pipInterval = null;
+      let pipStream = null;
+      let pipRenderTimer = null;
 
-      function updatePipCanvas() {
+      function getOrCreatePipCanvas() {
         if (!pipCanvas) {
           pipCanvas = document.createElement('canvas');
           pipCanvas.width = 360;
           pipCanvas.height = 200;
         }
-        const ctx = pipCanvas.getContext('2d');
-        const w = pipCanvas.width;
-        const h = pipCanvas.height;
+        return pipCanvas;
+      }
 
-        // Fundo AMOLED escuro com gradiente sutil
+      function updatePipCanvas() {
+        const canvas = getOrCreatePipCanvas();
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+
+        // Fundo AMOLED escuro com cantos sólidos
         ctx.fillStyle = '#030508';
         ctx.fillRect(0, 0, w, h);
 
+        // Borda superior com degradê neon
+        const grad = ctx.createLinearGradient(0, 0, w, 0);
+        grad.addColorStop(0, '#00E676');
+        grad.addColorStop(1, '#FACC15');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, 3);
+
         // Barra Superior: MotoCash Pro • Status
         ctx.fillStyle = '#00E676';
-        ctx.font = 'bold 16px Inter, sans-serif';
-        ctx.fillText('⚡ MotoCash Pro', 16, 28);
+        ctx.font = 'bold 15px Inter, sans-serif';
+        ctx.fillText('⚡ MotoCash Pro', 14, 25);
 
-        // Relógio ao Vivo
+        const isSim = state.sim && state.sim.active;
+        if (isSim) {
+          ctx.fillStyle = '#FACC15';
+          ctx.font = 'bold 11px Inter, sans-serif';
+          ctx.fillText('⚡ SIMULADOR', 148, 24);
+        } else {
+          ctx.fillStyle = '#60A5FA';
+          ctx.font = 'bold 11px Inter, sans-serif';
+          ctx.fillText('📍 GPS REAL', 148, 24);
+        }
+
+        // Relógio digital ao vivo
         const now = new Date();
         const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
         ctx.fillStyle = '#9CA3AF';
-        ctx.font = 'bold 13px monospace';
-        ctx.fillText(timeStr, w - 85, 28);
+        ctx.font = 'bold 12px monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText(timeStr, w - 14, 24);
+        ctx.textAlign = 'left';
 
         // Linha divisória
-        ctx.strokeStyle = 'rgba(0, 230, 118, 0.25)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(16, 38);
-        ctx.lineTo(w - 16, 38);
+        ctx.moveTo(14, 34);
+        ctx.lineTo(w - 14, 34);
         ctx.stroke();
 
-        // Coluna Esquerda: Velocidade e Odômetro
-        const spd = state.currentShift.isActive && !state.currentShift.isPaused ? (state.currentShift.currentSpeed || 0) : 0;
+        // Coluna 1: Velocidade e Odômetro
+        const isShiftActive = state.currentShift && state.currentShift.isActive && !state.currentShift.isPaused;
+        const spd = isShiftActive ? Math.round(state.currentShift.currentSpeed || 0) : 0;
+
         ctx.fillStyle = '#00E676';
-        ctx.font = '900 44px Orbitron, monospace';
-        ctx.fillText(`${Math.round(spd)}`, 16, 88);
-        ctx.font = 'bold 14px Inter, sans-serif';
-        ctx.fillText('km/h', 90, 86);
-
-        const km = (state.currentShift.odometer || 0).toFixed(1);
-        ctx.fillStyle = '#E5E7EB';
+        ctx.font = '900 46px Orbitron, monospace';
+        ctx.fillText(`${spd}`, 14, 86);
         ctx.font = 'bold 13px Inter, sans-serif';
-        ctx.fillText(`Odômetro: ${km} km`, 16, 118);
+        ctx.fillText('km/h', 82, 84);
 
-        // Coluna Direita: Ganhos do Dia e Custo/km
-        const gainsTotal = (state.currentShift.gains || []).reduce((acc, g) => acc + (parseFloat(g.value) || 0), 0);
-        ctx.fillStyle = '#FACC15';
+        const km = ((state.currentShift && state.currentShift.odometer) || 0).toFixed(1);
+        ctx.fillStyle = '#E5E7EB';
         ctx.font = 'bold 12px Inter, sans-serif';
-        ctx.fillText('Ganhos Hoje:', 190, 62);
-        ctx.font = '900 20px monospace';
-        ctx.fillText(formatBRL(gainsTotal), 190, 88);
+        ctx.fillText(`Odômetro: ${km} km`, 14, 112);
+
+        const shiftSec = isShiftActive ? (state.currentShift.elapsedSeconds || 0) : 0;
+        const sHrs = Math.floor(shiftSec / 3600);
+        const sMins = Math.floor((shiftSec % 3600) / 60);
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = '11px Inter, sans-serif';
+        ctx.fillText(`Tempo: ${String(sHrs).padStart(2, '0')}h ${String(sMins).padStart(2, '0')}m`, 14, 130);
+
+        // Coluna 2: Ganhos do Dia e Lucro Líquido
+        const gainsTotal = ((state.currentShift && state.currentShift.gains) || []).reduce((acc, g) => acc + (parseFloat(g.value) || 0), 0);
+        const costPerKm = (state.moto && state.moto.costPerKm) || 0.42;
+        const kmNum = (state.currentShift && state.currentShift.odometer) || 0;
+        const costTotal = kmNum * costPerKm;
+        const netTotal = gainsTotal - costTotal;
 
         ctx.fillStyle = '#9CA3AF';
-        ctx.font = '12px Inter, sans-serif';
-        ctx.fillText(`Custo: ${formatBRL(state.moto.costPerKm)}/km`, 190, 118);
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.fillText('Ganhos Hoje:', 185, 56);
+
+        ctx.fillStyle = '#FACC15';
+        ctx.font = '900 22px Orbitron, monospace';
+        ctx.fillText(formatBRL(gainsTotal), 185, 80);
+
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = '11px Inter, sans-serif';
+        ctx.fillText(`Custo: ${formatBRL(costTotal)}`, 185, 102);
+
+        ctx.fillStyle = netTotal >= 0 ? '#00E676' : '#EF4444';
+        ctx.font = 'bold 13px Inter, sans-serif';
+        ctx.fillText(`Líquido: ${formatBRL(netTotal)}`, 185, 126);
 
         // Rodapé de Ação
-        ctx.fillStyle = 'rgba(0, 230, 118, 0.15)';
-        ctx.fillRect(16, 136, w - 32, 44);
-        ctx.strokeStyle = '#00E676';
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(16, 136, w - 32, 44);
+        ctx.fillStyle = 'rgba(0, 230, 118, 0.12)';
+        ctx.fillRect(14, 145, w - 28, 42);
+        ctx.strokeStyle = 'rgba(0, 230, 118, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(14, 145, w - 28, 42);
 
         ctx.fillStyle = '#00E676';
-        ctx.font = 'bold 13px Inter, sans-serif';
+        ctx.font = 'bold 12px Inter, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('Toque para abrir o MotoCash', w / 2, 163);
+        ctx.fillText('Toque para abrir • Puxe ao X p/ fechar', w / 2, 170);
         ctx.textAlign = 'left';
       }
 
+      function ensurePipVideoReady() {
+        const canvas = getOrCreatePipCanvas();
+        updatePipCanvas();
+
+        if (!pipVideoElement) {
+          pipVideoElement = document.createElement('video');
+          pipVideoElement.id = 'motocashPipVideo';
+          pipVideoElement.muted = true;
+          pipVideoElement.playsInline = true;
+          pipVideoElement.autoplay = true;
+          pipVideoElement.disablePictureInPicture = false;
+
+          try {
+            pipVideoElement.autoPictureInPicture = true;
+          } catch (e) {}
+
+          pipVideoElement.style.position = 'fixed';
+          pipVideoElement.style.bottom = '1px';
+          pipVideoElement.style.right = '1px';
+          pipVideoElement.style.width = '2px';
+          pipVideoElement.style.height = '2px';
+          pipVideoElement.style.opacity = '0.01';
+          pipVideoElement.style.pointerEvents = 'none';
+          pipVideoElement.style.zIndex = '1';
+          document.body.appendChild(pipVideoElement);
+
+          pipVideoElement.addEventListener('enterpictureinpicture', () => {
+            console.log('[PiP] Entrou em Picture-in-Picture!');
+            localStorage.setItem('motocash_pip_active', 'true');
+            showToast('⚡ MotoCash Flutuando sobre outros apps! (Uber, 99, etc.)', 'green');
+          });
+
+          pipVideoElement.addEventListener('leavepictureinpicture', () => {
+            console.log('[PiP] Saiu de Picture-in-Picture');
+            localStorage.setItem('motocash_pip_active', 'false');
+          });
+        }
+
+        if (!pipStream) {
+          try {
+            pipStream = canvas.captureStream(15);
+            pipVideoElement.srcObject = pipStream;
+          } catch (e) {
+            console.warn('[PiP] captureStream erro:', e);
+          }
+        }
+
+        if (pipVideoElement.paused) {
+          pipVideoElement.play().catch(() => {});
+        }
+
+        if (!pipRenderTimer) {
+          pipRenderTimer = setInterval(updatePipCanvas, 500);
+        }
+
+        return pipVideoElement;
+      }
+
       async function triggerPipMode() {
+        const video = ensurePipVideoReady();
         try {
-          updatePipCanvas();
-          if (!pipVideoElement) {
-            pipVideoElement = document.createElement('video');
-            pipVideoElement.muted = true;
-            pipVideoElement.playsInline = true;
-            pipVideoElement.style.position = 'fixed';
-            pipVideoElement.style.top = '-9999px';
-            pipVideoElement.style.left = '-9999px';
-            pipVideoElement.style.opacity = '0';
-            pipVideoElement.style.pointerEvents = 'none';
-            document.body.appendChild(pipVideoElement);
-          }
-
-          if (!pipVideoElement.srcObject) {
-            const stream = pipCanvas.captureStream(10);
-            pipVideoElement.srcObject = stream;
-          }
-
-          await pipVideoElement.play();
-
           if (document.pictureInPictureElement) {
             await document.exitPictureInPicture();
-          } else if (pipVideoElement.requestPictureInPicture) {
-            await pipVideoElement.requestPictureInPicture();
-            showToast('Janela Flutuante ativada! Pode abrir o Uber ou 99 agora.', 'green');
-            const m = document.getElementById('modalMiniCockpit');
-            if (m) m.classList.add('hidden');
-          } else {
-            showToast('Navegador não suporta PiP. Use a bolha flutuante na tela!', 'blue');
+            showToast('Janela flutuante fechada.', 'amber');
+            return;
           }
 
-          if (!pipInterval) {
-            pipInterval = setInterval(() => {
-              if (document.pictureInPictureElement) {
-                updatePipCanvas();
-              }
-            }, 1000);
+          if (video.paused) {
+            await video.play();
+          }
+
+          if (video.requestPictureInPicture) {
+            await video.requestPictureInPicture();
+            showToast('⚡ Janela Flutuante ativada! Abra o Uber ou 99 agora.', 'green');
+            const m = document.getElementById('modalMiniCockpit');
+            if (m) m.classList.add('hidden');
+          } else if (window.documentPictureInPicture && window.documentPictureInPicture.requestWindow) {
+            const pipWin = await window.documentPictureInPicture.requestWindow({ width: 340, height: 200 });
+            pipWin.document.body.style.margin = '0';
+            pipWin.document.body.style.background = '#030508';
+            pipWin.document.body.appendChild(getOrCreatePipCanvas());
+            showToast('⚡ Janela Flutuante ativada sobre outros apps!', 'green');
+          } else {
+            showToast('Seu navegador não suporta PiP. Use o botão flutuante na tela!', 'amber');
           }
         } catch (err) {
           console.warn('[PiP] Erro ao iniciar PiP:', err);
-          showToast('Bolha flutuante ativa na tela! Arraste para onde preferir.', 'blue');
+          if (err.name === 'NotAllowedError') {
+            showToast('Permita "Imagem em imagem" nas configurações do Chrome/Celular.', 'amber');
+          } else {
+            showToast('Bolha flutuante ativa na tela! Arraste para onde preferir.', 'blue');
+          }
         }
+      }
+
+      // Ao alternar para o Uber/99 ou minimizar o app, ativa PiP se o modo flutuante ou turno estiver ativo
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          const isBubbleActive = localStorage.getItem('motocash_bubble_visible') === 'true';
+          const isShiftRunning = state.currentShift && state.currentShift.isActive && !state.currentShift.isPaused;
+          if ((isBubbleActive || isShiftRunning) && !document.pictureInPictureElement && pipVideoElement) {
+            try {
+              if (pipVideoElement.paused) pipVideoElement.play().catch(() => {});
+              if (pipVideoElement.requestPictureInPicture) {
+                pipVideoElement.requestPictureInPicture().catch(() => {});
+              }
+            } catch (e) {}
+          }
+        }
+      });
+
+      // Função Fechar e Encerrar Aplicativo
+      function handleCloseApp() {
+        saveState();
+        if (state.currentShift && state.currentShift.isActive) {
+          state.currentShift.isPaused = true;
+          saveState();
+        }
+        if (document.pictureInPictureElement) {
+          document.exitPictureInPicture().catch(() => {});
+        }
+        showToast('MotoCash encerrado. Seus dados estão salvos!', 'green');
+
+        try {
+          window.close();
+        } catch (e) {}
+
+        setTimeout(() => {
+          document.body.innerHTML = `
+            <div style="background:#030508; color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; font-family:Inter, sans-serif;">
+              <div style="width:72px; height:72px; border-radius:50%; background:rgba(0,230,118,0.15); border:2px solid #00E676; display:flex; align-items:center; justify-content:center; margin-bottom:20px; box-shadow:0 0 30px rgba(0,230,118,0.25);">
+                <svg style="width:36px; height:36px; color:#00E676;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <h1 style="font-size:22px; font-weight:800; margin-bottom:8px; color:#fff;">MotoCash Encerrado</h1>
+              <p style="font-size:13px; color:#9CA3AF; max-width:320px; line-height:1.5; margin-bottom:24px;">Todos os seus dados de km, ganhos e metas foram salvos com segurança.<br><br>Você já pode fechar esta aba ou voltar para a tela inicial do celular.</p>
+              <button onclick="window.location.reload()" style="background:#00E676; color:#030508; font-weight:800; font-size:13px; padding:12px 28px; border-radius:14px; border:none; cursor:pointer; box-shadow:0 4px 15px rgba(0,230,118,0.3);">Reabrir MotoCash</button>
+            </div>
+          `;
+        }, 150);
       }
 
       function initFloatingBubble() {
@@ -4976,6 +5148,18 @@
         const btnDismissMini = document.getElementById('btnDismissBubbleFromMini');
 
         if (!bubbleContainer || !bubble) return;
+
+        // Pré-inicializa o vídeo do PiP para estar pronto para sobrepor o Uber e 99
+        ensurePipVideoReady();
+
+        // Recupera visibilidade salva da bolha
+        const savedVisible = localStorage.getItem('motocash_bubble_visible');
+        if (savedVisible === 'false') {
+          bubbleContainer.classList.add('hidden');
+        } else if (savedVisible === 'true') {
+          bubbleContainer.classList.remove('hidden');
+          bubbleContainer.style.display = 'block';
+        }
 
         // Recupera posição salva
         try {
@@ -5075,7 +5259,7 @@
           }
           bubble.classList.remove('scale-75', 'opacity-50');
 
-          // 1. Soltou no X para fechar?
+          // 1. Soltou no X para fechar? Fecha a bolha e também a janela PiP!
           if (isOverDismiss) {
             bubbleContainer.style.transition = 'transform 0.22s ease, opacity 0.22s ease';
             bubbleContainer.style.transform = 'scale(0)';
@@ -5086,6 +5270,11 @@
               bubbleContainer.style.opacity = '';
               localStorage.setItem('motocash_bubble_visible', 'false');
             }, 230);
+
+            if (document.pictureInPictureElement) {
+              document.exitPictureInPicture().catch(() => {});
+            }
+
             showToast('Botão flutuante recolhido no X! Toque em "Flutuante" no topo quando quiser reativar.', 'amber');
             return;
           }
@@ -5104,7 +5293,7 @@
               bubbleContainer.style.transition = '';
             }, 260);
           } else {
-            // 3. Foi um toque / clique simples: Abre o Mini Cockpit Flutuante!
+            // 3. Foi um toque / clique simples na bolha: Abre o Mini Cockpit Flutuante!
             if (modalMiniCockpit) {
               renderPainel();
               modalMiniCockpit.classList.remove('hidden');
@@ -5117,34 +5306,30 @@
         bubble.addEventListener('pointerup', onPointerUp);
         bubble.addEventListener('pointercancel', onPointerUp);
 
-        // Ativar e Exibir a Bolha Flutuante
-        const activateFloatingBubble = () => {
-          if (!bubbleContainer) return;
-          bubbleContainer.classList.remove('hidden');
-          bubbleContainer.style.display = 'block';
-          bubbleContainer.style.transform = 'scale(1)';
-          bubbleContainer.style.opacity = '1';
+        // Ativar Modo Flutuante (Tanto a Bolha na Tela quanto a Janela sobre o Uber/99)
+        const activateFloatingBubble = async () => {
+          if (bubbleContainer) {
+            bubbleContainer.classList.remove('hidden');
+            bubbleContainer.style.display = 'block';
+            bubbleContainer.style.transform = 'scale(1)';
+            bubbleContainer.style.opacity = '1';
 
-          // Garante posição altamente visível na tela
-          const maxTop = window.innerHeight - 100;
-          const targetTop = Math.min(Math.max(120, maxTop * 0.35), maxTop);
-          bubbleContainer.style.top = targetTop + 'px';
-          bubbleContainer.style.right = '16px';
-          bubbleContainer.style.left = 'auto';
+            const maxTop = window.innerHeight - 100;
+            const targetTop = Math.min(Math.max(120, maxTop * 0.35), maxTop);
+            bubbleContainer.style.top = targetTop + 'px';
+            bubbleContainer.style.right = '16px';
+            bubbleContainer.style.left = 'auto';
 
-          // Animação chamativa para o usuário identificar imediatamente na tela
-          bubbleContainer.classList.add('animate-bounce');
-          setTimeout(() => {
-            bubbleContainer.classList.remove('animate-bounce');
-          }, 1200);
+            bubbleContainer.classList.add('animate-bounce');
+            setTimeout(() => {
+              bubbleContainer.classList.remove('animate-bounce');
+            }, 1200);
 
-          localStorage.setItem('motocash_bubble_visible', 'true');
-          showToast('⚡ Botão Flutuante ativado! Arraste pela tela ou toque para opções.', 'green');
-
-          if (modalMiniCockpit) {
-            renderPainel();
-            modalMiniCockpit.classList.remove('hidden');
+            localStorage.setItem('motocash_bubble_visible', 'true');
           }
+
+          // Dispara a Janela Flutuante sobreposta (PiP do Android)
+          await triggerPipMode();
         };
 
         // Botão no Cockpit Principal (Barra de Ações do Painel do Dia)
@@ -5164,6 +5349,9 @@
             if (modalMiniCockpit) modalMiniCockpit.classList.add('hidden');
             bubbleContainer.classList.add('hidden');
             localStorage.setItem('motocash_bubble_visible', 'false');
+            if (document.pictureInPictureElement) {
+              document.exitPictureInPicture().catch(() => {});
+            }
             showToast('Botão flutuante fechado. Toque em "Flutuante" no topo para reabrir.', 'amber');
           });
         }
@@ -5198,6 +5386,34 @@
         if (btnTriggerPip) {
           btnTriggerPip.addEventListener('click', () => {
             triggerPipMode();
+          });
+        }
+
+        // Ações de Fechar App
+        const modalConfirmCloseApp = document.getElementById('modalConfirmCloseApp');
+        const btnConfirmCloseApp = document.getElementById('btnConfirmCloseApp');
+        const btnCancelCloseApp = document.getElementById('btnCancelCloseApp');
+
+        document.querySelectorAll('.btn-trigger-close-app').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (modalConfirmCloseApp) {
+              modalConfirmCloseApp.classList.remove('hidden');
+            } else {
+              handleCloseApp();
+            }
+          });
+        });
+
+        if (btnCancelCloseApp && modalConfirmCloseApp) {
+          btnCancelCloseApp.addEventListener('click', () => {
+            modalConfirmCloseApp.classList.add('hidden');
+          });
+        }
+
+        if (btnConfirmCloseApp) {
+          btnConfirmCloseApp.addEventListener('click', () => {
+            if (modalConfirmCloseApp) modalConfirmCloseApp.classList.add('hidden');
+            handleCloseApp();
           });
         }
       }
