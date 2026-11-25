@@ -2,7 +2,7 @@
 // MotoCash Pro — Service Worker (Offline-First para Motoboys na Rua)
 // ============================================================================
 
-const CACHE_NAME = 'motocash-pro-v1.6.5';
+const CACHE_NAME = 'motocash-pro-v1.7.0';
 
 const PRECACHE_URLS = [
   './',
@@ -50,12 +50,31 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Interceptação de requisições: Cache First com Network Fallback
+// Interceptação de requisições:
+// 1. Navegação (HTML): Network-First para garantir que novas atualizações entrem na hora
+// 2. Outros recursos (ícones, fontes): Cache-First para velocidade e uso 100% offline
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') {
     return;
   }
 
+  // Navegação: Network-first com cache fallback
+  if (event.request.mode === 'navigate' || event.request.url.includes('index.html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request) || caches.match('./index.html') || caches.match('/'))
+    );
+    return;
+  }
+
+  // Recursos estáticos: Cache-first com network update
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {

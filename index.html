@@ -356,8 +356,8 @@
               </span>
             </div>
             <!-- Botão Simulação (Para testar no PC ou sem sair de moto) -->
-            <button id="btnToggleSim" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition bg-amber-500/15 text-amber-400 border-amber-500/40 hover:bg-amber-500/25 shadow-sm shadow-amber-500/10" title="Alternar entre modo simulador (amarelo) e corrida real pelo GPS (azul)">
-              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            <button id="btnToggleSim" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border-2 transition bg-amber-500/25 text-amber-300 border-amber-400 hover:bg-amber-500/35 shadow-lg shadow-amber-500/20 active:scale-95" title="Alternar entre modo simulador (amarelo) e corrida real pelo GPS (azul)">
+              <svg id="iconToggleSim" class="w-3.5 h-3.5 shrink-0 text-amber-300" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               <span id="simLabel" class="truncate">Simulador: ON</span>
             </button>
 
@@ -383,6 +383,12 @@
             <button id="btnHeaderInstall" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold bg-card border border-neonGreen/40 text-neonGreen hover:bg-neonGreen/10 transition" title="Instalar aplicativo APK no seu celular">
               <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               <span class="truncate">Instalar</span>
+            </button>
+
+            <!-- Botão Atualizar App (Limpa Cache e Atualiza Imediatamente) -->
+            <button id="btnHeaderUpdateApp" type="button" class="btn-trigger-update-app flex-1 sm:flex-none flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold bg-card border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/15 transition active:scale-95 shadow-sm" title="Atualizar MotoCash Pro para a versão mais recente e limpar cache">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+              <span class="truncate">Atualizar</span>
             </button>
           </div>
         </div>
@@ -1857,6 +1863,12 @@
       <button id="btnTriggerPipOverlay" type="button" class="w-full py-3 px-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-neonGreen text-amoled font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 active:scale-95 transition" title="Exibir janela flutuante por cima do Uber, 99 e Waze">
         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
         <span>Flutuar Sobre o Uber / 99 (Modo PiP)</span>
+      </button>
+
+      <!-- Botão Atualizar App no Mini Cockpit -->
+      <button type="button" class="btn-trigger-update-app w-full py-2.5 px-3 rounded-xl bg-card hover:bg-cardHover border border-emerald-500/35 text-emerald-400 hover:text-white font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+        <span>Atualizar Versão do App</span>
       </button>
 
       <!-- Fechar / Voltar ao App -->
@@ -3766,17 +3778,26 @@
           }
         });
 
-        // Alternar Modo Simulação vs GPS Real
+        // Alternar Modo Simulação vs GPS Real (Amarelo no Simulador, Azul no GPS Real)
         const btnToggleSim = document.getElementById('btnToggleSim');
         const syncSimToggleUI = () => {
           const label = document.getElementById('simLabel');
+          const icon = document.getElementById('iconToggleSim');
           if (!btnToggleSim || !label) return;
           if (state.config.simulationMode) {
-            btnToggleSim.className = 'flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition bg-amber-500/15 text-amber-400 border-amber-500/40 hover:bg-amber-500/25 shadow-sm shadow-amber-500/10';
+            btnToggleSim.className = 'flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border-2 transition bg-amber-500/25 text-amber-300 border-amber-400 hover:bg-amber-500/35 shadow-lg shadow-amber-500/20 active:scale-95';
             label.textContent = 'Simulador: ON';
+            if (icon) {
+              icon.className = 'w-3.5 h-3.5 shrink-0 text-amber-300';
+              icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />';
+            }
           } else {
-            btnToggleSim.className = 'flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition bg-blue-500/15 text-blue-400 border-blue-500/40 hover:bg-blue-500/25 shadow-sm shadow-blue-500/10';
+            btnToggleSim.className = 'flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border-2 transition bg-blue-600/30 text-blue-300 border-blue-400 hover:bg-blue-600/40 shadow-lg shadow-blue-500/25 active:scale-95';
             label.textContent = 'GPS Real: ON';
+            if (icon) {
+              icon.className = 'w-3.5 h-3.5 shrink-0 text-blue-300';
+              icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />';
+            }
           }
         };
 
@@ -3787,18 +3808,52 @@
             stopGpsTracking();
             if (state.currentShift.isActive && !state.currentShift.isPaused) {
               startSimulation();
+            } else {
+              updateGpsStatus('Simulador Pronto', 'amber');
             }
-            showToast('Modo Simulador ativado (Amarelo)', 'amber');
+            showToast('Modo Simulador ativado (Amarelo)!', 'amber');
           } else {
             stopSimulation();
             if (state.currentShift.isActive && !state.currentShift.isPaused) {
               startGpsTracking();
+            } else {
+              updateGpsStatus('GPS Conectado', 'blue');
             }
-            showToast('Corrida Real pelo GPS ativada (Azul)', 'blue');
+            showToast('Modo GPS Real ativado (Azul)!', 'blue');
           }
           saveState();
         });
         syncSimToggleUI();
+
+        // Botão Atualizar App (Limpa Cache e Atualiza Versão Imediatamente)
+        const handleUpdateApp = async () => {
+          showToast('Buscando atualizações e limpando cache...', 'blue');
+          try {
+            if ('serviceWorker' in navigator) {
+              const registrations = await navigator.serviceWorker.getRegistrations();
+              for (const reg of registrations) {
+                await reg.update();
+                await reg.unregister();
+              }
+            }
+            if ('caches' in window) {
+              const keys = await caches.keys();
+              for (const key of keys) {
+                await caches.delete(key);
+              }
+            }
+          } catch (err) {
+            console.warn('[Update] Erro ao limpar cache:', err);
+          }
+          showToast('Atualizado! Recarregando aplicativo...', 'green');
+          setTimeout(() => {
+            window.location.href = window.location.origin + window.location.pathname + '?v=' + Date.now();
+          }, 350);
+        };
+
+        document.querySelectorAll('.btn-trigger-update-app').forEach(btn => {
+          btn.addEventListener('click', handleUpdateApp);
+        });
 
         // Botão + Gasto Extra
         let selectedExtraCat = 'Almoço';
