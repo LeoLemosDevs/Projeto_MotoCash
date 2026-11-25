@@ -373,6 +373,12 @@
               <span class="truncate">Zerar</span>
             </button>
 
+            <!-- Botão Modo Flutuante (Sobre outros apps tipo Uber/99) -->
+            <button id="btnToggleFloating" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold bg-card border border-neonGreen/30 text-neonGreen hover:bg-neonGreen/10 transition" title="Ativar botão flutuante para usar junto com Uber e 99">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+              <span class="truncate">Flutuante</span>
+            </button>
+
             <!-- Botão Instalar App (APK / WebAPK Android) -->
             <button id="btnHeaderInstall" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold bg-card border border-neonGreen/40 text-neonGreen hover:bg-neonGreen/10 transition" title="Instalar aplicativo APK no seu celular">
               <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
@@ -1770,6 +1776,95 @@
     </div>
   </div>
 
+  <!-- ==================== BOLHA FLUTUANTE ESTILO UBER / 99 ==================== -->
+  <div id="floatingBubbleContainer" class="fixed z-50 select-none touch-none transition-opacity duration-300 pointer-events-auto" style="top: 220px; right: 16px;">
+    <!-- Bolha Principal Arrastável (Meio Transparente, Bordas Neon, Ícone MotoCash + Velocidade) -->
+    <div id="floatingBubble" class="relative group cursor-grab active:cursor-grabbing flex items-center justify-center" title="Arraste para mover | Toque para abrir mini painel | Solte no X para fechar">
+      <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-amoled/80 hover:bg-amoled active:scale-95 backdrop-blur-md border-2 border-neonGreen shadow-[0_0_20px_rgba(0,230,118,0.4)] flex flex-col items-center justify-center transition-all pointer-events-none">
+        <img src="assets/icons/icon-192.png" class="w-7 h-7 sm:w-8 sm:h-8 object-contain pointer-events-none" alt="MotoCash" />
+        <span id="bubbleSpeedLabel" class="text-[9px] sm:text-[10px] font-mono font-black text-neonGreen leading-none mt-0.5 tabular-nums pointer-events-none">0 km/h</span>
+      </div>
+      <!-- Ponto pulsante de status ativo -->
+      <span class="absolute top-0 right-0 flex h-3.5 w-3.5 pointer-events-none">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neonGreen opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-neonGreen border-2 border-amoled"></span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ==================== ZONA DE DESCARTE COM 'X' (Uber / 99 / Messenger Style) ==================== -->
+  <div id="bubbleDismissZone" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center justify-center transition-all duration-200 pointer-events-none">
+    <div id="bubbleDismissTarget" class="w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-red-600/85 border-2 border-red-300 text-white flex items-center justify-center shadow-[0_0_25px_rgba(239,68,68,0.7)] transition-all duration-200">
+      <svg class="w-8 h-8 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </div>
+    <span class="text-[11px] font-extrabold text-white mt-1.5 bg-black/80 border border-red-500/40 px-3 py-0.5 rounded-full shadow-lg">Solte no X para fechar</span>
+  </div>
+
+  <!-- ==================== MINI COCKPIT FLUTUANTE (Ao tocar na bolha) ==================== -->
+  <div id="modalMiniCockpit" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-card border border-neonGreen/40 rounded-3xl p-5 shadow-2xl space-y-4">
+      <!-- Cabeçalho Mini Cockpit -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <img src="assets/icons/icon-192.png" class="w-8 h-8 rounded-xl border border-neonGreen/30 shadow-md" alt="MotoCash" />
+          <div>
+            <h3 class="font-extrabold text-sm text-white">MotoCash Flutuante</h3>
+            <span class="text-[10px] text-neonGreen font-semibold">Modo Rua • Uber & 99</span>
+          </div>
+        </div>
+        <button data-close-modal="modalMiniCockpit" class="p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Resumo Rápido (Velocidade, KM, Ganhos no Turno) -->
+      <div class="grid grid-cols-2 gap-2 text-center">
+        <div class="p-2.5 rounded-2xl bg-amoled border border-borderSubtle">
+          <span class="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Velocidade / KM</span>
+          <span id="miniCockpitSpeedKm" class="font-mono font-black text-neonGreen text-sm sm:text-base tabular-nums">0 km/h • 0.0 km</span>
+        </div>
+        <div class="p-2.5 rounded-2xl bg-amoled border border-borderSubtle">
+          <span class="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Ganhos Hoje</span>
+          <span id="miniCockpitGains" class="font-mono font-black text-amber-400 text-sm sm:text-base tabular-nums">R$ 0,00</span>
+        </div>
+      </div>
+
+      <!-- Ações Rápidas de Ganho (+ Uber, + 99, + iFood) -->
+      <div class="space-y-1.5">
+        <p class="text-[11px] font-bold text-gray-300">Lançar Corrida Rápida:</p>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" data-quick-gain="Uber" class="btn-mini-gain py-2 px-1 rounded-xl bg-amoled hover:bg-neonGreen/10 border border-borderSubtle hover:border-neonGreen/40 text-xs font-bold text-white transition flex flex-col items-center gap-0.5 active:scale-95">
+            <span>🚗 Uber</span>
+          </button>
+          <button type="button" data-quick-gain="99" class="btn-mini-gain py-2 px-1 rounded-xl bg-amoled hover:bg-neonGreen/10 border border-borderSubtle hover:border-neonGreen/40 text-xs font-bold text-white transition flex flex-col items-center gap-0.5 active:scale-95">
+            <span>🚕 99</span>
+          </button>
+          <button type="button" data-quick-gain="iFood" class="btn-mini-gain py-2 px-1 rounded-xl bg-amoled hover:bg-neonGreen/10 border border-borderSubtle hover:border-neonGreen/40 text-xs font-bold text-white transition flex flex-col items-center gap-0.5 active:scale-95">
+            <span>🍔 iFood</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Botão Flutuar Sobre Outros Apps (Android PiP) -->
+      <button id="btnTriggerPipOverlay" type="button" class="w-full py-3 px-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-neonGreen text-amoled font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-neonGreen/20 active:scale-95 transition" title="Exibir janela flutuante por cima do Uber, 99 e Waze">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+        <span>Flutuar Sobre o Uber / 99 (Modo PiP)</span>
+      </button>
+
+      <!-- Fechar / Voltar ao App -->
+      <div class="flex gap-2">
+        <button type="button" id="btnDismissBubbleFromMini" class="flex-1 py-2.5 rounded-xl bg-amoled border border-red-500/30 text-red-400 hover:bg-red-500/10 font-bold text-xs transition">
+          Fechar Bolha
+        </button>
+        <button type="button" data-close-modal="modalMiniCockpit" class="flex-1 py-2.5 rounded-xl bg-card hover:bg-cardHover border border-borderSubtle text-gray-300 font-semibold text-xs transition">
+          Voltar ao Painel
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== TOAST DISCRETO ==================== -->
   <div id="toast" class="pointer-events-none fixed top-16 left-1/2 -translate-x-1/2 z-50 opacity-0 translate-y-2 transition-all duration-300">
     <div class="px-4 py-2.5 rounded-2xl bg-gray-900/95 border border-gray-700 text-gray-100 text-xs sm:text-sm font-medium shadow-2xl flex items-center gap-2 whitespace-nowrap">
@@ -2451,6 +2546,22 @@
         if (displayProfitEl) {
           displayProfitEl.textContent = formatBRL(netProfit);
           displayProfitEl.className = `font-mono font-black text-xs sm:text-base lg:text-xl tabular-nums digital-glow-amber ${netProfit < 0 ? 'text-red-400' : 'text-amber-400'}`;
+        }
+
+        // Atualiza velocímetro e dados da Bolha Flutuante e Mini Cockpit
+        const currentSpeed = state.currentShift.isActive && !state.currentShift.isPaused ? (state.currentShift.currentSpeed || 0) : 0;
+        const bubbleSpeedEl = document.getElementById('bubbleSpeedLabel');
+        if (bubbleSpeedEl) bubbleSpeedEl.textContent = `${currentSpeed} km/h`;
+
+        const miniSpeedKmEl = document.getElementById('miniCockpitSpeedKm');
+        if (miniSpeedKmEl) miniSpeedKmEl.textContent = `${currentSpeed} km/h • ${km.toFixed(1)} km`;
+
+        const miniGainsEl = document.getElementById('miniCockpitGains');
+        if (miniGainsEl) miniGainsEl.textContent = formatBRL(totalGains);
+
+        // Se o modo PiP estiver ativo no Android, atualiza o HUD desenhado
+        if (typeof updatePipCanvas === 'function' && document.pictureInPictureElement) {
+          updatePipCanvas();
         }
 
         // Atualiza botões de filtro de custos (Combustível, Peças, Extras - Linha Única Compacta)
@@ -4663,6 +4774,346 @@
         saveState();
       });
 
+      // =======================================================================
+      // 9. BOTÃO FLUTUANTE ESTILO UBER / 99 & MODO PIP SOBRE OUTROS APPS
+      // =======================================================================
+      let pipVideoElement = null;
+      let pipCanvas = null;
+      let pipInterval = null;
+
+      function updatePipCanvas() {
+        if (!pipCanvas) {
+          pipCanvas = document.createElement('canvas');
+          pipCanvas.width = 360;
+          pipCanvas.height = 200;
+        }
+        const ctx = pipCanvas.getContext('2d');
+        const w = pipCanvas.width;
+        const h = pipCanvas.height;
+
+        // Fundo AMOLED escuro com gradiente sutil
+        ctx.fillStyle = '#030508';
+        ctx.fillRect(0, 0, w, h);
+
+        // Barra Superior: MotoCash Pro • Status
+        ctx.fillStyle = '#00E676';
+        ctx.font = 'bold 16px Inter, sans-serif';
+        ctx.fillText('⚡ MotoCash Pro', 16, 28);
+
+        // Relógio ao Vivo
+        const now = new Date();
+        const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = 'bold 13px monospace';
+        ctx.fillText(timeStr, w - 85, 28);
+
+        // Linha divisória
+        ctx.strokeStyle = 'rgba(0, 230, 118, 0.25)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(16, 38);
+        ctx.lineTo(w - 16, 38);
+        ctx.stroke();
+
+        // Coluna Esquerda: Velocidade e Odômetro
+        const spd = state.currentShift.isActive && !state.currentShift.isPaused ? (state.currentShift.currentSpeed || 0) : 0;
+        ctx.fillStyle = '#00E676';
+        ctx.font = '900 44px Orbitron, monospace';
+        ctx.fillText(`${Math.round(spd)}`, 16, 88);
+        ctx.font = 'bold 14px Inter, sans-serif';
+        ctx.fillText('km/h', 90, 86);
+
+        const km = (state.currentShift.odometer || 0).toFixed(1);
+        ctx.fillStyle = '#E5E7EB';
+        ctx.font = 'bold 13px Inter, sans-serif';
+        ctx.fillText(`Odômetro: ${km} km`, 16, 118);
+
+        // Coluna Direita: Ganhos do Dia e Custo/km
+        const gainsTotal = (state.currentShift.gains || []).reduce((acc, g) => acc + (parseFloat(g.value) || 0), 0);
+        ctx.fillStyle = '#FACC15';
+        ctx.font = 'bold 12px Inter, sans-serif';
+        ctx.fillText('Ganhos Hoje:', 190, 62);
+        ctx.font = '900 20px monospace';
+        ctx.fillText(formatBRL(gainsTotal), 190, 88);
+
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = '12px Inter, sans-serif';
+        ctx.fillText(`Custo: ${formatBRL(state.moto.costPerKm)}/km`, 190, 118);
+
+        // Rodapé de Ação
+        ctx.fillStyle = 'rgba(0, 230, 118, 0.15)';
+        ctx.fillRect(16, 136, w - 32, 44);
+        ctx.strokeStyle = '#00E676';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(16, 136, w - 32, 44);
+
+        ctx.fillStyle = '#00E676';
+        ctx.font = 'bold 13px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Toque para abrir o MotoCash', w / 2, 163);
+        ctx.textAlign = 'left';
+      }
+
+      async function triggerPipMode() {
+        try {
+          updatePipCanvas();
+          if (!pipVideoElement) {
+            pipVideoElement = document.createElement('video');
+            pipVideoElement.muted = true;
+            pipVideoElement.playsInline = true;
+            pipVideoElement.style.position = 'fixed';
+            pipVideoElement.style.top = '-9999px';
+            pipVideoElement.style.left = '-9999px';
+            pipVideoElement.style.opacity = '0';
+            pipVideoElement.style.pointerEvents = 'none';
+            document.body.appendChild(pipVideoElement);
+          }
+
+          if (!pipVideoElement.srcObject) {
+            const stream = pipCanvas.captureStream(10);
+            pipVideoElement.srcObject = stream;
+          }
+
+          await pipVideoElement.play();
+
+          if (document.pictureInPictureElement) {
+            await document.exitPictureInPicture();
+          } else if (pipVideoElement.requestPictureInPicture) {
+            await pipVideoElement.requestPictureInPicture();
+            showToast('Janela Flutuante ativada! Pode abrir o Uber ou 99 agora.', 'green');
+            const m = document.getElementById('modalMiniCockpit');
+            if (m) m.classList.add('hidden');
+          } else {
+            showToast('Navegador não suporta PiP. Use a bolha flutuante na tela!', 'blue');
+          }
+
+          if (!pipInterval) {
+            pipInterval = setInterval(() => {
+              if (document.pictureInPictureElement) {
+                updatePipCanvas();
+              }
+            }, 1000);
+          }
+        } catch (err) {
+          console.warn('[PiP] Erro ao iniciar PiP:', err);
+          showToast('Bolha flutuante ativa na tela! Arraste para onde preferir.', 'blue');
+        }
+      }
+
+      function initFloatingBubble() {
+        const bubbleContainer = document.getElementById('floatingBubbleContainer');
+        const bubble = document.getElementById('floatingBubble');
+        const dismissZone = document.getElementById('bubbleDismissZone');
+        const dismissTarget = document.getElementById('bubbleDismissTarget');
+        const btnToggleFloating = document.getElementById('btnToggleFloating');
+        const modalMiniCockpit = document.getElementById('modalMiniCockpit');
+        const btnTriggerPip = document.getElementById('btnTriggerPipOverlay');
+        const btnDismissMini = document.getElementById('btnDismissBubbleFromMini');
+
+        if (!bubbleContainer || !bubble) return;
+
+        // Recupera posição salva
+        try {
+          const savedPos = JSON.parse(localStorage.getItem('motocash_bubble_pos'));
+          if (savedPos && typeof savedPos.top === 'number') {
+            const maxTop = window.innerHeight - 80;
+            const topVal = Math.max(10, Math.min(maxTop, savedPos.top));
+            bubbleContainer.style.top = topVal + 'px';
+            if (typeof savedPos.left === 'number') {
+              const maxLeft = window.innerWidth - 80;
+              const leftVal = Math.max(10, Math.min(maxLeft, savedPos.left));
+              bubbleContainer.style.left = leftVal + 'px';
+              bubbleContainer.style.right = 'auto';
+            }
+          }
+        } catch (e) {}
+
+        // Estado do arraste
+        let isDown = false;
+        let hasMoved = false;
+        let startX = 0;
+        let startY = 0;
+        let startLeft = 0;
+        let startTop = 0;
+        let isOverDismiss = false;
+
+        const onPointerDown = (e) => {
+          isDown = true;
+          hasMoved = false;
+          isOverDismiss = false;
+          startX = e.clientX;
+          startY = e.clientY;
+
+          const rect = bubbleContainer.getBoundingClientRect();
+          startLeft = rect.left;
+          startTop = rect.top;
+
+          try {
+            bubble.setPointerCapture(e.pointerId);
+          } catch (err) {}
+        };
+
+        const onPointerMove = (e) => {
+          if (!isDown) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+
+          if (!hasMoved && Math.hypot(dx, dy) > 6) {
+            hasMoved = true;
+            if (dismissZone) dismissZone.classList.remove('hidden');
+            bubbleContainer.style.transition = 'none';
+          }
+
+          if (hasMoved) {
+            const bWidth = bubbleContainer.offsetWidth || 60;
+            const bHeight = bubbleContainer.offsetHeight || 60;
+            const newLeft = Math.max(0, Math.min(window.innerWidth - bWidth, startLeft + dx));
+            const newTop = Math.max(0, Math.min(window.innerHeight - bHeight, startTop + dy));
+
+            bubbleContainer.style.left = newLeft + 'px';
+            bubbleContainer.style.top = newTop + 'px';
+            bubbleContainer.style.right = 'auto';
+
+            // Verifica colisão com o X (Zona de Descarte)
+            if (dismissTarget) {
+              const targetRect = dismissTarget.getBoundingClientRect();
+              const bCx = newLeft + bWidth / 2;
+              const bCy = newTop + bHeight / 2;
+              const tCx = targetRect.left + targetRect.width / 2;
+              const tCy = targetRect.top + targetRect.height / 2;
+              const dist = Math.hypot(bCx - tCx, bCy - tCy);
+
+              if (dist < 75) {
+                isOverDismiss = true;
+                dismissTarget.classList.add('scale-125', 'bg-red-500', 'shadow-[0_0_35px_rgba(239,68,68,1)]');
+                bubble.classList.add('scale-75', 'opacity-50');
+              } else {
+                isOverDismiss = false;
+                dismissTarget.classList.remove('scale-125', 'bg-red-500', 'shadow-[0_0_35px_rgba(239,68,68,1)]');
+                bubble.classList.remove('scale-75', 'opacity-50');
+              }
+            }
+          }
+        };
+
+        const onPointerUp = (e) => {
+          if (!isDown) return;
+          isDown = false;
+
+          try {
+            bubble.releasePointerCapture(e.pointerId);
+          } catch (err) {}
+
+          if (dismissZone) dismissZone.classList.add('hidden');
+          if (dismissTarget) {
+            dismissTarget.classList.remove('scale-125', 'bg-red-500', 'shadow-[0_0_35px_rgba(239,68,68,1)]');
+          }
+          bubble.classList.remove('scale-75', 'opacity-50');
+
+          // 1. Soltou no X para fechar?
+          if (isOverDismiss) {
+            bubbleContainer.style.transition = 'transform 0.22s ease, opacity 0.22s ease';
+            bubbleContainer.style.transform = 'scale(0)';
+            bubbleContainer.style.opacity = '0';
+            setTimeout(() => {
+              bubbleContainer.classList.add('hidden');
+              bubbleContainer.style.transform = '';
+              bubbleContainer.style.opacity = '';
+              localStorage.setItem('motocash_bubble_visible', 'false');
+            }, 230);
+            showToast('Botão flutuante recolhido no X! Toque em "Flutuante" no topo quando quiser reativar.', 'amber');
+            return;
+          }
+
+          // 2. Se moveu a bolha, faz snap suave para o canto mais próximo (esquerda ou direita)
+          if (hasMoved) {
+            const rect = bubbleContainer.getBoundingClientRect();
+            const bWidth = rect.width;
+            const screenW = window.innerWidth;
+            const snapLeft = (rect.left + bWidth / 2 < screenW / 2) ? 12 : (screenW - bWidth - 12);
+
+            bubbleContainer.style.transition = 'left 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), top 0.2s ease';
+            bubbleContainer.style.left = snapLeft + 'px';
+            localStorage.setItem('motocash_bubble_pos', JSON.stringify({ left: snapLeft, top: rect.top }));
+            setTimeout(() => {
+              bubbleContainer.style.transition = '';
+            }, 260);
+          } else {
+            // 3. Foi um toque / clique simples: Abre o Mini Cockpit Flutuante!
+            if (modalMiniCockpit) {
+              renderPainel();
+              modalMiniCockpit.classList.remove('hidden');
+            }
+          }
+        };
+
+        bubble.addEventListener('pointerdown', onPointerDown);
+        bubble.addEventListener('pointermove', onPointerMove);
+        bubble.addEventListener('pointerup', onPointerUp);
+        bubble.addEventListener('pointercancel', onPointerUp);
+
+        // Botão no Header para Ativar / Desativar a Bolha
+        if (btnToggleFloating) {
+          btnToggleFloating.addEventListener('click', () => {
+            if (bubbleContainer.classList.contains('hidden')) {
+              bubbleContainer.classList.remove('hidden');
+              bubbleContainer.style.transform = 'scale(1)';
+              bubbleContainer.style.opacity = '1';
+              localStorage.setItem('motocash_bubble_visible', 'true');
+              showToast('Botão flutuante ativado! Arraste para onde quiser ou solte no X para fechar.', 'green');
+            } else {
+              if (modalMiniCockpit) {
+                renderPainel();
+                modalMiniCockpit.classList.remove('hidden');
+              }
+            }
+          });
+        }
+
+        // Fechar bolha pelo Mini Cockpit
+        if (btnDismissMini) {
+          btnDismissMini.addEventListener('click', () => {
+            if (modalMiniCockpit) modalMiniCockpit.classList.add('hidden');
+            bubbleContainer.classList.add('hidden');
+            localStorage.setItem('motocash_bubble_visible', 'false');
+            showToast('Botão flutuante fechado. Toque em "Flutuante" no topo para reabrir.', 'amber');
+          });
+        }
+
+        // Ações Rápidas de Ganho no Mini Cockpit (+ Uber, + 99, + iFood)
+        document.querySelectorAll('.btn-mini-gain').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const platform = btn.dataset.quickGain;
+            if (modalMiniCockpit) modalMiniCockpit.classList.add('hidden');
+            const modalGain = document.getElementById('modalGain');
+            if (modalGain) {
+              modalGain.classList.remove('hidden');
+              const inputVal = document.getElementById('inputGainValue');
+              const inputKm = document.getElementById('inputGainKm');
+              const inputNotes = document.getElementById('inputGainNotes');
+              if (inputVal) inputVal.value = '';
+              if (inputKm) inputKm.value = '';
+              if (inputNotes) inputNotes.value = '';
+              document.querySelectorAll('.gain-platform-btn').forEach(b => {
+                if (b.dataset.gainPlatform.toLowerCase() === platform.toLowerCase()) {
+                  b.className = 'gain-platform-btn py-2.5 px-2 rounded-xl border border-neonGreen bg-neonGreen/15 text-neonGreen font-bold text-xs text-center transition';
+                } else {
+                  b.className = 'gain-platform-btn py-2.5 px-2 rounded-xl border border-borderSubtle bg-amoled text-gray-300 font-bold text-xs text-center transition';
+                }
+              });
+              if (inputVal) inputVal.focus();
+            }
+          });
+        });
+
+        // Botão Ativar PiP Overlay
+        if (btnTriggerPip) {
+          btnTriggerPip.addEventListener('click', () => {
+            triggerPipMode();
+          });
+        }
+      }
+
       // Relógio e Data ao Vivo de Alta Visibilidade para Suporte de Guidão (Horário e Data do Dia)
       function updateLiveClock() {
         const timeEl = document.getElementById('displayLiveTime');
@@ -4688,6 +5139,7 @@
 
       // Inicialização Geral
       initEvents();
+      initFloatingBubble();
       updateLiveClock();
       setInterval(updateLiveClock, 1000);
       restoreShiftStateOnLoad();
