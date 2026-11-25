@@ -356,9 +356,9 @@
               </span>
             </div>
             <!-- Botão Simulação (Para testar no PC ou sem sair de moto) -->
-            <button id="btnToggleSim" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40 hover:bg-neonGreen/25" title="Alternar entre modo simulação de teste (~50 km/h) e GPS real">
+            <button id="btnToggleSim" type="button" class="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition bg-amber-500/15 text-amber-400 border-amber-500/40 hover:bg-amber-500/25 shadow-sm shadow-amber-500/10" title="Alternar entre modo simulador (amarelo) e corrida real pelo GPS (azul)">
               <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-              <span id="simLabel" class="truncate">Simulação: ON</span>
+              <span id="simLabel" class="truncate">Simulador: ON</span>
             </button>
 
             <!-- Botão KM Manual -->
@@ -510,8 +510,8 @@
                 </div>
               </div>
 
-              <!-- BOTÕES DE CONTROLE RÁPIDO PADRONIZADOS (5 Ações em Linha) -->
-              <div class="grid grid-cols-5 gap-1.5 sm:gap-2">
+              <!-- BOTÕES DE CONTROLE RÁPIDO PADRONIZADOS (6 Ações) -->
+              <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-2">
                 <!-- 1. Iniciar / Pausar / Continuar -->
                 <button id="btnStartPause" type="button" class="min-h-[52px] sm:min-h-[58px] p-1.5 sm:p-2 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-extrabold text-[11px] sm:text-xs flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 shadow-lg shadow-neonGreen/20 transition" title="Iniciar ou Pausar Turno">
                   <svg id="iconStartPause" class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
@@ -530,13 +530,19 @@
                   <span class="truncate">+ Extra</span>
                 </button>
 
-                <!-- 4. Finalizar -->
+                <!-- 4. Botão Flutuante (Ativação Direta do Modo Flutuante / Uber / 99) -->
+                <button id="btnCockpitFloating" type="button" class="min-h-[52px] sm:min-h-[58px] p-1.5 sm:p-2 rounded-2xl bg-amber-500/15 hover:bg-amber-500/25 active:scale-[0.98] text-amber-400 border border-amber-500/40 font-bold text-[11px] sm:text-xs flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 shadow-md shadow-amber-500/10 transition" title="Ativar botão flutuante para usar por cima do Uber e 99">
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-amber-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                  <span class="truncate">Flutuante</span>
+                </button>
+
+                <!-- 5. Finalizar -->
                 <button id="btnFinishDay" type="button" class="min-h-[52px] sm:min-h-[58px] p-1.5 sm:p-2 rounded-2xl bg-red-600/90 hover:bg-red-500 active:scale-[0.98] text-white font-bold text-[11px] sm:text-xs flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 shadow-lg shadow-red-600/20 transition" title="Encerrar o dia e salvar relatório">
                   <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   <span class="truncate">Finalizar</span>
                 </button>
 
-                <!-- 5. Zerar Turno (Padronizado no Grid) -->
+                <!-- 6. Zerar Turno (Padronizado no Grid) -->
                 <button id="btnOpenResetPanel" type="button" class="min-h-[52px] sm:min-h-[58px] p-1.5 sm:p-2 rounded-2xl bg-card hover:bg-cardHover active:scale-[0.98] text-gray-300 hover:text-red-400 border border-borderSubtle hover:border-red-500/40 font-bold text-[11px] sm:text-xs flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 transition" title="Zerar dados do turno atual">
                   <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-red-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                   <span class="truncate">Zerar</span>
@@ -2503,9 +2509,13 @@
             badge.className = 'inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-neonGreen/15 text-neonGreen border border-neonGreen/30 w-full sm:w-auto shrink-0 shadow-sm';
             dot.className = 'w-2 h-2 rounded-full bg-neonGreen animate-pulse';
             if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-neonGreen';
+          } else if (color === 'blue') {
+            badge.className = 'inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/30 w-full sm:w-auto shrink-0 shadow-sm';
+            dot.className = 'w-2 h-2 rounded-full bg-blue-400 animate-pulse';
+            if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-blue-400';
           } else if (color === 'amber') {
             badge.className = 'inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 w-full sm:w-auto shrink-0 shadow-sm';
-            dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+            dot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
             if (clusterDot) clusterDot.className = 'w-2 h-2 rounded-full bg-amber-400';
           } else {
             badge.className = 'inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-red-500/15 text-red-400 border border-red-500/30 w-full sm:w-auto shrink-0 shadow-sm';
@@ -3762,10 +3772,10 @@
           const label = document.getElementById('simLabel');
           if (!btnToggleSim || !label) return;
           if (state.config.simulationMode) {
-            btnToggleSim.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-neonGreen/15 text-neonGreen border-neonGreen/40 hover:bg-neonGreen/25';
-            label.textContent = 'Simulação: ON';
+            btnToggleSim.className = 'flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition bg-amber-500/15 text-amber-400 border-amber-500/40 hover:bg-amber-500/25 shadow-sm shadow-amber-500/10';
+            label.textContent = 'Simulador: ON';
           } else {
-            btnToggleSim.className = 'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition bg-card text-gray-400 border-borderSubtle hover:bg-cardHover';
+            btnToggleSim.className = 'flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition bg-blue-500/15 text-blue-400 border-blue-500/40 hover:bg-blue-500/25 shadow-sm shadow-blue-500/10';
             label.textContent = 'GPS Real: ON';
           }
         };
@@ -3778,13 +3788,13 @@
             if (state.currentShift.isActive && !state.currentShift.isPaused) {
               startSimulation();
             }
-            showToast('Modo Simulação ativado (Ciclo inteligente)', 'green');
+            showToast('Modo Simulador ativado (Amarelo)', 'amber');
           } else {
             stopSimulation();
             if (state.currentShift.isActive && !state.currentShift.isPaused) {
               startGpsTracking();
             }
-            showToast('GPS Real ativado!', 'blue');
+            showToast('Corrida Real pelo GPS ativada (Azul)', 'blue');
           }
           saveState();
         });
@@ -5052,22 +5062,45 @@
         bubble.addEventListener('pointerup', onPointerUp);
         bubble.addEventListener('pointercancel', onPointerUp);
 
+        // Ativar e Exibir a Bolha Flutuante
+        const activateFloatingBubble = () => {
+          if (!bubbleContainer) return;
+          bubbleContainer.classList.remove('hidden');
+          bubbleContainer.style.display = 'block';
+          bubbleContainer.style.transform = 'scale(1)';
+          bubbleContainer.style.opacity = '1';
+
+          // Garante posição altamente visível na tela
+          const maxTop = window.innerHeight - 100;
+          const targetTop = Math.min(Math.max(120, maxTop * 0.35), maxTop);
+          bubbleContainer.style.top = targetTop + 'px';
+          bubbleContainer.style.right = '16px';
+          bubbleContainer.style.left = 'auto';
+
+          // Animação chamativa para o usuário identificar imediatamente na tela
+          bubbleContainer.classList.add('animate-bounce');
+          setTimeout(() => {
+            bubbleContainer.classList.remove('animate-bounce');
+          }, 1200);
+
+          localStorage.setItem('motocash_bubble_visible', 'true');
+          showToast('⚡ Botão Flutuante ativado! Arraste pela tela ou toque para opções.', 'green');
+
+          if (modalMiniCockpit) {
+            renderPainel();
+            modalMiniCockpit.classList.remove('hidden');
+          }
+        };
+
+        // Botão no Cockpit Principal (Barra de Ações do Painel do Dia)
+        const btnCockpitFloating = document.getElementById('btnCockpitFloating');
+        if (btnCockpitFloating) {
+          btnCockpitFloating.addEventListener('click', activateFloatingBubble);
+        }
+
         // Botão no Header para Ativar / Desativar a Bolha
         if (btnToggleFloating) {
-          btnToggleFloating.addEventListener('click', () => {
-            if (bubbleContainer.classList.contains('hidden')) {
-              bubbleContainer.classList.remove('hidden');
-              bubbleContainer.style.transform = 'scale(1)';
-              bubbleContainer.style.opacity = '1';
-              localStorage.setItem('motocash_bubble_visible', 'true');
-              showToast('Botão flutuante ativado! Arraste para onde quiser ou solte no X para fechar.', 'green');
-            } else {
-              if (modalMiniCockpit) {
-                renderPainel();
-                modalMiniCockpit.classList.remove('hidden');
-              }
-            }
-          });
+          btnToggleFloating.addEventListener('click', activateFloatingBubble);
         }
 
         // Fechar bolha pelo Mini Cockpit
