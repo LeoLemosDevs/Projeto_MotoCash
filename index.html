@@ -4853,12 +4853,20 @@
 
       // Registra o Service Worker para cache e uso offline
       if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', (e) => {
+          if (e.data && e.data.type === 'FORCE_RELOAD') {
+            console.log('[PWA] Nova versão ativada! Recarregando página...');
+            window.location.reload();
+          }
+        });
+
         window.addEventListener('load', () => {
           const tryRegister = (url, opts) => navigator.serviceWorker.register(url, opts);
           tryRegister('./sw.js')
             .catch(() => tryRegister('./assets/sw.js', { scope: './' }))
             .then((reg) => {
               console.log('[PWA] Service Worker registrado com sucesso:', reg.scope);
+              reg.update().catch(() => {});
             }).catch((err) => {
               console.warn('[PWA] Registro do Service Worker falhou:', err);
             });
@@ -4909,7 +4917,7 @@
         ctx.font = 'bold 15px Inter, sans-serif';
         ctx.fillText('⚡ MotoCash Pro', 14, 25);
 
-        const isSim = state.sim && state.sim.active;
+        const isSim = state.config && state.config.simulationMode;
         if (isSim) {
           ctx.fillStyle = '#FACC15';
           ctx.font = 'bold 11px Inter, sans-serif';

@@ -2,7 +2,7 @@
 // MotoCash Pro — Service Worker (Offline-First para Motoboys na Rua)
 // ============================================================================
 
-const CACHE_NAME = 'motocash-pro-v1.8.1';
+const CACHE_NAME = 'motocash-pro-v1.8.2';
 
 const PRECACHE_URLS = [
   './',
@@ -34,7 +34,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Ativação: Limpa caches legados
+// Ativação: Limpa todos os caches legados e força atualização imediata
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -46,12 +46,19 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(async () => {
+      await self.clients.claim();
+      // Notifica todas as janelas abertas para recarregar
+      const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      for (const client of clients) {
+        client.postMessage({ type: 'FORCE_RELOAD' });
+      }
+    })
   );
 });
 
 // Interceptação de requisições:
-// 1. Navegação (HTML): Network-First para garantir que novas atualizações entrem na hora
+// 1. Navegação (HTML): Network-First forçado (no-cache) para que novas atualizações entrem na hora
 // 2. Outros recursos (ícones, fontes): Cache-First para velocidade e uso 100% offline
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') {
@@ -59,9 +66,9 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Navegação: Network-first com cache fallback
-  if (event.request.mode === 'navigate' || event.request.url.includes('index.html')) {
+  if (event.request.mode === 'navigate' || event.request.url.includes('index.html') || event.request.destination === 'document') {
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: 'no-cache' })
         .then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             const copy = networkResponse.clone();
