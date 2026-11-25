@@ -3819,14 +3819,14 @@
             btnToggleSim.className = 'flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border-2 transition bg-amber-500/25 text-amber-300 border-amber-400 hover:bg-amber-500/35 shadow-lg shadow-amber-500/20 active:scale-95';
             label.textContent = 'Simulador: ON';
             if (icon) {
-              icon.className = 'w-3.5 h-3.5 shrink-0 text-amber-300';
+              icon.setAttribute('class', 'w-3.5 h-3.5 shrink-0 text-amber-300');
               icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />';
             }
           } else {
             btnToggleSim.className = 'flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black border-2 transition bg-blue-600/30 text-blue-300 border-blue-400 hover:bg-blue-600/40 shadow-lg shadow-blue-500/25 active:scale-95';
             label.textContent = 'GPS Real: ON';
             if (icon) {
-              icon.className = 'w-3.5 h-3.5 shrink-0 text-blue-300';
+              icon.setAttribute('class', 'w-3.5 h-3.5 shrink-0 text-blue-300');
               icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />';
             }
           }

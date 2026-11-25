@@ -2,7 +2,7 @@
 // MotoCash Pro — Service Worker (Offline-First para Motoboys na Rua)
 // ============================================================================
 
-const CACHE_NAME = 'motocash-pro-v1.8.0';
+const CACHE_NAME = 'motocash-pro-v1.8.1';
 
 const PRECACHE_URLS = [
   './',
