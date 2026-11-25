@@ -1526,6 +1526,119 @@
     </div>
   </div>
 
+  <!-- ==================== MODAL GUIA DE INSTALAÇÃO NO CELULAR ==================== -->
+  <div id="modalInstallGuide" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-end sm:items-center justify-center p-3 sm:p-4">
+    <div class="w-full max-w-md bg-card border border-neonGreen/40 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
+      
+      <!-- Topo: Logo + Título + Fechar -->
+      <div class="flex items-center justify-between pb-3 border-b border-borderSubtle">
+        <div class="flex items-center gap-3">
+          <img src="img/logo moto 50p.png" onerror="this.src='assets/icons/icon-192.png'" class="w-10 h-10 rounded-2xl object-contain border border-neonGreen/30 bg-amoled p-0.5 shadow-md shrink-0" alt="MotoCash Logo" />
+          <div>
+            <h3 class="font-extrabold text-base sm:text-lg text-white leading-tight">Instalar MotoCash no Celular</h3>
+            <p class="text-xs text-neonGreen font-semibold">Atalho Oficial na Tela Inicial e Gaveta de Apps</p>
+          </div>
+        </div>
+        <button data-close-modal="modalInstallGuide" type="button" class="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition" title="Fechar">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Alerta / Explicação Clara -->
+      <div class="bg-amoled/80 border border-borderSubtle rounded-2xl p-3.5 space-y-2">
+        <div class="flex items-start gap-2.5">
+          <span class="w-7 h-7 rounded-lg bg-neonGreen/15 text-neonGreen flex items-center justify-center shrink-0 mt-0.5 font-black text-sm">✓</span>
+          <p class="text-xs text-gray-300 leading-relaxed">
+            O MotoCash Pro funciona como aplicativo nativo no celular: <b class="text-white">tela cheia, 100% offline, odômetro GPS e botão flutuante</b>, sem precisar baixar da Play Store!
+          </p>
+        </div>
+      </div>
+
+      <!-- Passo a Passo Visual para Android (Chrome) -->
+      <div id="installGuideAndroid" class="space-y-3">
+        <p class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5896 8.3582 13.852 8 12 8s-3.5896.3582-5.1368.9497L4.8409 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396"/></svg>
+          Instalação Direta no Celular Android:
+        </p>
+
+        <!-- Card 1 -->
+        <div class="flex items-center gap-3 bg-amoled/90 border border-emerald-500/20 rounded-2xl p-3">
+          <div class="w-8 h-8 rounded-xl bg-card border border-emerald-500/40 text-neonGreen font-black text-sm flex items-center justify-center shrink-0 shadow-inner">
+            1
+          </div>
+          <div class="flex-1 text-xs">
+            <p class="font-bold text-white">Toque nos 3 Pontinhos <span class="text-neonGreen text-sm font-black">⋮</span></p>
+            <p class="text-gray-400">No canto superior direito da tela do Google Chrome.</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="flex items-center gap-3 bg-amoled/90 border border-emerald-500/20 rounded-2xl p-3">
+          <div class="w-8 h-8 rounded-xl bg-card border border-emerald-500/40 text-neonGreen font-black text-sm flex items-center justify-center shrink-0 shadow-inner">
+            2
+          </div>
+          <div class="flex-1 text-xs">
+            <p class="font-bold text-white">Toque em <span class="text-neonGreen font-extrabold">"Instalar aplicativo"</span></p>
+            <p class="text-gray-400">Ou <span class="text-gray-300 font-semibold">"Adicionar à tela inicial"</span> no menu aberto.</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="flex items-center gap-3 bg-amoled/90 border border-emerald-500/20 rounded-2xl p-3">
+          <div class="w-8 h-8 rounded-xl bg-card border border-emerald-500/40 text-neonGreen font-black text-sm flex items-center justify-center shrink-0 shadow-inner">
+            3
+          </div>
+          <div class="flex-1 text-xs">
+            <p class="font-bold text-white">Confirme em <span class="text-neonGreen font-extrabold">"Instalar"</span></p>
+            <p class="text-gray-400">Pronto! O aplicativo será adicionado com o ícone oficial!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guia iOS (iPhone) -->
+      <div id="installGuideIos" class="hidden bg-amoled/90 border border-blue-500/30 rounded-2xl p-3.5 space-y-2 text-xs">
+        <p class="font-bold text-white flex items-center gap-1.5">
+          <span class="text-blue-400 font-bold">No iPhone (Safari):</span>
+        </p>
+        <p class="text-gray-300">
+          1. Toque no botão de <b>Compartilhar</b> (ícone do quadrado com a seta para cima <span class="text-blue-400 text-sm font-bold">⎋</span>).
+        </p>
+        <p class="text-gray-300">
+          2. Role a lista e escolha <b>"Adicionar à Tela de Início"</b> (<span class="text-blue-400 font-bold">⊞</span>).
+        </p>
+        <p class="text-gray-300">
+          3. Toque em <b>"Adicionar"</b> no canto superior.
+        </p>
+      </div>
+
+      <!-- Se estiver em navegador interno (WhatsApp, Instagram, etc) -->
+      <div id="installInAppAlert" class="hidden bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3 space-y-2 text-xs">
+        <p class="font-bold text-amber-400 flex items-center gap-1.5">
+          <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+          Navegador Interno Detectado
+        </p>
+        <p class="text-gray-300">
+          Você está abrindo o link dentro do WhatsApp/Instagram. Para instalar o app com ícone no celular, abra no Google Chrome:
+        </p>
+        <button id="btnOpenInChrome" type="button" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-amoled font-extrabold text-xs shadow-md transition">
+          Abrir no Google Chrome Agora
+        </button>
+      </div>
+
+      <!-- Ações do Modal -->
+      <div class="space-y-2 pt-2">
+        <button id="btnTryDirectInstallAgain" type="button" class="w-full py-3 rounded-2xl bg-neonGreen hover:bg-emerald-400 active:scale-[0.98] text-amoled font-black text-sm shadow-lg shadow-neonGreen/25 transition flex items-center justify-center gap-2">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          Disparar Instalador Direto
+        </button>
+        <button data-close-modal="modalInstallGuide" type="button" class="w-full py-2.5 rounded-2xl bg-card hover:bg-cardHover border border-borderSubtle text-gray-300 font-semibold text-xs transition">
+          Entendi, vou tocar nos 3 pontinhos (⋮)
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ==================== MODAL ZERAR TURNO ==================== -->
   <div id="modalReset" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="w-full max-w-sm bg-card border border-borderSubtle rounded-3xl p-6 text-center shadow-2xl">
@@ -4786,11 +4899,38 @@
         if (btn) btn.classList.remove('hidden');
       });
 
+      const openInstallGuideModal = () => {
+        const modal = document.getElementById('modalInstallGuide');
+        if (!modal) return;
+
+        const isInAppBrowser = /FBAN|FBAV|Instagram|WhatsApp|Line|Twitter/i.test(navigator.userAgent);
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        const androidGuide = document.getElementById('installGuideAndroid');
+        const iosGuide = document.getElementById('installGuideIos');
+        const inAppAlert = document.getElementById('installInAppAlert');
+
+        if (inAppAlert) {
+          if (isInAppBrowser) inAppAlert.classList.remove('hidden');
+          else inAppAlert.classList.add('hidden');
+        }
+
+        if (isIOS) {
+          if (iosGuide) iosGuide.classList.remove('hidden');
+          if (androidGuide) androidGuide.classList.add('hidden');
+        } else {
+          if (iosGuide) iosGuide.classList.add('hidden');
+          if (androidGuide) androidGuide.classList.remove('hidden');
+        }
+
+        modal.classList.remove('hidden');
+      };
+
       const executeDirectInstall = async () => {
         // 1. Já está instalado e rodando como app standalone?
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
         if (isStandalone) {
-          showToast('O MotoCash Pro já está instalado no seu celular! Verifique seus apps.', 'green');
+          showToast('O MotoCash Pro já está instalado e rodando como aplicativo no seu celular!', 'green');
           return;
         }
 
@@ -4808,33 +4948,20 @@
               if (banner) banner.classList.add('hidden');
               const btn = document.getElementById('btnHeaderInstall');
               if (btn) btn.classList.add('hidden');
+              const modal = document.getElementById('modalInstallGuide');
+              if (modal) modal.classList.add('hidden');
             } else {
               showToast('Instalação cancelada.', 'amber');
             }
           } catch (err) {
             console.error('[PWA] Erro ao disparar instalador nativo:', err);
+            openInstallGuideModal();
           }
           return;
         }
 
-        // 3. Detecção de navegador interno (WhatsApp, Instagram, etc) que bloqueia instalação PWA
-        const isAndroid = /Android/i.test(navigator.userAgent);
-        const isInAppBrowser = /FBAN|FBAV|Instagram|WhatsApp|Line|Twitter/i.test(navigator.userAgent);
-        if (isAndroid && isInAppBrowser) {
-          showToast('Abrindo no Google Chrome para instalar...', 'blue');
-          window.location.href = 'intent://' + window.location.host + window.location.pathname + '#Intent;scheme=https;package=com.android.chrome;end';
-          return;
-        }
-
-        // 4. Detecção de iOS / Safari
-        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-        if (isIOS) {
-          showToast('No iPhone: toque no ícone de Compartilhar (quadrado com seta) e escolha "Adicionar à Tela de Início".', 'blue');
-          return;
-        }
-
-        // 5. Caso o Chrome ainda esteja verificando os critérios do manifesto
-        showToast('Preparando instalador no celular... Toque novamente em Instalar!', 'blue');
+        // 3. Caso o evento nativo não esteja disponível de imediato, abre o Guia Visual com os 3 passos
+        openInstallGuideModal();
       };
 
       const btnPwaInstall = document.getElementById('btnPwaInstall');
@@ -4848,6 +4975,26 @@
         btnPwaDismiss.addEventListener('click', () => {
           const banner = document.getElementById('pwaInstallBanner');
           if (banner) banner.classList.add('hidden');
+        });
+      }
+
+      // Conecta botões internos do modal de instalação
+      const btnTryDirect = document.getElementById('btnTryDirectInstallAgain');
+      if (btnTryDirect) {
+        btnTryDirect.addEventListener('click', () => {
+          const promptEvent = window.deferredInstallPrompt || deferredPrompt;
+          if (promptEvent) {
+            executeDirectInstall();
+          } else {
+            showToast('Siga os 3 passos acima: toque nos 3 pontinhos (⋮) do Chrome e selecione "Instalar aplicativo"!', 'amber', 5000);
+          }
+        });
+      }
+
+      const btnOpenInChrome = document.getElementById('btnOpenInChrome');
+      if (btnOpenInChrome) {
+        btnOpenInChrome.addEventListener('click', () => {
+          window.location.href = 'intent://' + window.location.host + window.location.pathname + '#Intent;scheme=https;package=com.android.chrome;end';
         });
       }
 
